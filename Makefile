@@ -12,10 +12,10 @@ distclean: clean
 	@rm -rf bin
 	@make -s -C extern clean
 
-#extern: bin/dia2code
-#
-#bin/dia2code:
-#	@make -s -j4 -C extern dia2code
+extern: bin/dia2code
+
+bin/dia2code:
+	@make -s -j4 -C extern dia2code
 
 configure:
 	@mkdir -p build 
