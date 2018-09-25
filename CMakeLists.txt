@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.8)
-project (plt)
+project (defaupdelavoypierre)
 
 # Directories
 include_directories ("${PROJECT_SOURCE_DIR}/src/client")
