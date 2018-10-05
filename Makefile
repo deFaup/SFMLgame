@@ -18,13 +18,24 @@ bin/dia2code:
 	@make -s -j4 -C extern dia2code
 
 configure:
+ifdef SYSTEMROOT
+#Windows
+	@configure.bat
+
+else
 	@mkdir -p build 
 	@cd build && cmake ..
+endif
+
 
 build: bin/client 
 
 bin/client:
+ifdef SYSTEMROOT
+	@mingw32-make -s -j4 -C build client
+else
 	@make -s -j4 -C build client
+endif
 
 bin/server:
 	@make -s -j4 -C build server

@@ -16,12 +16,15 @@ ENDIF(CMAKE_COMPILER_IS_GNUCC)
 
 # libxml2
 if(WIN32)
-include_directories(libxml2/include)
-find_library(LIBXML2_LIBRARIES NAMES libxml2 PATHS libxml2/lib)
+include_directories(${PROJECT_SOURCE_DIR}/../libxml2/include)
+find_library(LIBXML2_LIBRARIES NAMES libxml2-2 HINTS "${PROJECT_SOURCE_DIR}/../../lib")
+
 else(WIN32)
+
 if($ENV{MACHINE_ENSEA})
 include_directories("/users/perm/gosselin/lib/libxml2/include/libxml2")
 set(LIBXML2_LIBRARIES "/users/perm/gosselin/lib/libxml2/lib/libxml2.so")
+
 else($ENV{MACHINE_ENSEA})
 find_package (LibXml2 REQUIRED)
 include_directories(${LIBXML2_INCLUDE_DIR})

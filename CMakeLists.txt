@@ -46,8 +46,11 @@ add_executable(client ${client_sources} ${shared_sources})
 
 # SFML
 if(WIN32)
-set(SFML_ROOT "D:/Utils/SFML-2.3")
-set(CMAKE_MODULE_PATH "${SFML_ROOT}/cmake/Modules" ${CMAKE_MODULE_PATH})
+#since v2.5.0 use SFML_DIR
+set(SFML_DIR "C:/Users/gregoire/Documents/Ensea/3A/Projet_IS/soft/SFML-2.5.0/lib/cmake/SFML")
+#set(SFML_ROOT "D:/Utils/SFML-2.3")
+#set(CMAKE_MODULE_PATH "${SFML_ROOT}/cmake/Modules" ${CMAKE_MODULE_PATH})
+
 else(WIN32)
 set(CMAKE_MODULE_PATH "/usr/share/SFML/cmake/Modules/" ${CMAKE_MODULE_PATH})
 endif(WIN32)
