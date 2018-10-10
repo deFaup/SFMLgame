@@ -1,3 +1,5 @@
+#define number_of_attacks 5
+
 #include <iostream>
 
 // Les lignes suivantes ne servent qu'à vérifier que la compilation avec SFML fonctionne
