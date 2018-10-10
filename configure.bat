@@ -1,5 +1,5 @@
 xcopy "lib" "bin"/y
 mkdir build 
 cd build
-cmake -G "MinGW Makefiles" ..
+cmake -DCMAKE_SH="CMAKE_SH-NOTFOUND" -G "MinGW Makefiles" ..
 cd ..
