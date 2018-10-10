@@ -16,8 +16,6 @@ using namespace state;
 
 int main(int argc,char* argv[]) 
 {
-    Exemple exemple;
-    exemple.setX(53);
 
     cout << "Bienvenue chez antoine et gregoire !" << endl;
 
