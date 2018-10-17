@@ -1,7 +1,6 @@
-#define number_of_attacks 5
-
 #include <iostream>
 #include <string>
+#define number_of_attacks 5
 
 // Les lignes suivantes ne servent qu'à vérifier que la compilation avec SFML fonctionne
 #include <SFML/Graphics.hpp>
