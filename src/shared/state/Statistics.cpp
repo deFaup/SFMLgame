@@ -1,31 +1,64 @@
-#include "state/Statistics.h"
+/**
+ * @file : Statistics.cpp
+ * @brief : fichier contenant la definition des methodes de la classe Statistics
+ */
 
-namespace state {
+#include "define.hpp"
+#include "Statistics.h"
 
-state::Statistics::Statistics (int vie, int attaque, int deplacement){
-	this->life_point = vie;
-	this->attack_point = attaque;
-	this->move_point = deplacement;
+state::Statistics::Statistics (unsigned int vie, unsigned int attaque, unsigned int deplacement){
+	if(vie <= MAX_LIFE_POINT){
+		this->life_point = vie;
+	}
+	else{
+		this->life_point = MAX_LIFE_POINT;
+	}
+	if(attaque <= MAX_ATTACK_POINT){
+		this->attack_point = attaque;
+	}
+	else{
+		this->attack_point = MAX_ATTACK_POINT;
+	}
+	if(deplacement <= MAX_MOVE_POINT){
+		this->move_point = deplacement;
+	}
+	else{
+		this->move_point = MAX_MOVE_POINT;
+	}
 	return;
 }
 
-int state::Statistics::Get_life_points (){
+unsigned int state::Statistics::Get_life_points (){
 	return(this->life_point);
 }
 
-int state::Statistics::Get_attack_points (){
+unsigned int state::Statistics::Get_attack_points (){
 	return(this->attack_point);
 }
 
-int state::Statistics::Get_move_points (){
+unsigned int state::Statistics::Get_move_points (){
 	return(this->life_point);
 }
 
-void state::Statistics::Set_statistiques (int life_point, int attack_point, int move_point){
-	this->life_point = life_point;
-	this->attack_point = attack_point;
-	this->move_point = move_point;
+void state::Statistics::Set_statistiques (unsigned int vie, unsigned int attaque, unsigned int deplacement){
+	if(vie <= MAX_LIFE_POINT){
+		this->life_point = vie;
+	}
+	else{
+		this->life_point = MAX_LIFE_POINT;
+	}
+	if(attaque <= MAX_ATTACK_POINT){
+		this->attack_point = attaque;
+	}
+	else{
+		this->attack_point = MAX_ATTACK_POINT;
+	}
+	if(deplacement <= MAX_MOVE_POINT){
+		this->move_point = deplacement;
+	}
+	else{
+		this->move_point = MAX_MOVE_POINT;
+	}
 	return;
 }
 
-};
