@@ -40,6 +40,7 @@ void state::Characters::addAttack (unsigned int attack_cost, unsigned int attack
 		this->attack_damage[number_of_attacks] = MAX_ATTACK_DAMAGE;
 	}
 	this->attack_field_of_action[number_of_attacks] = attack_field_of_action;
+	(this->number_of_attacks)++;
 }
 
 unsigned int state::Characters::get_attack_cost (unsigned int numero_attack){
