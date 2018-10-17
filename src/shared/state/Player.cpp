@@ -1,5 +1,9 @@
 
+<<<<<<< HEAD
 #include "define.hpp"
+=======
+#include "define"
+>>>>>>> 1075fa6962ab215280e9c2a9582418500b0345f0
 #include "Player.h"
 
 state::Player::Player(){
