@@ -37,7 +37,7 @@ unsigned int state::Statistics::Get_attack_points (){
 }
 
 unsigned int state::Statistics::Get_move_points (){
-	return(this->life_point);
+	return(this->move_point);
 }
 
 void state::Statistics::Set_statistiques (unsigned int vie, unsigned int attaque, unsigned int deplacement){

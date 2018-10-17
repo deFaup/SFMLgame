@@ -19,7 +19,6 @@ using namespace state;
 
 int main(int argc,char* argv[]) 
 {
-
 	cout << "Bienvenue chez antoine et gregoire !" << endl;
 	if(argc == 2 /*&& argv[1] == "test"*/){
 		cout << "Test de la classe Statistiques" << endl;
