@@ -6,9 +6,15 @@
 using namespace state;
 using namespace std;
 
-Player::Player(): name("Un-named Player"){}
+Player::Player(){
+	this->name = "Un-named Player";
+	//this->number_of_characters = 0;
+}
 
-Player::Player(string name): name(name){}
+Player::Player(string name){
+	this->name = name;
+	//this->number_of_characters = 0;
+}
 
 void Player::add_character(Characters new_character){
 	if(this->number_of_characters < MAX_NB_CHARACTER){

@@ -26,21 +26,28 @@ state::Characters::Characters(std::string name){
 	return;
 }
 
+unsigned int state::Characters::get_number_of_attacks(){
+	return(this->number_of_attacks);
+}
+
 void state::Characters::addAttack (unsigned int attack_cost, unsigned int attack_damage, void * attack_field_of_action){
-	if(attack_cost <= MAX_ATTACK_COST){	
-		this->attack_cost[number_of_attacks] = attack_cost;
+	if(this->number_of_attacks < MAX_NB_ATTACK){
+		if(attack_cost <= MAX_ATTACK_COST){	
+			this->attack_cost[number_of_attacks] = attack_cost;
+		}
+		else{
+			this->attack_cost[number_of_attacks] = MAX_ATTACK_COST;
+		}
+		if(attack_damage <= MAX_ATTACK_DAMAGE){	
+			this->attack_damage[number_of_attacks] = attack_damage;
+		}
+		else{
+			this->attack_damage[number_of_attacks] = MAX_ATTACK_DAMAGE;
+		}
+		this->attack_field_of_action[number_of_attacks] = attack_field_of_action;
+		(this->number_of_attacks)++;
 	}
-	else{
-		this->attack_cost[number_of_attacks] = MAX_ATTACK_COST;
-	}
-	if(attack_damage <= MAX_ATTACK_DAMAGE){	
-		this->attack_damage[number_of_attacks] = attack_damage;
-	}
-	else{
-		this->attack_damage[number_of_attacks] = MAX_ATTACK_DAMAGE;
-	}
-	this->attack_field_of_action[number_of_attacks] = attack_field_of_action;
-	(this->number_of_attacks)++;
+	return;
 }
 
 unsigned int state::Characters::get_attack_cost (unsigned int numero_attack){

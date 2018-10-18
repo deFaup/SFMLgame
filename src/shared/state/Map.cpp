@@ -13,14 +13,14 @@ void Map::set_screen_dimensions (){
 
 	width = sf::VideoMode::getDesktopMode().width;
 	height = sf::VideoMode::getDesktopMode().height;
-	cout << width << ", " << height << endl;
+	//cout << width << ", " << height << endl;
 }
 
 void Map::get_screen_dimensions(int* width, int* height){
 
 	*width = this->width;
 	*height =this->height;
-	cout << width << ", " << height << endl;
+	//cout << width << ", " << height << endl;
 }
 
 void Map::create_mask ()
@@ -34,17 +34,19 @@ void Map::create_mask ()
 	/* Starting with the first column and random row */
 	int x(0), y(0);
 	y = int((30 * height) / 100) + rand() % int(50 * height / 100);
-	printf("y = %d\n", y);
+	//printf("y = %d\n", y);
 	mask[x][y]++;
 	puts_zero(mask, x, y);
-
+	cout << "ici2" << endl;
 	while (x != width - 1) {
 		/* new x and new y*/
 		x++;
 		new_line_index(&y, height);
+		cout << "ici3" << endl;
 		/* update the matrix */
 		mask[x][y]++;
 		puts_zero(mask, x, y);
+		cout << "ici4" << endl;
 
 	}
 }
@@ -62,7 +64,7 @@ void Map::affiche(const auto& mask){
     
     for (int i = 0; i < height; i++){
         for (int j = 0; j < width; j++){
-            cout << "mask[" <<i<<"]"<<"["<< j<<"] = "<< mask[i][j] << endl;
+            //cout << "mask[" <<i<<"]"<<"["<< j<<"] = "<< mask[i][j] << endl;
         }
     }
 }

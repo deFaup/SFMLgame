@@ -7,7 +7,7 @@
 #include "Statistics.h"
 
 state::Statistics::Statistics (int vie, int attaque, int deplacement){
-	if(0 <= vie <= MAX_LIFE_POINT){
+	if(0 <= vie && vie <= MAX_LIFE_POINT){
 		this->life_point = vie;
 	}
 	else if(vie > MAX_LIFE_POINT){
@@ -16,16 +16,16 @@ state::Statistics::Statistics (int vie, int attaque, int deplacement){
 	else{
 		this->life_point = 0;
 	}
-	if(0 <= attaque <= MAX_ATACK_POINT){
+	if(0 <= attaque && attaque <= MAX_ATTACK_POINT){
 		this->attack_point = attaque;
 	}
-	else if(vie > MAX_LIFE_POINT){
+	else if(attaque > MAX_ATTACK_POINT){
 		this->attack_point = MAX_ATTACK_POINT;
 	}
 	else{
 		this->attack_point = 0;
 	}
-	if(0 <= deplacement <= MAX_MOVE_POINT){
+	if(0 <= deplacement && deplacement <= MAX_MOVE_POINT){
 		this->move_point = deplacement;
 	}
 	else if(deplacement > MAX_MOVE_POINT){
@@ -50,7 +50,7 @@ unsigned int state::Statistics::Get_move_points (){
 }
 
 void state::Statistics::Set_statistiques (int vie, int attaque, int deplacement){
-	if(0 <= vie <= MAX_LIFE_POINT){
+	if(0 <= vie && vie <= MAX_LIFE_POINT){
 		this->life_point = vie;
 	}
 	else if(vie > MAX_LIFE_POINT){
@@ -59,16 +59,16 @@ void state::Statistics::Set_statistiques (int vie, int attaque, int deplacement)
 	else{
 		this->life_point = 0;
 	}
-	if(0 <= attaque <= MAX_ATACK_POINT){
+	if(0 <= attaque && attaque <= MAX_ATTACK_POINT){
 		this->attack_point = attaque;
 	}
-	else if(vie > MAX_LIFE_POINT){
+	else if(attaque > MAX_ATTACK_POINT){
 		this->attack_point = MAX_ATTACK_POINT;
 	}
 	else{
 		this->attack_point = 0;
 	}
-	if(0 <= deplacement <= MAX_MOVE_POINT){
+	if(0 <= deplacement && deplacement <= MAX_MOVE_POINT){
 		this->move_point = deplacement;
 	}
 	else if(deplacement > MAX_MOVE_POINT){
