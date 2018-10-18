@@ -79,6 +79,9 @@ void testGameState(){
 	cout << "\n\nTest de la classe GameState" << endl;
 	GameState etat;
 
+	cout << "\n\nCreation d'une carte de jeu 50x50\n" << endl;
+	etat.new_map();	
+
 	cout << "\n\nVerification du nombre de joueurs max (5)\n" << endl;
 	for (int i = 0; i< 7; i++)
 	{
@@ -86,6 +89,8 @@ void testGameState(){
 		etat.new_player("player");
 		cout << "Nombre de joueur enregistre = " << etat.get_number_of_player() << endl;
 	}
+	
+
 }
 
 int main(int argc,char* argv[]) 
@@ -97,42 +102,10 @@ int main(int argc,char* argv[])
 		{
 
 			testStatistics();
-			//testCharacters();
-			testPlayer();
+			testCharacters();
+			testGameState();
+			//testPlayer();
 
-
-	/*	
-
-		
-
-
-		
-		cout << "Ajout d'un joueur au jeu" << endl;
-		etat.new_player("player");
-		//cout << "Nombre de joueur enregistre = " << etat.get_number_of_player() << endl;
-		cout << "Ajout d'un joueur au jeu" << endl;
-		etat.new_player("player");
-		cout << "Nombre de joueur enregistre = " << etat.get_number_of_player() << endl;
-		cout << "Ajout d'un joueur au jeu" << endl;
-		etat.new_player("player");
-		cout << "Nombre de joueur enregistre = " << etat.get_number_of_player() << endl;
-		cout << "Ajout d'un joueur au jeu" << endl;
-		etat.new_player("player");
-		cout << "Nombre de joueur enregistre = " << etat.get_number_of_player() << endl;
-		cout << "Ajout d'un joueur au jeu" << endl;
-		etat.new_player("player");
-		cout << "Nombre de joueur enregistre = " << etat.get_number_of_player() << endl;
-		cout << "Ajout d'un joueur au jeu" << endl;
-		etat.new_player("player");
-		cout << "Nombre de joueur enregistre = " << etat.get_number_of_player() << endl;
-		cout << "Ajout d'un joueur au jeu" << endl;
-		etat.new_player("player");
-		cout << "Nombre de joueur enregistre = " << etat.get_number_of_player() << endl;
-		cout << "Ajout d'un joueur au jeu" << endl;
-		etat.new_player("player");
-		cout << "Nombre de joueur enregistre = " << etat.get_number_of_player() << endl;
-
-		*/
 		}
 	}
 	return 0;

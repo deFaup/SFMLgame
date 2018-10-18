@@ -9,17 +9,16 @@ using namespace std;
 GameState::GameState(){
 
   state = not_started;
-  new_map(map);
-  new_player("player1");
+  //new_map();
+  //new_player("player1");
   //number_of_player = 1;
 }
 
-void GameState::new_map(Map& carte){
+void GameState::new_map(){
 
-    map.set_screen_dimensions ();
-    int width,height;
- 	  map.get_screen_dimensions(&width, &height);
-    cout << "ici" << endl;
+    map.get_screen_dimensions ();
+    int width(50), height(50);
+    map.set_dimensions(width, height);
     map.create_mask ();
 }
 

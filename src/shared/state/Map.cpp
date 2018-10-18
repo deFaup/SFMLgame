@@ -9,24 +9,24 @@
 using namespace std;
 using namespace state;
 
-void Map::set_screen_dimensions (){
+void Map::get_screen_dimensions (){
 
 	width = sf::VideoMode::getDesktopMode().width;
 	height = sf::VideoMode::getDesktopMode().height;
-	//cout << width << ", " << height << endl;
+	cout << "resolution ecran:" << width << ", " << height << endl;
 }
 
-void Map::get_screen_dimensions(int* width, int* height){
+void Map::set_dimensions(const int width, const int height){
 
-	*width = this->width;
-	*height =this->height;
+	this->width = width;
+	this->height = height;
 	//cout << width << ", " << height << endl;
 }
 
 void Map::create_mask ()
 {
 	fill_mask_with_x(mask,1);
-	affiche(mask);
+	//affiche(mask);
 
 	/* Intializes random number generator */
 	srand(time(NULL));
@@ -37,25 +37,24 @@ void Map::create_mask ()
 	//printf("y = %d\n", y);
 	mask[x][y]++;
 	puts_zero(mask, x, y);
-	cout << "ici2" << endl;
+
 	while (x != width - 1) {
 		/* new x and new y*/
 		x++;
 		new_line_index(&y, height);
-		cout << "ici3" << endl;
+
 		/* update the matrix */
 		mask[x][y]++;
 		puts_zero(mask, x, y);
-		cout << "ici4" << endl;
-
 	}
+	affiche(mask);
 }
 
 void Map::fill_mask_with_x(auto& mask, const int x){
     
     for (int i = 0; i < height; i++)
     {
-        //On ajoute une ligne de 4 cases
+        //On ajoute une ligne de width cases
         mask.push_back(vector<int>(width,x));   
     } 	//*4
 }
@@ -65,7 +64,10 @@ void Map::affiche(const auto& mask){
     for (int i = 0; i < height; i++){
         for (int j = 0; j < width; j++){
             //cout << "mask[" <<i<<"]"<<"["<< j<<"] = "<< mask[i][j] << endl;
+            cout << mask[i][j];
         }
+        cout << endl;
+
     }
 }
 
