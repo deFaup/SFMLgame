@@ -73,6 +73,20 @@ void testPlayer(){
 	cout << "\nFin du test de Player" << endl << endl;
 }
 
+/* Test de la classe GameState */
+void testGameState(){
+	
+	cout << "\n\nTest de la classe GameState" << endl;
+	GameState etat;
+
+	cout << "\n\nVerification du nombre de joueurs max (5)\n" << endl;
+	for (int i = 0; i< 7; i++)
+	{
+		cout << "Ajout d'un joueur au jeu" << endl;
+		etat.new_player("player");
+		cout << "Nombre de joueur enregistre = " << etat.get_number_of_player() << endl;
+	}
+}
 
 int main(int argc,char* argv[]) 
 {
@@ -83,46 +97,16 @@ int main(int argc,char* argv[])
 		{
 
 			testStatistics();
-			testCharacters();
+			//testCharacters();
 			testPlayer();
 
 
 	/*	
 
-		// test de la classe Player
+		
 
 
-		joueur.add_character(perso);
-		cout << "Nombre d'attaque enregistre = " << joueur.get_number_of_characters() << endl;
-		cout << "Ajout d'un personnage a la liste du du joueur" << endl;
-		joueur.add_character(perso);
-		cout << "Nombre d'attaque enregistre = " << joueur.get_number_of_characters() << endl;
-		cout << "Ajout d'un personnage a la liste du du joueur" << endl;
-		joueur.add_character(perso);
-		cout << "Nombre d'attaque enregistre = " << joueur.get_number_of_characters() << endl;
-		cout << "Ajout d'un personnage a la liste du du joueur" << endl;
-		joueur.add_character(perso);
-		cout << "Nombre d'attaque enregistre = " << joueur.get_number_of_characters() << endl;
-		cout << "Ajout d'un personnage a la liste du du joueur" << endl;
-		joueur.add_character(perso);
-		cout << "Nombre d'attaque enregistre = " << joueur.get_number_of_characters() << endl;
-		cout << "Ajout d'un personnage a la liste du du joueur" << endl;
-		joueur.add_character(perso);
-		cout << "Nombre d'attaque enregistre = " << joueur.get_number_of_characters() << endl;
-		cout << "Ajout d'un personnage a la liste du du joueur" << endl;
-		joueur.add_character(perso);
-		cout << "Nombre d'attaque enregistre = " << joueur.get_number_of_characters() << endl;
-		cout << "Ajout d'un personnage a la liste du du joueur" << endl;
-		joueur.add_character(perso);
-		cout << "Nombre d'attaque enregistre = " << joueur.get_number_of_characters() << endl;
-
-		// test de la classe GameState
-
-		cout << "\nTest de la classe etat de jeu (5 joueur maximum)" << endl;
-		GameState etat;
-		cout << "Ajout d'un joueur au jeu" << endl;
-		etat.new_player("player");
-		//cout << "Nombre de joueur enregistre = " << etat.get_number_of_player() << endl;
+		
 		cout << "Ajout d'un joueur au jeu" << endl;
 		etat.new_player("player");
 		//cout << "Nombre de joueur enregistre = " << etat.get_number_of_player() << endl;

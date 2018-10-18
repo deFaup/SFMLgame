@@ -1,5 +1,4 @@
 #include <iostream>
-#include <vector>
 
 #include "define.hpp"
 #include "GameState.h"
@@ -19,19 +18,21 @@ void GameState::new_map(Map& carte){
 
     map.set_screen_dimensions ();
     int width,height;
- 	map.get_screen_dimensions(&width, &height);
+ 	  map.get_screen_dimensions(&width, &height);
     cout << "ici" << endl;
     map.create_mask ();
 }
 
 void GameState::new_player(const std::string name){
-	if(number_of_player < MAX_NB_PLAYER){
-		players.push_back(unique_ptr<Player> (new Player(name)));
+	if(get_number_of_player() < MAX_NB_PLAYER)
+  {
+    unique_ptr<Player> ptr = make_unique<Player>(name);
+		players.push_back(move(ptr));
 	}
 }
 
-unsigned int GameState::get_number_of_player(){
-	return(this->number_of_player);
+int GameState::get_number_of_player(){
+	return(players.size());
 }
 
 
