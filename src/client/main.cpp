@@ -95,9 +95,14 @@ void testGameState(){
 
 int main(int argc,char* argv[]) 
 {
-	cout << "Bienvenue chez antoine et gregoire !" << endl;
+	
 	if(argc == 2)
 	{
+		if(strcmp(argv[1], "hello") == 0 )
+		{
+			cout << "Bienvenue chez antoine et gregoire !" << endl;
+		}
+
 		if(strcmp(argv[1], "state") == 0 )
 		{
 
