@@ -1,37 +1,41 @@
-
+#include <string>
 #include "define.hpp"
 #include "Characters.h"
 
+using namespace std;
 using namespace state;
 
-state::Characters::Characters(){
-	this->name = "Unparametred character";
-	this->number_of_attacks = 0;
-	return;
-}
-
-state::Characters::Characters(Statistics stats){
-	this->name = "Unnamed character";
-	this->number_of_attacks = 0;
+Characters::Characters(): name("Unparametered character"), number_of_attacks(0)
+{
+	Statistics stats; 		// default stats is 10/10/10
 	this->stats = stats;
-	return;
+//	Position pos;			// default pos is ?
+//	this->position = pos;
 }
 
-state::Characters::Characters(std::string name){
-	this->name = name;
-	this->number_of_attacks = 0;
-	if(name == "Vegeta"){				// Amené à évoluer
+Characters::Characters(Statistics stats): name("Unnamed character"), number_of_attacks(0), stats(stats)
+{
+//	Position pos;
+//	this->position = pos;
+}
+
+Characters::Characters(string name): name(name), number_of_attacks(0)
+{
+//	Position pos;
+//	this->position = pos;
+	if(name == "Vegeta"){	// Amené à évoluer
 		this->stats.Set_statistiques(101,101,101);
 	}
 	return;
 }
 
-unsigned int state::Characters::get_number_of_attacks(){
+unsigned int Characters::get_number_of_attacks(){
 	return(this->number_of_attacks);
 }
 
-void state::Characters::addAttack (unsigned int attack_cost, unsigned int attack_damage, void * attack_field_of_action){
-	if(this->number_of_attacks < MAX_NB_ATTACK){
+void Characters::addAttack (unsigned int attack_cost, unsigned int attack_damage, void* attack_field_of_action){
+	if(this->number_of_attacks < MAX_NB_ATTACK)
+	{
 		if(attack_cost <= MAX_ATTACK_COST){	
 			this->attack_cost[number_of_attacks] = attack_cost;
 		}
@@ -44,20 +48,20 @@ void state::Characters::addAttack (unsigned int attack_cost, unsigned int attack
 		else{
 			this->attack_damage[number_of_attacks] = MAX_ATTACK_DAMAGE;
 		}
-		this->attack_field_of_action[number_of_attacks] = attack_field_of_action;
+		//this->attack_field_of_action[number_of_attacks] = attack_field_of_action;
 		(this->number_of_attacks)++;
 	}
 	return;
 }
 
-unsigned int state::Characters::get_attack_cost (unsigned int numero_attack){
+unsigned int Characters::get_attack_cost (unsigned int numero_attack){
 	return(this->attack_cost[numero_attack-1]);
 	}
 
-unsigned int state::Characters::get_attack_damage (unsigned int numero_attack){
+unsigned int Characters::get_attack_damage (unsigned int numero_attack){
 	return(this->attack_damage[numero_attack-1]);
 	}
-void * state::Characters::get_attack_field_of_action (unsigned int numero_attack){
+void* Characters::get_attack_field_of_action (unsigned int numero_attack){
 	return(this->attack_field_of_action[numero_attack-1]);
 	}
 

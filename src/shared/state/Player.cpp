@@ -6,20 +6,19 @@
 using namespace state;
 using namespace std;
 
-Player::Player(){
-	this->name = "Un-named Player";
+Player::Player(): name("Un-named Player"), number_of_characters(0) {
 	//this->number_of_characters = 0;
 }
 
-Player::Player(string name){
-	this->name = name;
+Player::Player(string name): name(name), number_of_characters(0){
 	//this->number_of_characters = 0;
 }
 
-void Player::add_character(Characters new_character){
+void Player::add_character(Characters new_character)
+{
 	if(this->number_of_characters < MAX_NB_CHARACTER){
-		std::unique_ptr<Characters> ptr(&new_character);
-		this->characters.push_back(std::move(ptr));
+		unique_ptr<Characters> ptr(&new_character);
+		this->characters.push_back(move(ptr));
 		(this->number_of_characters)++;
 	}
 	return;
