@@ -33,15 +33,15 @@ void Map::create_mask ()
 
 	/* Starting with the first column and random row */
 	int x(0), y(0);
-	y = int((30 * height) / 100) + rand() % int(50 * height / 100);
+	x = int((30 * height) / 100) + rand() % int(50 * height / 100);
 	//printf("y = %d\n", y);
 	mask[x][y]++;
 	puts_zero(mask, x, y);
 
-	while (x != width - 1) {
+	while (y != width - 1) {
 		/* new x and new y*/
-		x++;
-		new_line_index(&y, height);
+		y++;
+		new_line_index(&x, height);
 
 		/* update the matrix */
 		mask[x][y]++;
@@ -75,8 +75,8 @@ void Map::puts_zero(auto& mask, const int x, const int y) {
 	/* if mask(xxx xxx) = 2 then
 	we put all values in the col xxx from the beginning to xxx to 0 (reduce 1)
 	*/
-	for (int i = 0; i < y; i++) {
-		mask[x][i]--;
+	for (int i = 0; i < x; i++) {
+		mask[i][y]--;
 	}
 }
 
@@ -88,18 +88,19 @@ int int_power(int number, int power) {
 	return temp;
 }
 
-int* Map::new_line_index(int* y, const int& height) {
+int* Map::new_line_index(int* x, const int& height) {
 	/* new index based on the preivous one */
 	/* be careful no to make x negative or superior to height -1 */
 	int sign = 1;
-	if (*y <= 0.3 * height) //30% of free space in the top for the sky
+	if (*x <= 0.3 * height) //30% of free space in the top for the sky
 		sign = +1;
-	else if (*y >= 0.8 * height) // 20% of bottom space for the ground
+	else if (*x >= 0.8 * height) // 20% of bottom space for the ground
 		sign = -1;
 	else
 		sign = int_power(-1, rand() % 2); // Either -1 or 1
 	
-	*y = *y + sign* (rand() %3);
-	return y;
+	*x = *x + sign* (rand() %3);
+	return x;
 }
+
 
