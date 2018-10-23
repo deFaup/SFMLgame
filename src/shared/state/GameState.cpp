@@ -17,7 +17,7 @@ GameState::GameState(){
 void GameState::new_map(){
 
     map.get_screen_dimensions ();
-    int width(50), height(50);
+    int width(500), height(500);
     map.set_dimensions(width, height);
     map.create_mask ();
 }

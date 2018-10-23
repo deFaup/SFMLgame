@@ -7,7 +7,9 @@ using namespace state;
 using namespace std;
 
 Player::Player(): name("Un-named Player"), number_of_characters(0) {
-	//this->number_of_characters = 0;
+/*Player::Player(){
+	this->name = "Un-named player";
+	this->number_of_characters = 0;*/
 }
 
 Player::Player(string name): name(name), number_of_characters(0){

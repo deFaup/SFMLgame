@@ -94,8 +94,59 @@ void testGameState(){
 }
 
 int main(int argc,char* argv[]) 
-{
+{	
+
+	sf::RenderWindow renderWindow(sf::VideoMode(500, 500), "test affichage");
+
+	sf::Event event;
+
+  	sf::Image image;
+  	image.create(500, 500, sf::Color::Black);
+
+	sf::Image ciel;
+	ciel.loadFromFile("textureciel.png");
+
+	sf::Image herbe;
+	herbe.loadFromFile("textureherbe.png");
+
+	sf::Image sol;
+	sol.loadFromFile("texturesol.png");
+
+	GameState etat;
+	etat.new_map();
 	
+	//sol.getPixel(10,10);
+
+	//Loop through each vertical row of the image
+	for (int y = 0; y < 500; y++){
+		//then horizontal, setting pixels to black or white in blocks of 8
+		for (int x = 0; x < 500; x++){
+			if (etat.map.mask[x][y] == 1){
+				image.setPixel(x, y, sol.getPixel(x,y));
+			}
+			else if( etat.map.mask[x][y] == 2){
+				image.setPixel(x, y, herbe.getPixel(x,y));
+			}
+			else {
+				image.setPixel(x, y, ciel.getPixel(x,y));
+			}
+		}
+	}
+	sf::Texture texture;
+  	texture.loadFromImage(image);
+  	sf::Sprite sprite(texture);
+
+	while (renderWindow.isOpen()){
+		while (renderWindow.pollEvent(event)){
+			if (event.type == sf::Event::EventType::Closed)
+			renderWindow.close();
+		}
+
+		renderWindow.clear();
+		renderWindow.draw(sprite);
+		renderWindow.display();
+	}
+
 	if(argc == 2)
 	{
 		if(strcmp(argv[1], "hello") == 0 )
