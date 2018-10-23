@@ -26,8 +26,8 @@ void GameState::new_map(){
 void GameState::new_player(const std::string name){
 	if(get_number_of_player() < MAX_NB_PLAYER)
   {
-    unique_ptr<Player> ptr = make_unique<Player>(name);
-		players.push_back(move(ptr));
+    shared_ptr<Player> ptr = make_shared<Player>(name);
+		players.push_back(ptr);
 	}
 }
 
@@ -35,7 +35,7 @@ int GameState::get_number_of_player(){
 	return(players.size());
 }
 
-unique_ptr<Player>& GameState::get_player (int i)
+shared_ptr<Player>& GameState::get_player (int i)
 {
 	if(i >= players.size() || i < 0)
 		throw std::invalid_argument( "received negative value" );

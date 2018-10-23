@@ -1,4 +1,6 @@
 #include <string>
+#include <iostream>
+
 #include "define.hpp"
 #include "Characters.h"
 
@@ -13,6 +15,10 @@ Characters::Characters(): name("Unparametered character"), number_of_attacks(0)
 //	this->position = pos;
 }
 
+Characters::~Characters() 
+{
+	cout << "Characters: "<< name << " deleted"<< endl; 
+}
 Characters::Characters(Statistics stats): name("Unnamed character"), number_of_attacks(0), stats(stats)
 {
 //	Position pos;

@@ -58,6 +58,7 @@ void testCharacters(){
 /* Test de la classe Player */
 void testPlayer(/*Gamestate etat&*/){
 
+
 	cout << "\n\nTest de la classe Player" << endl;
 	Player joueur;
 	
@@ -65,7 +66,7 @@ void testPlayer(/*Gamestate etat&*/){
 	for (int i = 0; i< 7; i++)
 	{	
 		{
-			unique_ptr<Characters> perso = make_unique<Characters>();
+			shared_ptr<Characters> perso = make_shared<Characters>();
 			cout << "\tAjout d'un personnage a la liste du du joueur" << endl;
 			joueur.add_character(perso);
 			cout << "\tNombre d'attaque enregistre = " << joueur.get_number_of_characters() << endl << endl;
@@ -92,7 +93,7 @@ void testGameState(){
 	}
 	
 	cout << "\n\nNous avons donc 5 joueurs dans l'etat de jeu\n" << endl;
-	cout << "\nAjoutons des joueurs à nos personnages.\n" << endl;
+	cout << "\nAjoutons des joueurs a nos personnages.\n" << endl;
 
 }
 

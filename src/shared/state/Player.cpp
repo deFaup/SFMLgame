@@ -1,4 +1,5 @@
 #include <string>
+#include <iostream>
 
 #include "define.hpp"
 #include "Player.h"
@@ -16,7 +17,12 @@ Player::Player(string name): name(name), number_of_characters(0){
 	//this->number_of_characters = 0;
 }
 
-void Player::add_character(unique_ptr<Characters>& character)
+Player::~Player()
+{
+	cout << "Player: "<< name << " deleted"<< endl; 
+}
+
+void Player::add_character(shared_ptr<Characters>& character)
 {
 	if(this->number_of_characters < MAX_NB_CHARACTER){
 		//unique_ptr<Characters> ptr(&new_character);
