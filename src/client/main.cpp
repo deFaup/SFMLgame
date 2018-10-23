@@ -114,6 +114,8 @@ int main(int argc,char* argv[])
 
 	GameState etat;
 	etat.new_map();
+
+	std::vector<std::vector<int>>& mask = etat.map.get_mask();
 	
 	//sol.getPixel(10,10);
 
@@ -121,10 +123,10 @@ int main(int argc,char* argv[])
 	for (int y = 0; y < 500; y++){
 		//then horizontal, setting pixels to black or white in blocks of 8
 		for (int x = 0; x < 500; x++){
-			if (etat.map.mask[x][y] == 1){
+			if (mask[y][x] == 1){
 				image.setPixel(x, y, sol.getPixel(x,y));
 			}
-			else if( etat.map.mask[x][y] == 2){
+			else if(mask[y][x] == 2){
 				image.setPixel(x, y, herbe.getPixel(x,y));
 			}
 			else {

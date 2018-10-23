@@ -16,6 +16,10 @@ void Map::get_screen_dimensions (){
 	cout << "resolution ecran:" << width << ", " << height << endl;
 }
 
+std::vector<std::vector<int>>& Map::get_mask(){
+	return(mask);
+}
+
 void Map::set_dimensions(const int width, const int height){
 
 	this->width = width;
