@@ -16,11 +16,11 @@ Player::Player(string name): name(name), number_of_characters(0){
 	//this->number_of_characters = 0;
 }
 
-void Player::add_character(Characters new_character)
+void Player::add_character(unique_ptr<Characters>& character)
 {
 	if(this->number_of_characters < MAX_NB_CHARACTER){
-		unique_ptr<Characters> ptr(&new_character);
-		this->characters.push_back(move(ptr));
+		//unique_ptr<Characters> ptr(&new_character);
+		this->characters.push_back(move(character));
 		(this->number_of_characters)++;
 	}
 	return;

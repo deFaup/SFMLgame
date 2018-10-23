@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdexcept>
 
 #include "define.hpp"
 #include "GameState.h"
@@ -34,4 +35,10 @@ int GameState::get_number_of_player(){
 	return(players.size());
 }
 
-
+unique_ptr<Player>& GameState::get_player (int i)
+{
+	if(i >= players.size() || i < 0)
+		throw std::invalid_argument( "received negative value" );
+	else 
+		return players[i];
+}

@@ -56,19 +56,20 @@ void testCharacters(){
 }
 
 /* Test de la classe Player */
-void testPlayer(){
+void testPlayer(/*Gamestate etat&*/){
 
 	cout << "\n\nTest de la classe Player" << endl;
 	Player joueur;
-	Characters perso;
 	
 	cout << "\n\nVerification du nombre de personnages par joueur (5 max)\n" << endl;
 	for (int i = 0; i< 7; i++)
 	{	
-		cout << "\tAjout d'un personnage a la liste du du joueur" << endl;
-		joueur.add_character(perso);
-		cout << "\tNombre d'attaque enregistre = " << joueur.get_number_of_characters() << endl << endl;
-		
+		{
+			unique_ptr<Characters> perso = make_unique<Characters>();
+			cout << "\tAjout d'un personnage a la liste du du joueur" << endl;
+			joueur.add_character(perso);
+			cout << "\tNombre d'attaque enregistre = " << joueur.get_number_of_characters() << endl << endl;
+		}
 	}
 	cout << "\nFin du test de Player" << endl << endl;
 }
@@ -85,17 +86,19 @@ void testGameState(){
 	cout << "\n\nVerification du nombre de joueurs max (5)\n" << endl;
 	for (int i = 0; i< 7; i++)
 	{
-		cout << "Ajout d'un joueur au jeu" << endl;
+		cout << "\tAjout d'un joueur au jeu" << endl;
 		etat.new_player("player");
-		cout << "Nombre de joueur enregistre = " << etat.get_number_of_player() << endl;
+		cout << "\tNombre de joueur enregistre = " << etat.get_number_of_player() << endl;
 	}
 	
+	cout << "\n\nNous avons donc 5 joueurs dans l'etat de jeu\n" << endl;
+	cout << "\nAjoutons des joueurs à nos personnages.\n" << endl;
 
 }
 
-int main(int argc,char* argv[]) 
-{	
 
+void render()
+{
 	sf::RenderWindow renderWindow(sf::VideoMode(500, 500), "test affichage");
 
 	sf::Event event;
@@ -147,7 +150,11 @@ int main(int argc,char* argv[])
 		renderWindow.clear();
 		renderWindow.draw(sprite);
 		renderWindow.display();
-	}
+	}	
+}
+
+int main(int argc,char* argv[]) 
+{	
 
 	if(argc == 2)
 	{
@@ -162,8 +169,13 @@ int main(int argc,char* argv[])
 			testStatistics();
 			testCharacters();
 			testGameState();
-			//testPlayer();
+			testPlayer();
 
+		}
+		
+		if (strcmp(argv[1], "render")==0)
+		{
+			render();
 		}
 	}
 	return 0;
