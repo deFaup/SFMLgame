@@ -12,13 +12,11 @@ Characters::Characters(): name("Unparametered character"), number_of_attacks(0)
 	Statistics stats; 		// default stats is 10/10/10
 	this->stats = stats;
 //	Position pos;			// default pos is ?
-//	this->position = pos;
+//	cout << "Characters: " << name << " created" << endl;
 }
 
-Characters::~Characters() 
-{
-	cout << "Characters: "<< name << " deleted"<< endl; 
-}
+Characters::~Characters() {	/* cout << "Characters: "<< name << " deleted"<< endl; */ }
+
 Characters::Characters(Statistics stats): name("Unnamed character"), number_of_attacks(0), stats(stats)
 {
 //	Position pos;

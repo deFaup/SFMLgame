@@ -51,7 +51,7 @@ void Map::create_mask ()
 		mask[x][y]++;
 		puts_zero(mask, x, y);
 	}
-	affiche(mask);
+	//affiche(mask);
 }
 
 void Map::fill_mask_with_x(auto& mask, const int x){

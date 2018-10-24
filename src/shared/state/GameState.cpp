@@ -15,18 +15,19 @@ GameState::GameState(){
   //number_of_player = 1;
 }
 
-void GameState::new_map(){
-
+void GameState::new_map()
+{
     map.get_screen_dimensions ();
-    int width(500), height(500);
-    map.set_dimensions(width, height);
+    //int width(500), height(500);
+    //map.set_dimensions(width, height);
     map.create_mask ();
 }
 
-void GameState::new_player(const std::string name){
+void GameState::new_player(const std::string name)
+{
 	if(get_number_of_player() < MAX_NB_PLAYER)
-  {
-    shared_ptr<Player> ptr = make_shared<Player>(name);
+	{
+		shared_ptr<Player> ptr = make_shared<Player>(name);
 		players.push_back(ptr);
 	}
 }
@@ -41,4 +42,9 @@ shared_ptr<Player>& GameState::get_player (int i)
 		throw std::invalid_argument( "received negative value" );
 	else 
 		return players[i];
+}
+
+void GameState::set_characters_range(unsigned int range)
+{
+	Player::set_characters_range(range);
 }

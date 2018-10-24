@@ -40,12 +40,12 @@ void testStatistics()
 void testCharacters(){
 
 	cout << "\n\nTest de la classe Characters (5 attaques maximum)" << endl;
-	Characters perso;
+	Characters perso("test class Characters");
 	
 	cout << "\n\nVerification des ajouts d'attaques possibles\n" << endl;
 
 	void * random;
-	for (int i = 0; i< 10; i++)
+	for (int i = 0; i< 7; i++)
 	{		
 		cout << "\tAjout d'une attaque a la liste du personnage" << endl;
 		perso.addAttack(10,10,random);
@@ -58,20 +58,24 @@ void testCharacters(){
 /* Test de la classe Player */
 void testPlayer(/*Gamestate etat&*/){
 
-
 	cout << "\n\nTest de la classe Player" << endl;
 	Player joueur;
 	
-	cout << "\n\nVerification du nombre de personnages par joueur (5 max)\n" << endl;
+	cout << "\n\Choix du nombre maximum de personnages par joueur. Ici 4 (au +5)" << endl;
+	Player::set_characters_range(4);
+
+	cout << "Verification\n" << endl;
 	for (int i = 0; i< 7; i++)
 	{	
 		{
 			shared_ptr<Characters> perso = make_shared<Characters>();
 			cout << "\tAjout d'un personnage a la liste du du joueur" << endl;
 			joueur.add_character(perso);
-			cout << "\tNombre d'attaque enregistre = " << joueur.get_number_of_characters() << endl << endl;
+			cout << "\tNombre de joueur enregistre = " << joueur.get_number_of_characters() << endl << endl;
 		}
 	}
+	cout << "\nNous avons au total " << joueur.get_number_of_characters() << " personnages pour notre joueur\n" << endl;
+
 	cout << "\nFin du test de Player" << endl << endl;
 }
 
@@ -81,19 +85,22 @@ void testGameState(){
 	cout << "\n\nTest de la classe GameState" << endl;
 	GameState etat;
 
-	cout << "\n\nCreation d'une carte de jeu 50x50\n" << endl;
+	cout << "\n\nCreation d'une carte de jeu\n" << endl;
 	etat.new_map();	
 
-	cout << "\n\nVerification du nombre de joueurs max (5)\n" << endl;
+	cout << "\n\Verification du nombre de joueurs max: 5\n" << endl;
+
+	string name_player("");
 	for (int i = 0; i< 7; i++)
 	{
 		cout << "\tAjout d'un joueur au jeu" << endl;
-		etat.new_player("player");
+		name_player = "player " + to_string(i+1);
+		etat.new_player(name_player);
 		cout << "\tNombre de joueur enregistre = " << etat.get_number_of_player() << endl;
 	}
 	
-	cout << "\n\nNous avons donc 5 joueurs dans l'etat de jeu\n" << endl;
-	cout << "\nAjoutons des joueurs a nos personnages.\n" << endl;
+	cout << "\nNous avons donc " << etat.get_number_of_player() <<" joueurs dans l'etat de jeu\n" << endl;
+	cout << "Ajoutons des personnages a nos joueurs.\n" << endl;
 
 }
 
@@ -173,8 +180,8 @@ int main(int argc,char* argv[])
 		if(strcmp(argv[1], "state") == 0 )
 		{
 
-			testStatistics();
-			testCharacters();
+			//testStatistics();
+			//testCharacters();
 			testGameState();
 			testPlayer();
 
