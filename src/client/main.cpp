@@ -10,13 +10,19 @@
 void testSFML() {
     sf::Texture texture;
 }
-
 // Fin test SFML
+
+/*************************************************************/
+/*************************************************************/
 
 #include "state.h"
 
 using namespace std;
 using namespace state;
+
+/*************************************************************/
+/*--------- Unit tests for the package state ----------------*/
+/*************************************************************/
 
 /* Test de la classe statistiques */
 void testStatistics()
@@ -100,10 +106,16 @@ void testGameState(){
 	}
 	
 	cout << "\nNous avons donc " << etat.get_number_of_player() <<" joueurs dans l'etat de jeu\n" << endl;
-	cout << "Ajoutons des personnages a nos joueurs.\n" << endl;
+	cout << "Ajoutons un personnages a player 1.\n" << endl;
+	
+	etat.get_player(0)->new_character("john");
+
 
 }
 
+/*************************************************************/
+/*--------- Unit tests for the package render ---------------*/
+/*************************************************************/
 
 void render()
 {
@@ -131,7 +143,7 @@ void render()
 
 	sf::Sprite spriteperso(textureperso,sf::IntRect(134,192,80,80));
 
-	std::vector<std::vector<int>>& mask = etat.map.get_mask();
+	const std::vector<std::vector<int>>& mask = etat.map.get_mask();
 
 	for (int y = 0; y < 500; y++){
 		for (int x = 0; x < 500; x++){

@@ -9,24 +9,26 @@ using namespace state;
 
 Characters::Characters(): name("Unparametered character"), number_of_attacks(0)
 {
-	Statistics stats; 		// default stats is 10/10/10
-	this->stats = stats;
-//	Position pos;			// default pos is ?
-//	cout << "Characters: " << name << " created" << endl;
+	// call Statistics constructor and set stats to 100/10/10
+	// call Position constructor and do nothing
+
+	//	cout << "Characters: " << name << " created" << endl;
 }
 
 Characters::~Characters() {	/* cout << "Characters: "<< name << " deleted"<< endl; */ }
 
 Characters::Characters(Statistics stats): name("Unnamed character"), number_of_attacks(0), stats(stats)
 {
-//	Position pos;
-//	this->position = pos;
+	// call Position constructor and do nothing
 }
 
 Characters::Characters(string name): name(name), number_of_attacks(0)
 {
-//	Position pos;
-//	this->position = pos;
+	// call Statistics constructor and set stats to 100/10/10
+	// call Position constructor and do nothing
+
+	cout << "Characters: " << name << " created" << endl;
+
 	if(name == "Vegeta"){	// Amené à évoluer
 		this->stats.Set_statistiques(101,101,101);
 	}

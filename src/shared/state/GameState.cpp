@@ -36,10 +36,10 @@ int GameState::get_number_of_player(){
 	return(players.size());
 }
 
-shared_ptr<Player>& GameState::get_player (int i)
+shared_ptr<Player>& GameState::get_player (unsigned int i)
 {
-	if(i >= players.size() || i < 0)
-		throw std::invalid_argument( "received negative value" );
+	if( i >= get_number_of_player() )
+		throw std::invalid_argument( "you can't access to a non existent player" );
 	else 
 		return players[i];
 }
