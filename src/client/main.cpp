@@ -114,20 +114,16 @@ void render()
   	sf::Image image;
   	image.create(500, 500, sf::Color::Black);
 
-	sf::Image ciel;
-	ciel.loadFromFile("textureciel.png");
-
-	sf::Image herbe;
-	herbe.loadFromFile("textureherbe.png");
-
-	sf::Image sol;
-	sol.loadFromFile("texturesol.png");
+	sf::Image ciel, herbe, sol;
+	ciel.loadFromFile("res/textureciel.png");
+	herbe.loadFromFile("res/textureherbe.png");
+	sol.loadFromFile("res/texturesol.png");
 
 	GameState etat;
 	etat.new_map();
 
 	sf::Image person;
-	person.loadFromFile("DBZ_gokusheet2.gif");
+	person.loadFromFile("res/DBZ_gokusheet2.gif");
 	person.createMaskFromColor(person.getPixel(1,1));
 
 	sf::Texture textureperso;
