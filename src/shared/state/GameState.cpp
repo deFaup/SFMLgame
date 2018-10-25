@@ -15,11 +15,14 @@ GameState::GameState(){
   //number_of_player = 1;
 }
 
-void GameState::new_map()
+void GameState::new_map(unsigned const int width, unsigned const int height)
 {
-    map.get_screen_dimensions ();
-    //int width(500), height(500);
-    //map.set_dimensions(width, height);
+	if (width == 0 & height == 0) // default parameters of the function
+		map.get_screen_dimensions ();
+    
+	else
+		map.set_dimensions(width, height);
+
     map.create_mask ();
 }
 
@@ -32,7 +35,7 @@ void GameState::new_player(const std::string name)
 	}
 }
 
-int GameState::get_number_of_player(){
+unsigned int GameState::get_number_of_player() const{
 	return(players.size());
 }
 

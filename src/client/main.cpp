@@ -52,7 +52,7 @@ void testCharacters(){
 	
 	cout << "\n\nVerification des ajouts d'attaques possibles\n" << endl;
 
-	void * random;
+	void * random(0);
 	for (int i = 0; i< 7; i++)
 	{		
 		cout << "\tAjout d'une attaque a la liste du personnage" << endl;
@@ -64,8 +64,8 @@ void testCharacters(){
 }
 
 /* Test de la classe Player */
-void testPlayer(/*Gamestate etat&*/){
-
+void testPlayer()
+{
 	cout << "\n\nTest de la classe Player" << endl;
 	Player joueur;
 	
@@ -93,10 +93,10 @@ void testGameState(){
 	cout << "\n\nTest de la classe GameState" << endl;
 	GameState etat;
 
-	cout << "\n\nCreation d'une carte de jeu\n" << endl;
-	etat.new_map();	
+	cout << "\nCreation d'une carte de jeu 800x600." << endl;
+	etat.new_map(800,600);	
 
-	cout << "\n\Verification du nombre de joueurs max: 5\n" << endl;
+	cout << "\n\nVerification du nombre de joueurs max: 5\n" << endl;
 
 	string name_player("");
 	for (int i = 0; i< 7; i++)
@@ -107,11 +107,17 @@ void testGameState(){
 		cout << "\tNombre de joueur enregistre = " << etat.get_number_of_player() << endl;
 	}
 	
-	cout << "\nNous avons donc " << etat.get_number_of_player() <<" joueurs dans l'etat de jeu\n" << endl;
-	cout << "Ajoutons un personnages a player 1.\n" << endl;
-	
+	cout << "\nNous avons donc " << etat.get_number_of_player() <<" joueurs dans l'etat de jeu" << endl;
+	cout << "Ajoutons un personnages a player 1." << endl;
+	/* En utilisant new_character */
 	etat.get_player(0)->new_character("john");
 
+	cout << "\nAjoutons un personnages a player 2.\n" << endl;
+	/* En utilisant add_character */
+	shared_ptr<Characters> player2_char1 = make_shared<Characters>("player2_char1");
+	etat.get_player(1)->add_character(player2_char1);
+
+	cout << "\nFin du test de la classe GameState" << endl;
 
 }
 
@@ -121,12 +127,12 @@ void testGameState(){
 
 void rendering()
 {
-	/*sf::RenderWindow renderWindow(sf::VideoMode(500, 500), "test affichage");
+	sf::RenderWindow renderWindow(sf::VideoMode(500, 500), "test affichage");
 
 	sf::Event event;
 
   	sf::Image image;
-  	image.create(500, 500, sf::Color::Black);
+  	image.create(800, 600, sf::Color::Black);
 
 	sf::Image ciel, herbe, sol;
 	ciel.loadFromFile("res/textureciel.png");
@@ -134,7 +140,7 @@ void rendering()
 	sol.loadFromFile("res/texturesol.png");
 
 	GameState etat;
-	etat.new_map();
+	etat.new_map(800,600);
 
 	sf::Image person;
 	person.loadFromFile("res/DBZ_gokusheet2.gif");
@@ -146,7 +152,7 @@ void rendering()
 	sf::Sprite spriteperso(textureperso,sf::IntRect(134,192,80,80));
 
 	const std::vector<std::vector<int>>& mask = etat.map.get_mask();
-
+	//x_max is width, y_max is height
 	for (int y = 0; y < 500; y++){
 		for (int x = 0; x < 500; x++){
 			if (mask[y][x] == 1){
@@ -174,8 +180,9 @@ void rendering()
 		renderWindow.draw(sprite);
 		renderWindow.draw(spriteperso);
 		renderWindow.display();
-	}*/
+	}
 
+	/*
 	GameState etats;
 	etats.new_player("jack");
 	etats.new_player("john");
@@ -215,6 +222,7 @@ void rendering()
 	rendu.info = info;
 	
 	rendu.rend();
+	*/
 }
 
 int main(int argc,char* argv[]) 
@@ -229,12 +237,10 @@ int main(int argc,char* argv[])
 
 		if(strcmp(argv[1], "state") == 0 )
 		{
-
-			//testStatistics();
-			//testCharacters();
-			testGameState();
+			testStatistics();
+			testCharacters();
 			testPlayer();
-
+			testGameState();
 		}
 		
 		if (strcmp(argv[1], "render")==0)

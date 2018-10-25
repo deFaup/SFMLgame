@@ -14,6 +14,6 @@ src/state.dia~
 
 rapport
 configure.bat
-rm_shared_state.bat
+rm.bat
 
 src/.vs

@@ -67,14 +67,16 @@ void Player::set_characters_range(unsigned int range)
 		characters_range = MAX_NB_CHARACTER;
 }
 
-ostream& operator <<(ostream& flux, Player const& player)
+ostream& operator<<(ostream& flux, Player const& player)
 {
 	flux << "player name: " << player.name << endl;
 	flux << "player characters: " << player.get_number_of_characters() << endl;
 	flux << "player's characters: " << endl;
-	for (int i = 0; i < player.get_number_of_characters(); i++ )
+	/*
+	for (auto character : player.characters)
 	{
-		flux << "\t" ;
+		flux << "\t" << ;
 	}
-	
+	*/
+	return flux;
 }

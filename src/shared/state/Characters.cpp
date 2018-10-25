@@ -7,6 +7,8 @@
 using namespace std;
 using namespace state;
 
+Characters::~Characters() {	/* cout << "Characters: "<< name << " deleted"<< endl; */ }
+
 Characters::Characters(): name("Unparametered character"), number_of_attacks(0)
 {
 	// call Statistics constructor and set stats to 100/10/10
@@ -15,9 +17,7 @@ Characters::Characters(): name("Unparametered character"), number_of_attacks(0)
 	//	cout << "Characters: " << name << " created" << endl;
 }
 
-Characters::~Characters() {	/* cout << "Characters: "<< name << " deleted"<< endl; */ }
-
-Characters::Characters(Statistics stats): name("Unnamed character"), number_of_attacks(0), stats(stats)
+Characters::Characters(Statistics stats): name("Unnamed character"), stats(stats), number_of_attacks(0)
 {
 	// call Position constructor and do nothing
 }
