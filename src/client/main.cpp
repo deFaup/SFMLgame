@@ -16,9 +16,11 @@ void testSFML() {
 /*************************************************************/
 
 #include "state.h"
+#include "render.h"
 
 using namespace std;
 using namespace state;
+using namespace render;
 
 /*************************************************************/
 /*--------- Unit tests for the package state ----------------*/
@@ -117,9 +119,9 @@ void testGameState(){
 /*--------- Unit tests for the package render ---------------*/
 /*************************************************************/
 
-void render()
+void rendering()
 {
-	sf::RenderWindow renderWindow(sf::VideoMode(500, 500), "test affichage");
+	/*sf::RenderWindow renderWindow(sf::VideoMode(500, 500), "test affichage");
 
 	sf::Event event;
 
@@ -172,7 +174,47 @@ void render()
 		renderWindow.draw(sprite);
 		renderWindow.draw(spriteperso);
 		renderWindow.display();
-	}	
+	}*/
+
+	GameState etats;
+	etats.new_player("jack");
+	etats.new_player("john");
+	etats.players[0]->new_character("worm1");
+	etats.players[0]->new_character("worm2");
+	etats.players[1]->new_character("worm3");
+	etats.players[1]->new_character("worm4");
+	//etats.characters[0]->position.setPosition(10,10);
+	//etats.characters[1]->position.setPosition(100,100);
+	//etats.characters[2]->position.setPosition(50,100);
+	//etats.characters[3]->position.setPosition(400,100);
+
+	Grid grid = Grid(&etats);
+	Character character = Character(&etats);
+	Information info = Information(&etats);
+
+	GridTileSet cart;
+	cart.sky_file = "res/textureciel.png";
+	cart.ground_file = "res/texturesol.png";
+	cart.grass_file = "res/textureherbe.png";
+
+	grid.tileset = cart;
+
+	shared_ptr<CharacterTileSet> chara = make_shared<CharacterTileSet>();
+	chara->tileset_file = "res/DBZ_gokusheet2.gif";
+	std::vector<sf::IntRect> vect;
+	vect.push_back(sf::IntRect(134,192,80,80));
+	chara->CharacterTile = vect;
+	character.tilesets.push_back(chara);
+	character.tilesets.push_back(chara);
+	character.tilesets.push_back(chara);
+	character.tilesets.push_back(chara);
+
+	GameRender rendu;
+	rendu.grid = grid;
+	rendu.character = character;
+	rendu.info = info;
+	
+	rendu.rend();
 }
 
 int main(int argc,char* argv[]) 
@@ -197,7 +239,7 @@ int main(int argc,char* argv[])
 		
 		if (strcmp(argv[1], "render")==0)
 		{
-			render();
+			rendering();
 		}
 	}
 	return 0;
