@@ -17,8 +17,8 @@ GameState::GameState(){
 
 void GameState::new_map(unsigned const int width, unsigned const int height)
 {
-	if (width == 0 & height == 0) // default parameters of the function
-		map.get_screen_dimensions ();
+	if (width == 0 && height == 0) // default parameters of the function
+		map.set_screen_dimensions();
     
 	else
 		map.set_dimensions(width, height);
@@ -46,6 +46,9 @@ shared_ptr<Player>& GameState::get_player (unsigned int i)
 	else 
 		return players[i];
 }
+
+const Map& GameState::get_map() const { return map; }
+
 
 void GameState::set_characters_range(unsigned int range)
 {

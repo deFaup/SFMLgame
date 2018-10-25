@@ -9,6 +9,7 @@
 
 void testSFML() {
     sf::Texture texture;
+	sf::Image image;
 }
 // Fin test SFML
 
@@ -69,7 +70,7 @@ void testPlayer()
 	cout << "\n\nTest de la classe Player" << endl;
 	Player joueur;
 	
-	cout << "\n\Choix du nombre maximum de personnages par joueur. Ici 4 (au +5)" << endl;
+	cout << "\nChoix du nombre maximum de personnages par joueur. Ici 4 (au +5)" << endl;
 	Player::set_characters_range(4);
 
 	cout << "Verification\n" << endl;
@@ -245,6 +246,7 @@ int main(int argc,char* argv[])
 		
 		if (strcmp(argv[1], "render")==0)
 		{
+			testSFML();
 			rendering();
 		}
 	}

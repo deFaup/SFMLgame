@@ -9,11 +9,17 @@
 using namespace std;
 using namespace state;
 
-void Map::get_screen_dimensions (){
+void Map::set_screen_dimensions (){
 
 	width = sf::VideoMode::getDesktopMode().width;
 	height = sf::VideoMode::getDesktopMode().height;
 	cout << "resolution ecran:" << width << ", " << height << endl;
+}
+
+void Map::get_dimensions(int& width, int& height) const
+{
+	width = this->width;
+	height = this->height;
 }
 
 const vector<vector<int>>& Map::get_mask() const{
