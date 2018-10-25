@@ -1,8 +1,16 @@
+/* Includes */
+#include <string>
 #include "define.hpp"
 #include "state.h"
 #include "TileSet.h"
 
+using namespace std;
 using namespace render;
+
+TileSet::TileSet(string image)
+{
+	setImageFile(image);
+}
 
 void TileSet::setImageFile(std::string name){
 	sf::Image image;
