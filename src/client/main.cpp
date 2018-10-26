@@ -226,6 +226,20 @@ void rendering()
 	*/
 }
 
+void render_state()
+{
+	GameState etat;
+	etat.new_map(800, 600);
+	etat.new_player("Joueur 1");
+	etat.get_player(0)->new_character("goku");
+
+	//etat.new_player("Joueur 2");
+	//etat.get_player(0)->new_character("vegeta");
+	Scene scene(etat, etat.get_map());
+	scene.draw();
+
+}
+
 int main(int argc,char* argv[]) 
 {	
 
@@ -247,7 +261,8 @@ int main(int argc,char* argv[])
 		if (strcmp(argv[1], "render")==0)
 		{
 			testSFML();
-			rendering();
+			//rendering();
+			render_state();
 		}
 	}
 	return 0;

@@ -35,6 +35,8 @@ Characters::Characters(string name): name(name), number_of_attacks(0)
 	return;
 }
 
+const string Characters::get_name() const{ return name; } 
+
 unsigned int Characters::get_number_of_attacks(){
 	return(this->number_of_attacks);
 }

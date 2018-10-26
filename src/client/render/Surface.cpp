@@ -28,7 +28,7 @@ void Surface::setSpriteLocation(state::Position position){
 	return;
 }
 
-void Surface::draw(sf::RenderWindow window){
+void Surface::draw(sf::RenderWindow& window){
 	window.draw(sprite);
 	return;
 }

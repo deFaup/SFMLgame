@@ -54,3 +54,5 @@ void GameState::set_characters_range(unsigned int range)
 {
 	Player::set_characters_range(range);
 }
+
+const vector<shared_ptr<Characters>>& GameState::get_characters() const { return characters; }

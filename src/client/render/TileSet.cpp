@@ -7,6 +7,11 @@
 using namespace std;
 using namespace render;
 
+TileSet::TileSet()
+{
+	sf::Image image;
+	images.push_back(image);
+}
 TileSet::TileSet(string image)
 {
 	setImageFile(image);

@@ -1,15 +1,36 @@
+/* Includes */
 #include "define.hpp"
 #include "state.h"
 #include "Character.h"
 #include "TileSet.h"
+#include <memory>
+#include <vector>
 
 using namespace render;
+using namespace std;
 
-Character::Character(state::GameState& state) : state(state){
-	this->state = state;
+Character::Character(const state::GameState& state) : state(state)
+{
 	surface = std::make_unique<Surface>();
-	tileset.push_back(std::make_shared<TileSet>("res/DBZ_gokusheet2.gif"));
-	return;
+
+	const vector<shared_ptr<state::Characters>>& state_characters = state.get_characters();
+	for (int i = 0; i < state_characters.size(); i++)
+	{
+		const string name = state_characters[i]->get_name();
+		if (name == "goku")
+		{
+			tileset.push_back(std::make_shared<TileSet>("res/DBZ_gokusheet2.gif"));
+			sf::Image image = tileset[0]->getImageFile(0);
+			image.createMaskFromColor(image.getPixel(1, 1));
+
+			/* créer une surface */
+			surface->loadTexture(image);	// appel à load texture
+			Tile tile(134, 192, 80, 80);
+			surface->setSpriteTexture(tile);
+		}
+
+	}
+
 }
 
 void Character::fill_characters_list(){
