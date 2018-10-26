@@ -28,8 +28,6 @@ Character::Character(const state::GameState& state) : state(state)
 
 	fill_characters_list();
 
-	cout << characters.size() << endl;
-
 	for (int i = 0; i < characters.size(); i++)
 	{
 		const string name = /*state_*/characters[i]->get_name();
@@ -43,21 +41,6 @@ Character::Character(const state::GameState& state) : state(state)
 			surface->loadTexture(image);	// appel à load texture
 			Tile tile(134, 192, 80, 80);
 			surface->setSpriteTexture(tile);
-
-			sf::RenderWindow rendWindow(sf::VideoMode(500, 500), "test affichage");
-
-			sf::Event event;
-
-			while (rendWindow.isOpen()){
-				while (rendWindow.pollEvent(event)){
-					if (event.type == sf::Event::EventType::Closed)
-					rendWindow.close();
-				}
-
-				rendWindow.clear();
-				surface->draw(rendWindow);
-				rendWindow.display();
-	}
 		}
 
 	}
