@@ -5,18 +5,34 @@
 #include "TileSet.h"
 #include <memory>
 #include <vector>
+#include <iostream>
 
 using namespace render;
 using namespace std;
 
+void Character::fill_characters_list(){
+	for(unsigned int i = 0; i < state.get_number_of_player(); i++){
+		for(unsigned int j = 0; j < state.players[i]->get_number_of_characters(); j++){
+			characters.push_back(state.players[i]->get_character(i));
+		}
+	}
+
+}
+
 Character::Character(const state::GameState& state) : state(state)
 {
+
 	surface = std::make_unique<Surface>();
 
-	const vector<shared_ptr<state::Characters>>& state_characters = state.get_characters();
-	for (int i = 0; i < state_characters.size(); i++)
+	//const vector<shared_ptr<state::Characters>>& state_characters = state.get_characters();
+
+	fill_characters_list();
+
+	cout << characters.size() << endl;
+
+	for (int i = 0; i < characters.size(); i++)
 	{
-		const string name = state_characters[i]->get_name();
+		const string name = /*state_*/characters[i]->get_name();
 		if (name == "goku")
 		{
 			tileset.push_back(std::make_shared<TileSet>("res/DBZ_gokusheet2.gif"));
@@ -27,17 +43,23 @@ Character::Character(const state::GameState& state) : state(state)
 			surface->loadTexture(image);	// appel à load texture
 			Tile tile(134, 192, 80, 80);
 			surface->setSpriteTexture(tile);
-		}
 
+			sf::RenderWindow rendWindow(sf::VideoMode(500, 500), "test affichage");
+
+			sf::Event event;
+
+			while (rendWindow.isOpen()){
+				while (rendWindow.pollEvent(event)){
+					if (event.type == sf::Event::EventType::Closed)
+					rendWindow.close();
+				}
+
+				rendWindow.clear();
+				surface->draw(rendWindow);
+				rendWindow.display();
 	}
-
-}
-
-void Character::fill_characters_list(){
-	for(unsigned int i = 0; i < state.get_number_of_player(); i++){
-		for(unsigned int j = 0; j < state.players[i]->get_number_of_characters(); j++){
-			characters.push_back(state.players[i]->get_character(i));
 		}
+
 	}
 
 }

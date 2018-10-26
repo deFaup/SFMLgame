@@ -25,6 +25,7 @@ void Scene::draw()
 	state.get_map().get_dimensions(width, height);
 	sf::RenderWindow renderWindow(sf::VideoMode(width, height), "test affichage", sf::Style::Titlebar| sf::Style::Close);
 
+
 	while (renderWindow.isOpen()) 
 	{
 		// Process events
