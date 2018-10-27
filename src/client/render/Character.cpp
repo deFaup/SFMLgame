@@ -34,7 +34,7 @@ Character::Character(const state::GameState& state) : state(state)
 		if (name == "goku")
 		{
 			tileset.push_back(std::make_shared<TileSet>("res/DBZ_gokusheet2.gif"));
-			sf::Image image = tileset[0]->getImageFile(0);
+			sf::Image image = tileset[0]->getImage();
 			image.createMaskFromColor(image.getPixel(1, 1));
 
 			/* créer une surface */

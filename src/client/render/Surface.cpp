@@ -32,3 +32,9 @@ void Surface::draw(sf::RenderWindow& window){
 	window.draw(sprite);
 	return;
 }
+
+/*You can only call this method if their is a non empty texture */
+void Surface::update(sf::Image& image) {
+	texture.update(image);
+	return;
+}

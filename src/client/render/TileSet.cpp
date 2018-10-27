@@ -7,23 +7,27 @@
 using namespace std;
 using namespace render;
 
-TileSet::TileSet()
+TileSet::TileSet() {}
+
+TileSet::TileSet(unsigned int width, unsigned int height, sf::Color color)
 {
-	sf::Image image;
-	images.push_back(image);
+	sf::Image pic;
+	pic.create(width, height, color);
+	image = pic;
 }
+
 TileSet::TileSet(string image)
 {
 	setImageFile(image);
 }
 
 void TileSet::setImageFile(std::string name){
-	sf::Image image;
-	image.loadFromFile(name);
-	images.push_back(image);
+	sf::Image pic;
+	pic.loadFromFile(name);
+	image = pic;
 	return;
 }
 
-sf::Image& TileSet::getImageFile(unsigned int i){
-	return(images[i]);
+sf::Image& TileSet::getImage(){
+	return image;
 }
