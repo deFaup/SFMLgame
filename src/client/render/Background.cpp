@@ -8,7 +8,7 @@ using namespace render;
 
 Background::Background(const state::GameState& state, const state::Map& map) : state(state), map(map)
 {
-	/* the background can be initialized straight into the constructor */
+	/* the background is initialized straight into the constructor */
 	
 	/* instantiation of a unique work surface */
 	surface = make_unique<Surface>();

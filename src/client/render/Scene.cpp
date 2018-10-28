@@ -7,6 +7,8 @@
 using namespace std;
 using namespace render;
 
+/* Scene constructor share its references to the state and to the Map */
+/* We share the map as doing state.get_map() wasn't working */
 Scene::Scene(const state::GameState& state, const state::Map& map) : state(state), background(state, map), characters(state)
 {
 	cout << "Scene created" << endl;
