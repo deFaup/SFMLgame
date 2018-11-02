@@ -5,6 +5,7 @@
 
 #include "define.hpp"
 #include "Statistics.h"
+using namespace state;
 
 state::Statistics::Statistics (int vie, int attaque, int deplacement){
 	if(0 <= vie && vie <= MAX_LIFE_POINT){
@@ -35,6 +36,36 @@ state::Statistics::Statistics (int vie, int attaque, int deplacement){
 		this->move_point = 0;
 	}
 	return;
+}
+
+Statistics::Statistics(CharactersID id)
+{
+	switch (id)
+	{
+	case default_value:
+		life_point =100;
+		attack_point = 10;
+		move_point = 10;
+		break;
+
+	case goku:
+		life_point = 100;
+		attack_point = 10;
+		move_point = 10;
+		break;
+
+	case vegeta:
+		life_point = 100;
+		attack_point = 10;
+		move_point = 10;
+		break;
+
+	case miyo:
+		life_point = 100;
+		attack_point = 10;
+		move_point = 10;
+		break;
+	}
 }
 
 unsigned int state::Statistics::Get_life_points (){
