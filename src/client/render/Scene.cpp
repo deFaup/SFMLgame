@@ -39,8 +39,8 @@ void Scene::draw()
 				renderWindow.close();
 		}
 		renderWindow.clear();
-		background.setSurface(renderWindow);
-		characters.setSurface(renderWindow);
+		background.setSurface(renderWindow); // first the background
+		characters.setSurface(renderWindow); // on top of the background the characters
 		renderWindow.display();
 	}
 
