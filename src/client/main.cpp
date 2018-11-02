@@ -46,7 +46,7 @@ void testStatistics()
 }
 
 /* Test de la classe Characters */
-void testCharacters(){
+/*void testCharacters(){
 
 	cout << "\n\nTest de la classe Characters (5 attaques maximum)" << endl;
 	Characters perso("test class Characters");
@@ -62,10 +62,10 @@ void testCharacters(){
 	}
 
 	cout << endl << "Fin du test de Characters" << endl << endl;
-}
+}*/
 
 /* Test de la classe Player */
-void testPlayer()
+/*void testPlayer()
 {
 	cout << "\n\nTest de la classe Player" << endl;
 	Player joueur;
@@ -86,7 +86,7 @@ void testPlayer()
 	cout << "\nNous avons au total " << joueur.get_number_of_characters() << " personnages pour notre joueur\n" << endl;
 
 	cout << "\nFin du test de Player" << endl << endl;
-}
+}*/
 
 /* Test de la classe GameState */
 void testGameState(){
@@ -111,12 +111,12 @@ void testGameState(){
 	cout << "\nNous avons donc " << etat.get_number_of_player() <<" joueurs dans l'etat de jeu" << endl;
 	cout << "Ajoutons un personnages a player 1." << endl;
 	/* En utilisant new_character */
-	etat.get_player(0)->new_character("john");
+	etat.get_player(0)->new_character(vegeta);
 
-	cout << "\nAjoutons un personnages a player 2.\n" << endl;
+	//cout << "\nAjoutons un personnages a player 2.\n" << endl;
 	/* En utilisant add_character */
-	shared_ptr<Characters> player2_char1 = make_shared<Characters>("player2_char1");
-	etat.get_player(1)->add_character(player2_char1);
+	//shared_ptr<Characters> player2_char1 = make_shared<Characters>(default_value);
+	//etat.get_player(1)->add_character(player2_char1);
 
 	cout << "\nFin du test de la classe GameState" << endl;
 
@@ -126,118 +126,17 @@ void testGameState(){
 /*--------- Unit tests for the package render ---------------*/
 /*************************************************************/
 
-void rendering()
-{
-	sf::RenderWindow renderWindow(sf::VideoMode(500, 500), "test affichage");
-
-	sf::Event event;
-
-  	sf::Image image;
-  	image.create(800, 600, sf::Color::Black);
-
-	sf::Image ciel, herbe, sol;
-	ciel.loadFromFile("res/textureciel.png");
-	herbe.loadFromFile("res/textureherbe.png");
-	sol.loadFromFile("res/texturesol.png");
-
-	GameState etat;
-	etat.new_map(800,600);
-
-	sf::Image person;
-	person.loadFromFile("res/DBZ_gokusheet2.gif");
-	person.createMaskFromColor(person.getPixel(1,1));
-
-	sf::Texture textureperso;
-  	textureperso.loadFromImage(person);
-
-	sf::Sprite spriteperso(textureperso,sf::IntRect(134,192,80,80));
-
-	const std::vector<std::vector<int>>& mask = etat.map.get_mask();
-	//x_max is width, y_max is height
-	for (int y = 0; y < 500; y++){
-		for (int x = 0; x < 500; x++){
-			if (mask[y][x] == 1){
-				image.setPixel(x, y, sol.getPixel(x,y));
-			}
-			else if(mask[y][x] == 2){
-				image.setPixel(x, y, herbe.getPixel(x,y));
-			}
-			else {
-				image.setPixel(x, y, ciel.getPixel(x,y));
-			}
-		}
-	}
-	sf::Texture texture;
-  	texture.loadFromImage(image);
-  	sf::Sprite sprite(texture);
-
-	while (renderWindow.isOpen()){
-		while (renderWindow.pollEvent(event)){
-			if (event.type == sf::Event::EventType::Closed)
-			renderWindow.close();
-		}
-
-		renderWindow.clear();
-		renderWindow.draw(sprite);
-		renderWindow.draw(spriteperso);
-		renderWindow.display();
-	}
-
-	/*
-	GameState etats;
-	etats.new_player("jack");
-	etats.new_player("john");
-	etats.players[0]->new_character("worm1");
-	etats.players[0]->new_character("worm2");
-	etats.players[1]->new_character("worm3");
-	etats.players[1]->new_character("worm4");
-	//etats.characters[0]->position.setPosition(10,10);
-	//etats.characters[1]->position.setPosition(100,100);
-	//etats.characters[2]->position.setPosition(50,100);
-	//etats.characters[3]->position.setPosition(400,100);
-
-	Grid grid = Grid(&etats);
-	Character character = Character(&etats);
-	Information info = Information(&etats);
-
-	GridTileSet cart;
-	cart.sky_file = "res/textureciel.png";
-	cart.ground_file = "res/texturesol.png";
-	cart.grass_file = "res/textureherbe.png";
-
-	grid.tileset = cart;
-
-	shared_ptr<CharacterTileSet> chara = make_shared<CharacterTileSet>();
-	chara->tileset_file = "res/DBZ_gokusheet2.gif";
-	std::vector<sf::IntRect> vect;
-	vect.push_back(sf::IntRect(134,192,80,80));
-	chara->CharacterTile = vect;
-	character.tilesets.push_back(chara);
-	character.tilesets.push_back(chara);
-	character.tilesets.push_back(chara);
-	character.tilesets.push_back(chara);
-
-	GameRender rendu;
-	rendu.grid = grid;
-	rendu.character = character;
-	rendu.info = info;
-	
-	rendu.rend();
-	*/
-}
-
 void render_state()
 {
 	GameState etat;
 	etat.new_map(800, 600);
 	etat.new_player("Joueur 1");
-	etat.get_player(0)->new_character("goku");
+	etat.get_player(0)->new_character(goku);
 
-	//etat.new_player("Joueur 2");
-	//etat.get_player(0)->new_character("vegeta");
+	etat.new_player("Joueur 2");
+	etat.get_player(0)->new_character(vegeta);
 	Scene scene(etat, etat.get_map());
 	scene.draw();
-
 }
 
 int main(int argc,char* argv[]) 
@@ -253,8 +152,8 @@ int main(int argc,char* argv[])
 		if(strcmp(argv[1], "state") == 0 )
 		{
 			testStatistics();
-			testCharacters();
-			testPlayer();
+			//testCharacters();
+			//testPlayer();
 			testGameState();
 		}
 		
