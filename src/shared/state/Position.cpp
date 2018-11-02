@@ -3,6 +3,8 @@
 
 using namespace state;
 
+Position::Position() : x(0), y(0) {}
+
 void Position::setPosition (const unsigned int x, const unsigned int y){
 	this->x = x;
 	this->y = y;
