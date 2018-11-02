@@ -7,14 +7,12 @@
 using namespace state;
 using namespace std;
 
-GameState::GameState(){
-
+GameState::GameState()
+{
   state = not_started;
-  //new_map();
-  //new_player("player1");
-  //number_of_player = 1;
 }
 
+/* Create a mask in the map object */
 void GameState::new_map(unsigned const int width, unsigned const int height)
 {
 	if (width == 0 && height == 0) // default parameters of the function
@@ -26,6 +24,7 @@ void GameState::new_map(unsigned const int width, unsigned const int height)
     map.create_mask ();
 }
 
+/* create a new instance of Player */
 void GameState::new_player(const std::string name)
 {
 	if(get_number_of_player() < MAX_NB_PLAYER)
@@ -35,10 +34,12 @@ void GameState::new_player(const std::string name)
 	}
 }
 
+/* return the number of Player's instances */
 unsigned int GameState::get_number_of_player() const{
 	return(players.size());
 }
 
+/* return a reference (not const) to a player */
 shared_ptr<Player>& GameState::get_player (unsigned int i)
 {
 	if( i >= get_number_of_player() )
@@ -47,14 +48,21 @@ shared_ptr<Player>& GameState::get_player (unsigned int i)
 		return players[i];
 }
 
+/* return a const reference to a player */
+const shared_ptr<Player>& GameState::get_player(unsigned int i) const
+{
+	if (i >= get_number_of_player())
+		throw std::invalid_argument("you can't access to a non existent player");
+	else
+		return players[i];
+}
+
+/* return a const reference of the state's map*/
 const Map& GameState::get_map() const { return map; }
 
-
+/* to limit the possible number of players */
+/* the range is also limited by MAX_NB_PLAYER in define.hpp */
 void GameState::set_characters_range(unsigned int range)
 {
 	Player::set_characters_range(range);
 }
-
-const vector<shared_ptr<Characters>>& GameState::get_characters() const { return characters; }
-
-
