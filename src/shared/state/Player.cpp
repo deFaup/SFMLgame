@@ -24,23 +24,24 @@ Player::~Player()
 	/* cout << "Player: " << name << " deleted" << endl; */
 }
 
-void Player::new_character(const std::string name)
+/* create and add a character to the player */
+void Player::new_character(const CharactersID id)
 {
 	if (get_number_of_characters() < characters_range)
 	{
-		shared_ptr<Characters> ptr = make_shared<Characters>(name);
+		shared_ptr<Characters> ptr = make_shared<Characters>(this, id);
 		characters.push_back(ptr);
 	}
 }
 
-
+/* to be deleted (+delete in main's tests) */
 void Player::add_character(shared_ptr<Characters>& character)
 {
 	if (characters.size() < characters_range) // You can't add more characters than characters_range
 		characters.push_back(character);
 }
 
-
+/* get a reference to your character number i */
 std::shared_ptr<Characters>& Player::get_character(unsigned int i)
 {
 	if (i >= get_number_of_characters())
@@ -49,6 +50,7 @@ std::shared_ptr<Characters>& Player::get_character(unsigned int i)
 		return characters[i];
 }
 
+/* for GameEngine: tells which character you are using */
 void Player::select_character(unsigned int character_index)
 {
 	if (character_index < characters.size()) //you can only select a character among those that you have
