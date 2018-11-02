@@ -9,33 +9,23 @@ using namespace state;
 
 Characters::~Characters() {	/* cout << "Characters: "<< name << " deleted"<< endl; */ }
 
-Characters::Characters(): name("Unparametered character"), number_of_attacks(0)
+Characters::Characters(Player* player): owner(player), id(default_value), number_of_attacks(0)
 {
 	// call Statistics constructor and set stats to 100/10/10
-	// call Position constructor and do nothing
-
+	// call Position constructor and set position to (0,0)
 	//	cout << "Characters: " << name << " created" << endl;
 }
 
-Characters::Characters(Statistics stats): name("Unnamed character"), stats(stats), number_of_attacks(0)
+/* Create a character of id=id with a defined owner, stats depending on the ID and position to (0,0) */
+Characters::Characters(Player* player, CharactersID id): owner(player), id(id), stats(id), number_of_attacks(0)
 {
-	// call Position constructor and do nothing
+	cout << "Characters: " << id << " created" << endl;
 }
 
-Characters::Characters(string name): name(name), number_of_attacks(0)
-{
-	// call Statistics constructor and set stats to 100/10/10
-	// call Position constructor and do nothing
+CharactersID Characters::get_id() const{ return id; }
 
-	cout << "Characters: " << name << " created" << endl;
+const Position& Characters::get_position() const { return position; }
 
-	if(name == "Vegeta"){	// Amené à évoluer
-		this->stats.Set_statistiques(101,101,101);
-	}
-	return;
-}
-
-const string Characters::get_name() const{ return name; } 
 
 unsigned int Characters::get_number_of_attacks(){
 	return(this->number_of_attacks);
