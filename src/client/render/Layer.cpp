@@ -1,6 +1,7 @@
 /* Includes */
 //#include <iostream>
 //#include "define.hpp"
+#include "define.hpp"
 #include "Layer.h"
 
 using namespace std;
