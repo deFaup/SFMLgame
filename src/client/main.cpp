@@ -129,7 +129,7 @@ void testGameState(){
 void render_state()
 {
 	GameState etat;
-	etat.new_map(800, 600);
+	etat.new_map(3000, 2000);
 	etat.new_player("Joueur 1");
 	etat.get_player(0)->new_character(goku);
 
