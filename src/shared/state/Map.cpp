@@ -9,7 +9,13 @@
 using namespace std;
 using namespace state;
 
-void Map::set_screen_dimensions (){
+void Map::set_screen_dimensions() {
+
+	width = sf::VideoMode::getDesktopMode().width;
+	height = sf::VideoMode::getDesktopMode().height;
+}
+
+void Map::get_screen_dimensions(int& width, int& height) {
 
 	width = sf::VideoMode::getDesktopMode().width;
 	height = sf::VideoMode::getDesktopMode().height;
