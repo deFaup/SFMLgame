@@ -24,7 +24,7 @@ Characters::Characters(Player* player, CharactersID id): owner(player), id(id), 
 
 CharactersID Characters::get_id() const{ return id; }
 
-const Position& Characters::get_position() const { return position; }
+Position& Characters::get_position() { return position; }
 
 
 unsigned int Characters::get_number_of_attacks(){

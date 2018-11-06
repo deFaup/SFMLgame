@@ -9,9 +9,9 @@ using namespace render;
 
 Layer::Layer() {}
 
-void Layer::setSurface(sf::RenderWindow& window)
+void Layer::setSurface(int i, sf::RenderWindow& window)
 {
-	surface->draw(window);
+	surface[i]->draw(window);
 }
 
 void Layer::update()

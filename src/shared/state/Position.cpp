@@ -18,3 +18,8 @@ unsigned int Position::getPositionX(){
 unsigned int Position::getPositionY(){
 	return(y);
 }
+
+const Position Position::getPosition() const
+{
+	return *this;
+}

@@ -5,6 +5,11 @@
 
 using namespace render;
 
+sf::Sprite& Surface::getSprite()
+{
+	return sprite;
+}
+
 void Surface::loadTexture(sf::Image& image){
 	texture.loadFromImage(image);
 	return;

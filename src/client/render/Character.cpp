@@ -12,18 +12,46 @@ using namespace std;
 
 Character::Character(const state::GameState& state) : state(state)
 {
-	/* instantiation of a unique work surface */
-	surface = std::make_unique<Surface>();
-
 	/* get all existing characters */
 	fill_characters_list();
 
 	for (int i = 0; i < characters.size(); i++)
-	{
-		/* create a tile to find the sprite we want in our tileset */
-		Tile tile;
+	{// for each character in game
 
-		const CharactersID id = characters[i]->get_id();
+		/* instantiation of a unique surface */
+		surface.push_back(make_unique<Surface>());
+
+		/* instantiation of a Tileset */
+		tileset.push_back(make_shared<TileSet>());
+	}
+	
+	load_tilset();
+
+	/*scale*/
+	float scale = 2.f;
+	
+	for (int i = 0; i < characters.size(); i++)
+	{
+		/* Linking its Surface texure to its Tileset */
+		surface[i]->loadTexture(tileset[i]->getImage());
+
+		/* Linking its Surface sprite to its Surface texture */
+		surface[i]->setSpriteTexture();
+
+		sf::Sprite& sprite( surface[i]->getSprite() );
+		sprite.setScale(scale, scale);
+
+	}
+
+	update();
+}
+
+void Character::load_tilset()
+{
+	cout << " load1\n";
+	for (int i = 0; i < characters.size(); i++)
+	{
+		CharactersID id = characters[i]->get_id();
 		switch (id)
 		{
 			case default_value:
@@ -31,24 +59,20 @@ Character::Character(const state::GameState& state) : state(state)
 			break;
 
 			case goku:
-				tileset.push_back(std::make_shared<TileSet>("res/DBZ_gokusheet2.gif"));
-				tile.setTile(134, 192, 80, 80);
+				tileset[i]->setImageFile("res/DBZ_gokusheet2.gif");
 			break;
 
 			case vegeta:
-				//life_point = 100;
+				tileset[i]->setImageFile("res/DBZ_vegeta.gif");
 			break;
-
-			case miyo:
-				//life_point = 100;
-			break;
+/*
+			case miyo: 
+				tileset[i]->setImageFile("res/Computer - Eternal Fighter Zero - Mio Kouzuki.png");
+				sf::Image& image = tileset[i]->getImage();
+				image.createMaskFromColor(image.getPixel(0, 0));
+			break;//58 14 57 82
+*/			
 		}
-		sf::Image image = tileset[0]->getImage();
-		image.createMaskFromColor(image.getPixel(1, 1));
-
-		surface->loadTexture(image);
-		surface->setSpriteTexture(tile);
-		surface->setSpriteLocation(characters[i]->get_position());
 	}
 }
 
@@ -60,4 +84,50 @@ void Character::fill_characters_list() {
 			characters.push_back(state.players[i]->get_character(i));
 		}
 	}
+}
+
+void Character::update()
+{
+	// TODO re-init character list
+
+	for (int i = 0; i < characters.size(); i++)
+	{// go through all characters
+
+		/* create a tile to find the sprite we want in our tileset */
+		Tile tile;
+		
+		CharactersID id = characters[i]->get_id();
+		switch (id)
+		{
+			/* Not really defined:
+			can load the tile corresponding to the character's state
+			can check the position and print the characters at their position
+			*/
+			case default_value:
+				//life_point = 100;
+			break;
+
+			case goku:
+				cout << " upadte\n";
+				tile.setTile(0, 0, 42, 98);
+			break;
+
+			case vegeta:
+				tile.setTile(0, 0, 50, 80);
+			break;
+		}
+
+		surface[i]->setSpriteTexture(tile);
+		surface[i]->setSpriteLocation(characters[i]->get_position().getPosition());
+	}
+}
+
+void Character::setSurface(sf::RenderWindow& window)
+{
+	update();
+	for (int i = 0; i < characters.size(); i++)
+	{
+		surface[i]->draw(window);
+	}
+	
 }

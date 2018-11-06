@@ -11,7 +11,7 @@ Background::Background(const state::GameState& state, const state::Map& map) : s
 	/* the background is initialized straight into the constructor */
 	
 	/* instantiation of a unique work surface */
-	surface = make_unique<Surface>();
+	surface.push_back( make_unique<Surface>() );
 	
 	/* get map dimensions */
 	int width(0), height(0);
@@ -21,10 +21,10 @@ Background::Background(const state::GameState& state, const state::Map& map) : s
 	tileset.push_back( make_shared<TileSet>(width, height, sf::Color::Black) );
 
 	/* Linking our Surface texure to the background */
-	surface->loadTexture(tileset[0]->getImage());
+	surface[0]->loadTexture(tileset[0]->getImage());
 
 	/* Linking our Surface sprite to the Surface texture */
-	surface->setSpriteTexture();
+	surface[0]->setSpriteTexture();
 
 	/* loading the images to make the background */
 	tileset.push_back(make_shared<TileSet>("res/BlueSkyWithClouds.png"));
@@ -70,6 +70,11 @@ void Background::update()
 	}
 
 	/* update the texture and thus the sprite as they are linked */
-	surface->update(image);
+	surface[0]->update(image);
 
+}
+
+void Background::setSurface(sf::RenderWindow& window)
+{
+	surface[0]->draw(window);
 }

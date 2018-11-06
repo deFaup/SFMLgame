@@ -130,11 +130,22 @@ void render_state()
 {
 	GameState etat;
 	etat.new_map(3000, 2000);
-	etat.new_player("Joueur 1");
-	etat.get_player(0)->new_character(goku);
 
-	etat.new_player("Joueur 2");
+	etat.new_player("Joueur 1");
+	cout << "nombre de joueurs: " << etat.get_number_of_player() << endl;
+
 	etat.get_player(0)->new_character(vegeta);
+	etat.get_player(0)->get_character(0)->get_position().setPosition(200, 200);
+	cout << "nombre de personnages du joueur 0: " << etat.get_player(0)->get_number_of_characters() << endl;
+	
+	/*
+	etat.new_player("Joueur 2");
+	cout << "nombre de joueurs: " << etat.get_number_of_player() << endl;
+	
+	etat.get_player(1)->new_character(vegeta);
+	cout << "nombre de personnages du joueur 1: " << etat.get_player(1)->get_number_of_characters() << endl;
+	//etat.get_player(1)->get_character(0)->get_position().setPosition(400, 400);
+*/
 	Scene scene(etat, etat.get_map());
 	scene.draw();
 }
