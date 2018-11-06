@@ -40,17 +40,16 @@ void Map::set_dimensions(const int width, const int height){
 }
 
 void Map::create_mask ()
-{
+{//mask[line][column] or mask[height][width]
+
 	fill_mask_with_x(mask,1);
-	//affiche(mask);
 
 	/* Intializes random number generator */
 	srand(time(NULL));
 
 	/* Starting with the first column and random row */
 	int x(0), y(0);
-	x = int((30 * height) / 100) + rand() % int(50 * height / 100);
-	//printf("y = %d\n", y);
+	x = int((60 * height) / 100) + rand() % int(30 * height / 100);
 	mask[x][y]++;
 	puts_zero(mask, x, y);
 
@@ -91,8 +90,11 @@ void Map::puts_zero(auto& mask, const int x, const int y) {
 	/* if mask(xxx xxx) = 2 then
 	we put all values in the col xxx from the beginning to xxx to 0 (reduce 1)
 	*/
-	for (int i = 0; i < x; i++) {
+	for (int i = 0; i < x-20; i++) {
 		mask[i][y]--;
+	}
+	for (int i = x-20; i < x; i++) {
+		mask[i][y]++;
 	}
 }
 
