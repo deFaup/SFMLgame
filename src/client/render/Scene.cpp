@@ -22,8 +22,6 @@ void Scene::updateScene(/* some event */)
 /* draw all layers (time-consuming) */
 void Scene::draw()
 {
-	//int width(0), height(0);
-	//state.get_map().get_dimensions(width, height);
 	sf::RenderWindow renderWindow;
 	sf::View window_view;
 	sf::Vector2f position_in_map;
@@ -59,6 +57,7 @@ void Scene::init_window(sf::View& window_view, sf::RenderWindow& renderWindow, s
 	renderWindow.create(sf::VideoMode(width, height), "SFML game", sf::Style::Titlebar | sf::Style::Close);
 
 	window_view.setSize(width, height);
+//	window_view.setSize(3000, 2000);
 
 	// set the first position in the game: temporary
 	position_in_map.x = width/2 ; 	position_in_map.y = height/2;
@@ -67,7 +66,7 @@ void Scene::init_window(sf::View& window_view, sf::RenderWindow& renderWindow, s
 	// set the view center so that the top left corner of the map is the top left corner of the window
 	window_view.setCenter(position_in_map);
 
-	position_in_map.x = 0; 	position_in_map.y = 0;
+	//position_in_map.x = 0; 	position_in_map.y = 0;
 
 	renderWindow.setView(window_view);
 	renderWindow.setPosition(sf::Vector2i(0, 0));

@@ -27,8 +27,8 @@ Background::Background(const state::GameState& state, const state::Map& map) : s
 	surface->setSpriteTexture();
 
 	/* loading the images to make the background */
-	tileset.push_back(make_shared<TileSet>("res/textureciel.png"));
-	tileset.push_back(make_shared<TileSet>("res/textureherbe.png"));
+	tileset.push_back(make_shared<TileSet>("res/BlueSkyWithClouds.png"));
+	tileset.push_back(make_shared<TileSet>("res/GreenGrass.png"));
 	tileset.push_back(make_shared<TileSet>("res/texturesol.png"));
 
 	/* update the background to represent the state's map */
@@ -53,16 +53,18 @@ void Background::update()
 	sf::Image& herbe = tileset[2]->getImage();
 	sf::Image& sol = tileset[3]->getImage();
 
+	sf::Vector2u size_ciel(ciel.getSize()), size_herbe(herbe.getSize());
+
 	for (int y = 0; y < height; y++) { //y == height
 		for (int x = 0; x < width; x++) { // x== width
 			if (mask[y][x] == 1) {
 				image.setPixel(x, y, sol.getPixel(x, y));
 			}
 			else if (mask[y][x] == 2) {
-				image.setPixel(x, y, herbe.getPixel(x, y));
+				image.setPixel(x, y, herbe.getPixel(x % (size_herbe.x), y % (size_herbe.y)));
 			}
 			else {
-				image.setPixel(x, y, ciel.getPixel(x, y));
+				image.setPixel(x, y, ciel.getPixel(x % (size_ciel.x), y % (size_ciel.y)));
 			}
 		}
 	}
