@@ -43,8 +43,6 @@ unsigned int GameState::get_number_of_player() const{
 shared_ptr<Player>& GameState::get_player (unsigned int i)
 {
 	if (i >= get_number_of_player()) {
-		cout << "ID que vous appellez " << i << endl;
-
 		throw std::invalid_argument("you can't access to a non existent player");
 	}
 	else 

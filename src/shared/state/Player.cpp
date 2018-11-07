@@ -45,7 +45,9 @@ void Player::add_character(shared_ptr<Characters>& character)
 std::shared_ptr<Characters>& Player::get_character(unsigned int i)
 {
 	if (i >= get_number_of_characters())
-		throw std::invalid_argument( "you can't access to a non existent character" );
+	{
+		throw std::invalid_argument("you can't access to a non existent character");
+	}
 	else
 		return characters[i];
 }
