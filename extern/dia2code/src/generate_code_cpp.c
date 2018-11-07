@@ -468,7 +468,7 @@ gen_class (umlclassnode *node)
             umlo = umlo->next;
         }
     }
-
+/*
     print ("// Setters and Getters\n");
     if (node->associations != NULL) {
         umlassoclist assoc = node->associations;
@@ -499,7 +499,7 @@ gen_class (umlclassnode *node)
             }
         }
     }
-    
+*/   
     
     if (node->key->attributes != NULL && is_valuetype) {
         umlattrlist umla = node->key->attributes;
