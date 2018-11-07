@@ -106,6 +106,7 @@ void Scene::update_view(sf::View& window_view, sf::RenderWindow& renderWindow, s
 
 	renderWindow.setView(window_view);
 	window_view.setCenter(position_in_map);
-	cout << x << " " << y << endl;
+/*	cout << x << " " << y << endl;
 	cout << position_in_map.x << " " << position_in_map.y << endl << endl;
+*/
 }

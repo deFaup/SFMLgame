@@ -48,7 +48,6 @@ Character::Character(const state::GameState& state) : state(state)
 
 void Character::load_tilset()
 {
-	cout << " load1\n";
 	for (int i = 0; i < characters.size(); i++)
 	{
 		CharactersID id = characters[i]->get_id();
