@@ -76,11 +76,12 @@ void Character::load_tilset()
 }
 
 void Character::fill_characters_list() {
+
 	for (unsigned int i = 0; i < state.get_number_of_player(); i++)
 	{
 		for (unsigned int j = 0; j < state.get_player(i)->get_number_of_characters(); j++)
 		{
-			characters.push_back(state.players[i]->get_character(i));
+			characters.push_back(state.players[i]->get_character(j));
 		}
 	}
 }
@@ -107,7 +108,6 @@ void Character::update()
 			break;
 
 			case goku:
-				cout << " upadte\n";
 				tile.setTile(0, 0, 42, 98);
 			break;
 
