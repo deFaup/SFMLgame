@@ -28,7 +28,7 @@ Character::Character(const state::GameState& state) : state(state)
 	load_tilset();
 
 	/*scale*/
-	float scale = 2.f;
+	float scale = 3.5f;
 	
 	for (int i = 0; i < characters.size(); i++)
 	{
