@@ -34,10 +34,16 @@ void GameState::new_player(const std::string name)
 	}
 }
 
-/* return the number of Player's instances */
-unsigned int GameState::get_number_of_player() const{
-	return(players.size());
+/* create a new character for player i */
+void GameState::new_character(const unsigned int player_id, const CharactersID character_id)
+{
+	shared_ptr<Characters> ptr(0);
+	ptr = get_player(player_id)->new_character(character_id);
+	characters.push_back(ptr);
 }
+
+/* return the number of Player's instances */
+unsigned int GameState::get_number_of_player() const{ return(players.size()); }
 
 /* return a reference (not const) to a player */
 shared_ptr<Player>& GameState::get_player (unsigned int i)
@@ -57,6 +63,9 @@ const shared_ptr<Player>& GameState::get_player(unsigned int i) const
 	else
 		return players[i];
 }
+
+/* return a reference to the characters list */
+const vector<shared_ptr<Characters>>& GameState::get_characters() const {	return characters;	}
 
 /* return a const reference of the state's map*/
 const Map& GameState::get_map() const { return map; }

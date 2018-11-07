@@ -25,13 +25,15 @@ Player::~Player()
 }
 
 /* create and add a character to the player */
-void Player::new_character(const CharactersID id)
+shared_ptr<Characters> Player::new_character(const CharactersID id)
 {
+	shared_ptr<Characters> ptr = 0;
 	if (get_number_of_characters() < characters_range)
 	{
-		shared_ptr<Characters> ptr = make_shared<Characters>(this, id);
+		ptr = make_shared<Characters>(this, id);
 		characters.push_back(ptr);
 	}
+	return ptr;
 }
 
 /* to be deleted (+delete in main's tests) */

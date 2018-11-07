@@ -134,7 +134,7 @@ void render_state()
 	etat.new_player("Joueur 1");
 	cout << "nombre de joueurs: " << etat.get_number_of_player() << endl;
 
-	etat.get_player(0)->new_character(goku);
+	etat.new_character(0,goku);
 	etat.get_player(0)->get_character(0)->get_position().setPosition(200, 200);
 	cout << "nombre de personnages du joueur 0: " << etat.get_player(0)->get_number_of_characters() << endl;
 	
@@ -142,10 +142,12 @@ void render_state()
 	etat.new_player("Joueur 2");
 	cout << "\nnombre de joueurs: " << etat.get_number_of_player() << endl;
 	
-	etat.get_player(1)->new_character(vegeta);
+	etat.new_character(1,vegeta);
 	cout << "nombre de personnages du joueur 1: " << etat.get_player(1)->get_number_of_characters() << endl;
 	etat.get_player(1)->get_character(0)->get_position().setPosition(400, 400);
 	
+	cout << "\nnombre de personnages: " << etat.characters.size()<< endl;
+
 	Scene scene(etat, etat.get_map());	//etat.get_map(); is not the problem scene is
 	scene.draw();
 

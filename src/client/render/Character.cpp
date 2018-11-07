@@ -10,10 +10,17 @@ using namespace render;
 using namespace state;
 using namespace std;
 
-Character::Character(const state::GameState& state) : state(state)
+// variables that are used to initialize our const reference characters but temporarly
+std::vector<std::shared_ptr<state::Characters>> temp;
+std::vector<std::shared_ptr<state::Characters>>& ref_temp = temp;
+
+Character::Character(const state::GameState& state) : state(state), characters(ref_temp)
 {
 	/* get all existing characters */
-	fill_characters_list();
+	{
+		auto state_temp = const_cast<GameState&> (state);
+		characters = state_temp.get_characters();
+	}
 
 	for (int i = 0; i < characters.size(); i++)
 	{// for each character in game
