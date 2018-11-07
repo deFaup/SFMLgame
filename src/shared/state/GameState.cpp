@@ -22,6 +22,8 @@ void GameState::new_map(unsigned const int width, unsigned const int height)
 		map.set_dimensions(width, height);
 
     map.create_mask ();
+	// notify map's observer EventMap that the mask has changed
+	notifyObserver("Map", Map_maskChanged);
 }
 
 /* create a new instance of Player */

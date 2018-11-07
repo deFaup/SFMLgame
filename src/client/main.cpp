@@ -153,6 +153,39 @@ void render_state()
 
 }
 
+void engine()
+{
+	/* creation des observeurs */
+	Event *event_GameState = new EventGameState();
+	Event *event_Characters = new EventCharacters();
+	Event *event_Map = new EventMap();
+
+	/* Ajout des observeurs à Observable */
+	Observable::registerObserver("GameState", event_GameState);
+	Observable::registerObserver("Characters", event_Characters);
+	Observable::registerObserver("Map", event_Map);
+
+	GameState etat;
+
+	// the following sets Map_maskChanged EventID to true 
+	etat.new_map(3000, 2000);
+	for (int i = 0; i < 3; i++)
+	{
+		etat.new_player("Joueur " + to_string(i));
+		etat.new_character(i, goku);
+		etat.new_character(i, vegeta);
+		etat.get_player(i)->get_character(0)->get_position().setPosition(100 + i * 100, 100 + i * 100);
+		etat.get_player(i)->get_character(1)->get_position().setPosition(400 + i * 200, 400 + i * 200);
+	}
+
+	Scene scene(etat, etat.get_map());	//etat.get_map(); is not the problem scene is
+	scene.draw();
+
+	/* suppression des observeurs */
+	delete event_GameState;
+	delete event_Characters;
+	delete event_Map;
+}
 int main(int argc,char* argv[]) 
 {	
 
@@ -176,6 +209,11 @@ int main(int argc,char* argv[])
 			testSFML();
 			//rendering();
 			render_state();
+		}
+
+		if (strcmp(argv[1], "engine") == 0)
+		{
+			engine();
 		}
 	}
 	return 0;
