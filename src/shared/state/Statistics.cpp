@@ -68,19 +68,27 @@ Statistics::Statistics(CharactersID id)
 	}
 }
 
-unsigned int state::Statistics::Get_life_points (){
+unsigned int state::Statistics::get_life_point (){
 	return(this->life_point);
 }
 
-unsigned int state::Statistics::Get_attack_points (){
+unsigned int state::Statistics::get_attack_point (){
 	return(this->attack_point);
 }
 
-unsigned int state::Statistics::Get_move_points (){
+unsigned int state::Statistics::get_move_point (){
 	return(this->move_point);
 }
 
-void state::Statistics::Set_statistiques (int vie, int attaque, int deplacement){
+void state::Statistics::set_statistics(Statistics given_stats)
+{
+	life_point = given_stats.life_point;
+	attack_point = given_stats.attack_point;
+	move_point = given_stats.move_point;
+}
+
+/*
+void state::Statistics::Set_statistics (int vie, int attaque, int deplacement){
 	if(0 <= vie && vie <= MAX_LIFE_POINT){
 		this->life_point = vie;
 	}
@@ -110,4 +118,4 @@ void state::Statistics::Set_statistiques (int vie, int attaque, int deplacement)
 	}
 	return;
 }
-
+*/

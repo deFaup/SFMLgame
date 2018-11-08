@@ -20,12 +20,22 @@ Characters::Characters(Player* player): owner(player), id(default_value), number
 Characters::Characters(Player* player, CharactersID id): owner(player), id(id), stats(id), number_of_attacks(0)
 {
 	cout << "Characters: " << id << " created" << endl;
+	//Statistics my_stat(20, 21, 22);
+	//get_statistics().set_statistics(my_stat);
+	cout << "\tstats: life_point = " << get_statistics().get_attack_point() << endl;
+	cout << "\tstats: attack_point = " << get_statistics().get_attack_point() << endl;
+	cout << "\tstats: move_point = " << get_statistics().get_move_point() << endl;
+
+	unsigned int life_point;
+	unsigned int attack_point;
+	unsigned int move_point;
 }
 
 CharactersID Characters::get_id() const{ return id; }
 
 Position& Characters::get_position() { return position; }
 
+Statistics& Characters::get_statistics() { return stats; }
 
 unsigned int Characters::get_number_of_attacks(){
 	return(this->number_of_attacks);
