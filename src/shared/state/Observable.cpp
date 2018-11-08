@@ -6,9 +6,9 @@ using namespace std;
 using namespace state;
 
 // init static member
-std::map<std::string, Event*> Observable::observers;
+std::map<std::string, shared_ptr<Event>> Observable::observers;
 
-void Observable::registerObserver(string event_name, Event* observer)
+void Observable::registerObserver(string event_name, shared_ptr<Event> observer)
 {
 	observers[event_name] = observer;
 }
