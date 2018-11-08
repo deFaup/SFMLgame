@@ -3,6 +3,7 @@
 #include "Move.h"
 #include "ChangeCharacter.h"
 #include "Attack.h"
+#include "ChangePlayer.h"
 #include <memory>
 #include <iostream>
 #include <SFML/Graphics.hpp>
@@ -18,8 +19,13 @@ void GameEngine::getUserInput(){
 	commande.isClicked = 0;
 	sf::Vector2i globalPosition = sf::Mouse::getPosition();
 	commande.mouse_position.setPosition(globalPosition.x,globalPosition.y);
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+	commande.isSpacePressed = 0;
+	commande.isCTRLPressed = 0;
+	
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)){
+		commande.isSpacePressed = 1;
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
 		commande.arrow_direction = arrow_left;
 	}
@@ -43,6 +49,10 @@ void GameEngine::getUserInput(){
 }
 
 void GameEngine::executeCommande(){
+	if(commande.isSpacePressed == 1){
+		ChangePlayer tour_commande;
+		tour_commande.execute(etat);
+	}
 	if(commande.arrow_direction == arrow_left || commande.arrow_direction == arrow_right){
 		Move move_command;
 		if(commande.arrow_direction == arrow_left){
@@ -63,6 +73,5 @@ void GameEngine::executeCommande(){
 			attack_command.execute(etat);
 		}
 	}
-	
 	return;
 }
