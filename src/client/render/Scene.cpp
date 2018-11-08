@@ -7,11 +7,16 @@
 using namespace std;
 using namespace render;
 
+sf::View window_view;
+sf::Vector2f position_in_map[2]; //[1] is the position with mouse coordinates
+
 /* Scene constructor share its references to the state and to the Map */
 /* We share the map as doing state.get_map() wasn't working */
-Scene::Scene(const state::GameState& state, const state::Map& map) : state(state), background(state, map), characters(state)
+Scene::Scene(const state::GameState& state, const state::Map& map, sf::RenderWindow& window) : state(state), background(state, map), characters(state), renderWindow(window)
 {
 	cout << "Scene created" << endl;
+	// new things
+	init_window(window_view, renderWindow, position_in_map);
 }
 
 void Scene::updateScene(/* some event */)
@@ -22,13 +27,19 @@ void Scene::updateScene(/* some event */)
 /* draw all layers (time-consuming) */
 void Scene::draw()
 {
+/*	
 	sf::RenderWindow renderWindow;
 	sf::View window_view;
 	sf::Vector2f position_in_map[2]; //[1] is the position with mouse coordinates
 	init_window(window_view, renderWindow, position_in_map);
+*/
 	const sf::Vector2f init_position = position_in_map[0];
+	update_view(window_view, renderWindow, position_in_map, init_position);
+	background.setSurface(renderWindow); // first the background
+	characters.setSurface(renderWindow); // on top of the background the characters
+	renderWindow.display();
 
-	while (renderWindow.isOpen()) 
+/*	while (renderWindow.isOpen()) 
 	{
 		// Process events
 		sf::Event event;
@@ -46,6 +57,7 @@ void Scene::draw()
 		characters.setSurface(renderWindow); // on top of the background the characters
 		renderWindow.display();
 	}
+*/
 }
 
 /* config the view position for the beginning */
@@ -88,29 +100,41 @@ void Scene::update_view(sf::View& window_view, sf::RenderWindow& renderWindow, s
 	if (x >= renderWindow.getPosition().x + renderWindow.getSize().x)
 		position_in_map[0].x += 10;
 
-	if (x <= renderWindow.getPosition().x)
+	if (x <= renderWindow.getPosition().x) {
+		cout << "going left1 " << endl;
 		position_in_map[0].x -= 10;
-
-	if (y >= renderWindow.getPosition().y + renderWindow.getSize().y)
+	}
+		
+	if (y >= renderWindow.getPosition().y + renderWindow.getSize().y) {
 		position_in_map[0].y += 10;
-
-	if (y <= renderWindow.getPosition().y)
+	}
+		
+	if (y <= renderWindow.getPosition().y) {
+		cout << "going up1 " << endl;
 		position_in_map[0].y -= 10;
+	}
+		
 
-	if (position_in_map[1].x >= map_size[0])
+	if (position_in_map[1].x >= map_size[0]) {
+		cout << "going left2 " << endl;
 		position_in_map[0].x -= 10;
+	}
+		
 	else if (position_in_map[1].x <= 0)
 		position_in_map[0].x += 10;
 
-	if (position_in_map[1].y >= map_size[1])
+	if (position_in_map[1].y >= map_size[1]) {
+		cout << "going up2 " << endl;
 		position_in_map[0].y -= 10;
+	}
+		
 	else if (position_in_map[1].y <= 0)
 		position_in_map[0].y += 10;
 
 	renderWindow.setView(window_view);
 	window_view.setCenter(position_in_map[0]);
-/*	cout << x << " " << y << endl;
+	cout << x << " " << y << endl;
 	cout << position_in_map[1].x << " " << position_in_map[1].y << endl;
 	cout << position_in_map[0].x << " " << position_in_map[0].y << endl << endl;
-*/
+
 }

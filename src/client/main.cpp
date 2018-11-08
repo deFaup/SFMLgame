@@ -129,7 +129,7 @@ void testGameState() {
 /*--------- Unit tests for the package render ---------------*/
 /*************************************************************/
 
-void render_state()
+/*void render_state()
 {
 	GameState etat;
 	etat.new_map(3000, 2000);
@@ -153,11 +153,13 @@ void render_state()
 
 	Scene scene(etat, etat.get_map());	//etat.get_map(); is not the problem scene is
 	scene.draw();
-
 }
+*/
 
 void enginet()
 {
+	sf::RenderWindow renderWindow;
+
 	/* creation des observeurs */
 	shared_ptr<Event> event_GameState = make_shared<EventGameState>();
 	shared_ptr<Event> event_Characters = make_shared<EventCharacters>();
@@ -169,6 +171,7 @@ void enginet()
 	Observable::registerObserver("Map", event_Map);
 
 	GameState etat;
+	
 	// afffichage de ses oberveurs
 	cout << "GameState observer size " << etat.observers_size() << endl;
 
@@ -184,16 +187,29 @@ void enginet()
 		etat.get_player(i)->get_character(1)->get_position().setPosition(400 + i * 200, 400 + i * 200);
 	}
 
-	Scene scene(etat, etat.get_map());	//etat.get_map(); is not the problem scene is
-	scene.draw();
-
 	GameEngine moteur(etat);
-	while(1){
+
+	Scene scene(etat, etat.get_map(), renderWindow);
+	// now we can display the view
+	while (renderWindow.isOpen())
+	{
+		// Process events
+		sf::Event event;
+
+		while (renderWindow.pollEvent(event))
+		{
+			if (event.type == sf::Event::EventType::Closed)
+				renderWindow.close();
+		}
+		renderWindow.clear();
+		scene.draw();
+		
 		moteur.getUserInput();
 		moteur.executeCommande();
+		
 	}
-
 }
+
 int main(int argc, char* argv[])
 {
 
@@ -216,7 +232,7 @@ int main(int argc, char* argv[])
 		{
 			testSFML();
 			//rendering();
-			render_state();
+			//render_state();
 		}
 
 		if (strcmp(argv[1], "engine") == 0)
