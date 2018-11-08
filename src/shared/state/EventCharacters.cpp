@@ -12,3 +12,5 @@ EventCharacters::EventCharacters()
 	events[Character_statisticChanged] = false;
 	events[SelectedCharacterChanged] = false;
 }
+
+EventCharacters::~EventCharacters() {};

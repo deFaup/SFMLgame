@@ -9,7 +9,8 @@ using namespace std;
 
 GameState::GameState()
 {
-  state = not_started;
+//	cout << "GameState created" << endl;
+	state = not_started;
 }
 
 /* Create a mask in the map object */
@@ -23,7 +24,7 @@ void GameState::new_map(unsigned const int width, unsigned const int height)
 
     map.create_mask ();
 	// notify map's observer EventMap that the mask has changed
-	notifyObserver("Map", Map_maskChanged);
+	//notifyObserver("Map", Map_maskChanged);
 }
 
 /* create a new instance of Player */

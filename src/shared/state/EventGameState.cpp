@@ -14,3 +14,4 @@ EventGameState::EventGameState()
 	events[GameState_stateID_Changed] = false;
 }
 
+EventGameState::~EventGameState() {};

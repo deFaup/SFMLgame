@@ -25,10 +25,6 @@ Characters::Characters(Player* player, CharactersID id): owner(player), id(id), 
 	cout << "\tstats: life_point = " << get_statistics().get_attack_point() << endl;
 	cout << "\tstats: attack_point = " << get_statistics().get_attack_point() << endl;
 	cout << "\tstats: move_point = " << get_statistics().get_move_point() << endl;
-
-	unsigned int life_point;
-	unsigned int attack_point;
-	unsigned int move_point;
 }
 
 CharactersID Characters::get_id() const{ return id; }

@@ -11,7 +11,7 @@ using namespace render;
 /* We share the map as doing state.get_map() wasn't working */
 Scene::Scene(const state::GameState& state, const state::Map& map) : state(state), background(state, map), characters(state)
 {
-//	cout << "Scene created" << endl;
+	cout << "Scene created" << endl;
 }
 
 void Scene::updateScene(/* some event */)

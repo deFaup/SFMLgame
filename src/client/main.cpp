@@ -159,19 +159,21 @@ void render_state()
 void enginet()
 {
 	/* creation des observeurs */
+/*
 	Event *event_GameState = new EventGameState();
 	Event *event_Characters = new EventCharacters();
 	Event *event_Map = new EventMap();
-
+*/
 	/* Ajout des observeurs à Observable */
-	Observable::registerObserver("GameState", event_GameState);
+/*	Observable::registerObserver("GameState", event_GameState);
 	Observable::registerObserver("Characters", event_Characters);
 	Observable::registerObserver("Map", event_Map);
-
+*/
 	GameState etat;
 
 	// the following sets Map_maskChanged EventID to true 
 	etat.new_map(3000, 2000);
+
 	for (int i = 0; i < 3; i++)
 	{
 		etat.new_player("Joueur " + to_string(i));
@@ -190,10 +192,10 @@ void enginet()
 		moteur.executeCommande();
 	}
 
-	/* suppression des observeurs */
+	/* suppression des observeurs 
 	delete event_GameState;
 	delete event_Characters;
-	delete event_Map;
+	delete event_Map;*/
 }
 int main(int argc, char* argv[])
 {

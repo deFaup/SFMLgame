@@ -7,7 +7,9 @@
 using namespace std;
 using namespace state;
 
-Event::Event() : changed(false) {}
+//element() initialize the variable element to an empty value - behing it's a map element
+Event::Event() : events() {}
+Event::~Event() {};
 
 void Event::setEventID(EventID ID, bool true_false) { events[ID] = true_false; }
 
