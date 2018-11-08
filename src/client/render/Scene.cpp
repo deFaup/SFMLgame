@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 
 using namespace std;
+using namespace state;
 using namespace render;
 
 sf::View window_view;
@@ -12,7 +13,7 @@ sf::Vector2f position_in_map[2]; //[1] is the position with mouse coordinates
 
 /* Scene constructor share its references to the state and to the Map */
 /* We share the map as doing state.get_map() wasn't working */
-Scene::Scene(const state::GameState& state, const state::Map& map, sf::RenderWindow& window) : state(state), background(state, map), characters(state), renderWindow(window)
+Scene::Scene(const GameState& state, const Map& map, sf::RenderWindow& window) : state(state), background(state, map), characters(state), renderWindow(window)
 {
 	cout << "Scene created" << endl;
 	// new things
@@ -27,14 +28,14 @@ void Scene::updateScene(/* some event */)
 /* draw all layers (time-consuming) */
 void Scene::draw()
 {
-/*	
-	sf::RenderWindow renderWindow;
-	sf::View window_view;
-	sf::Vector2f position_in_map[2]; //[1] is the position with mouse coordinates
-	init_window(window_view, renderWindow, position_in_map);
-*/
 	const sf::Vector2f init_position = position_in_map[0];
 	//update_view(window_view, renderWindow, position_in_map, init_position);
+
+	if (observer_map->hasChanged(Map_maskChanged))
+	{
+		background.update();
+		observer_map->setEventID(Map_maskChanged, false);
+	}
 	background.setSurface(renderWindow); // first the background
 	characters.setSurface(renderWindow); // on top of the background the characters
 	renderWindow.display();
@@ -138,4 +139,10 @@ void Scene::update_view(sf::View& window_view, sf::RenderWindow& renderWindow, s
 	cout << position_in_map[1].x << " " << position_in_map[1].y << endl;
 	cout << position_in_map[0].x << " " << position_in_map[0].y << endl << endl;
 
+}
+
+
+void Scene::set_observer_map(std::shared_ptr<Event> observer)
+{
+	observer_map = observer;
 }

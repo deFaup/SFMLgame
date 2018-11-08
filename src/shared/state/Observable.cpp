@@ -16,9 +16,9 @@ void Observable::registerObserver(string event_name, shared_ptr<Event> observer)
 
 void Observable::notifyObserver(string event_name, EventID ID)
 {
-	cout << "entering notifyObserver function\n";
+//	cout << "entering notifyObserver function\n";
 	observers[event_name]->setEventID(ID, true);
-	cout << "leaving notifyObserver function\n";
+//	cout << "leaving notifyObserver function\n";
 
 }
 
