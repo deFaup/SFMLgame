@@ -34,7 +34,7 @@ void Scene::draw()
 	init_window(window_view, renderWindow, position_in_map);
 */
 	const sf::Vector2f init_position = position_in_map[0];
-	update_view(window_view, renderWindow, position_in_map, init_position);
+	//update_view(window_view, renderWindow, position_in_map, init_position);
 	background.setSurface(renderWindow); // first the background
 	characters.setSurface(renderWindow); // on top of the background the characters
 	renderWindow.display();
@@ -68,11 +68,12 @@ void Scene::init_window(sf::View& window_view, sf::RenderWindow& renderWindow, s
 	width -= 10;	height -= 150;
 	renderWindow.create(sf::VideoMode(width, height), "SFML game", sf::Style::Titlebar | sf::Style::Close);
 
-	window_view.setSize(width, height);
-//	window_view.setSize(3000, 2000);
+//	window_view.setSize(width, height);
+	window_view.setSize(3000, 2000);
+	window_view.setCenter(1500, 1000);
 
 	// set the first position in the game: temporary
-	position_in_map[0].x = position_in_map[1].x = width/2 ;
+/*	position_in_map[0].x = position_in_map[1].x = width/2 ;
 	position_in_map[0].y = position_in_map[1].y = height/2;
 	sf::Mouse::setPosition((sf::Vector2i)position_in_map[0]);
 
@@ -80,7 +81,7 @@ void Scene::init_window(sf::View& window_view, sf::RenderWindow& renderWindow, s
 	window_view.setCenter(position_in_map[0]);
 
 	//position_in_map[0].x = 0; 	position_in_map[0].y = 0;
-
+*/
 	renderWindow.setView(window_view);
 	renderWindow.setPosition(sf::Vector2i(0, 0));
 }
