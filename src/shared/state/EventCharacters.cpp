@@ -12,9 +12,3 @@ EventCharacters::EventCharacters()
 	events[Character_statisticChanged] = false;
 	events[SelectedCharacterChanged] = false;
 }
-
-bool EventCharacters::hasChanged()
-{
-	bool changed_copy = false;// (changed);
-	return changed_copy;
-}

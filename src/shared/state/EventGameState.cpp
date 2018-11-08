@@ -14,9 +14,3 @@ EventGameState::EventGameState()
 	events[GameState_stateID_Changed] = false;
 }
 
-bool EventGameState::hasChanged() 
-{
-	bool changed_copy = false;// (changed);
-	return changed_copy;
-}
-

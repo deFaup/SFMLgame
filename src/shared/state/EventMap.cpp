@@ -12,7 +12,11 @@ EventMap::EventMap() : Event()
 	events[Map_maskChanged] = false;
 }
 
-bool EventMap::hasChanged()
+/*
+void EventMap::setEventID(EventID ID, bool true_false) 
 {
-//
-}
+	if (ID == Map_maskChanged)
+		events[ID] = true_false;
+}*/
+
+
