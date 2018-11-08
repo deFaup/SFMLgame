@@ -34,6 +34,7 @@ void GameState::new_player(const std::string name)
 	{
 		shared_ptr<Player> ptr = make_shared<Player>(name);
 		players.push_back(ptr);
+		current_player = ptr;
 	}
 }
 

@@ -32,6 +32,7 @@ shared_ptr<Characters> Player::new_character(const CharactersID id)
 	{
 		ptr = make_shared<Characters>(this, id);
 		characters.push_back(ptr);
+		current_character = ptr;
 	}
 	return ptr;
 }
@@ -41,6 +42,7 @@ void Player::add_character(shared_ptr<Characters>& character)
 {
 	if (characters.size() < characters_range) // You can't add more characters than characters_range
 		characters.push_back(character);
+		current_character = character;
 }
 
 /* get a reference to your character number i */
@@ -71,6 +73,10 @@ void Player::set_characters_range(unsigned int range)
 		characters_range = range;
 	else
 		characters_range = MAX_NB_CHARACTER;
+}
+
+std::shared_ptr<Characters> Player::get_current_character(){
+	return(current_character);
 }
 
 ostream& operator<<(ostream& flux, Player const& player)
