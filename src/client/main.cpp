@@ -18,10 +18,12 @@ void testSFML() {
 
 #include "state.h"
 #include "render.h"
+#include "engine.h"
 
 using namespace std;
 using namespace state;
 using namespace render;
+using namespace engine;
 
 /*************************************************************/
 /*--------- Unit tests for the package state ----------------*/
@@ -154,7 +156,7 @@ void render_state()
 
 }
 
-void engine()
+void enginet()
 {
 	/* creation des observeurs */
 	Event *event_GameState = new EventGameState();
@@ -181,6 +183,12 @@ void engine()
 
 	Scene scene(etat, etat.get_map());	//etat.get_map(); is not the problem scene is
 	scene.draw();
+
+	GameEngine moteur(etat);
+	while(1){
+		moteur.getUserInput();
+		moteur.executeCommande();
+	}
 
 	/* suppression des observeurs */
 	delete event_GameState;
@@ -214,7 +222,7 @@ int main(int argc, char* argv[])
 
 		if (strcmp(argv[1], "engine") == 0)
 		{
-			engine();
+			enginet();
 		}
 	}
 	return 0;
