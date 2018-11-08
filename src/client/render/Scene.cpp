@@ -73,13 +73,13 @@ void Scene::init_window(sf::View& window_view, sf::RenderWindow& renderWindow, s
 
 	// set the first position in the game: temporary
 	position_in_map[0].x = position_in_map[1].x = width/2 ;
-	position_in_map[0].y = position_in_map[0].y = height/2;
+	position_in_map[0].y = position_in_map[1].y = height/2;
 	sf::Mouse::setPosition((sf::Vector2i)position_in_map[0]);
 
 	// set the view center so that the top left corner of the map is the top left corner of the window
 	window_view.setCenter(position_in_map[0]);
 
-	//position_in_map.x = 0; 	position_in_map.y = 0;
+	//position_in_map[0].x = 0; 	position_in_map[0].y = 0;
 
 	renderWindow.setView(window_view);
 	renderWindow.setPosition(sf::Vector2i(0, 0));
@@ -97,19 +97,19 @@ void Scene::update_view(sf::View& window_view, sf::RenderWindow& renderWindow, s
 	int map_size[2] = { 0 };
 	state.get_map().get_dimensions(map_size[0], map_size[1]);
 
-	if (x >= renderWindow.getPosition().x + renderWindow.getSize().x)
+	if (x >= renderWindow.getPosition().x + renderWindow.getSize().x -100)
 		position_in_map[0].x += 10;
 
-	if (x <= renderWindow.getPosition().x) {
+	if (x <= renderWindow.getPosition().x /*- renderWindow.getSize().x/2*/ + 100) {
 		cout << "going left1 " << endl;
 		position_in_map[0].x -= 10;
 	}
 		
-	if (y >= renderWindow.getPosition().y + renderWindow.getSize().y) {
+	if (y >= renderWindow.getPosition().y + renderWindow.getSize().y - 100) {
 		position_in_map[0].y += 10;
 	}
 		
-	if (y <= renderWindow.getPosition().y) {
+	if (y <= renderWindow.getPosition().y + 100) {
 		cout << "going up1 " << endl;
 		position_in_map[0].y -= 10;
 	}
