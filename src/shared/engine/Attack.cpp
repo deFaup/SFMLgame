@@ -19,7 +19,7 @@ int Attack::isLegit(state::GameState etat){
 
 void Attack::execute(state::GameState& etat){
 	
-	cout << "executing attack" << endl;
+	//cout << "executing attack" << endl;
 	return;
 }
 
