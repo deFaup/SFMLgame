@@ -181,8 +181,8 @@ void enginet()
 	for (int i = 0; i < 3; i++)
 	{
 		etat.new_player("Joueur " + to_string(i));
-		etat.new_character(i, goku);
 		etat.new_character(i, vegeta);
+		etat.new_character(i, goku);
 		etat.get_player(i)->get_character(0)->get_position().setPosition(100 + i * 100, 100 + i * 100);
 		etat.get_player(i)->get_character(1)->get_position().setPosition(400 + i * 200, 400 + i * 200);
 	}

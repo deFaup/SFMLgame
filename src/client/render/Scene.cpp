@@ -37,6 +37,7 @@ void Scene::draw()
 		observer_map->setEventID(Map_maskChanged, false);
 	}
 	background.setSurface(renderWindow); // first the background
+	characters.updateSelectedCharacter();
 	characters.setSurface(renderWindow); // on top of the background the characters
 	renderWindow.display();
 

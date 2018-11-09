@@ -13,6 +13,9 @@ int Move::isLegit(state::GameState etat){
 }
 
 void Move::execute(state::GameState& etat){
+
+	/* get current_player and current_character */
+//	etat.current_player->get_current_character();
 	cout << "executing movement" << endl;
 	/*vector<std::vector<int>> mask = etat.map.get_mask();
 	shared_ptr<Characters> character = etat.current_player->get_character(1);
