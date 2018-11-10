@@ -160,22 +160,7 @@ void enginet()
 {
 	sf::RenderWindow renderWindow;
 
-	/* creation des observateurs */
-	shared_ptr<Event> event_GameState = make_shared<EventGameState>();
-	shared_ptr<Event> event_Characters = make_shared<EventCharacters>();
-	shared_ptr<Event> event_Map = make_shared<EventMap>();
-
-	//Ajout des observateurs à Observable
-	Observable::registerObserver("GameState", event_GameState);
-	Observable::registerObserver("Characters", event_Characters);
-	Observable::registerObserver("Map", event_Map);
-
 	GameState etat;
-	
-	// afffichage de ses oberveurs
-	//cout << "GameState observer size " << etat.observers_size() << endl;
-
-	// the following sets Map_maskChanged EventID to true 
 	etat.new_map(3000, 2000);
 
 	for (int i = 0; i < 3; i++)
@@ -189,8 +174,8 @@ void enginet()
 
 	GameEngine moteur(etat);
 
-	Scene scene(etat, etat.get_map(), renderWindow);
-	scene.set_observer_map(event_Map);
+	shared_ptr<Scene> scene = make_shared<Scene>(etat, etat.get_map(), renderWindow);
+	Observable::registerObserver(scene);
 
 	while (renderWindow.isOpen())
 	{
@@ -203,7 +188,8 @@ void enginet()
 				renderWindow.close();
 		}
 		renderWindow.clear();
-		scene.draw();
+		scene->draw();
+		renderWindow.display();
 		
 		moteur.getUserInput();
 		moteur.executeCommande();

@@ -60,10 +60,6 @@ void Character::load_tilset()
 		CharactersID id = characters[i]->get_id();
 		switch (id)
 		{
-			case default_value:
-				//life_point = 100;
-			break;
-
 			case goku:
 				tileset[i]->setImageFile("res/DBZ_gokusheet2.gif");
 			break;
@@ -91,35 +87,28 @@ void Character::update()
 
 		/* create a tile to find the sprite we want in our tileset */
 		Tile tile;
-		
+
 		CharactersID id = characters[i]->get_id();
 		switch (id)
 		{
-			/* Not really defined:
-			can load the tile corresponding to the character's state
-			can check the position and print the characters at their position
-			*/
-			case default_value:
-				//life_point = 100;
+		case goku:
+			tile.setTile(0, 0, 42, 98);
 			break;
 
-			case goku:
-				tile.setTile(0, 0, 42, 98);
-			break;
-
-			case vegeta:
-				tile.setTile(0, 0, 50, 80);
+		case vegeta:
+			tile.setTile(0, 0, 50, 80);
 			break;
 		}
-
 		surface[i]->setSpriteTexture(tile);
 		surface[i]->setSpriteLocation(characters[i]->get_position().getPosition());
+		/*cout << characters[i]->get_position().getPositionX();
+		cout << "\t" << characters[i]->get_position().getPositionY() << endl ;*/
 	}
+	//cout << "leaving character update function\n";
 }
 
 void Character::setSurface(sf::RenderWindow& window)
 {
-	update();
 	for (int i = 0; i < characters.size(); i++)
 	{
 		surface[i]->draw(window);
@@ -127,63 +116,64 @@ void Character::setSurface(sf::RenderWindow& window)
 	
 }
 
-void Character::updateSelectedCharacter()
+void Character::updateSelectedCharacter(unsigned int i)
 {
-	/* get all existing characters */
-	auto state_temp = const_cast<GameState&> (state);
-	auto selected_character = state_temp.current_player->get_current_character();
-
-	/* find the selected character among the character list */
-	int i = 0;
-	for (auto charac : characters)
+	if (i < state.get_number_of_player())
 	{
-		if (charac == selected_character)
+		auto state_temp = const_cast<GameState&> (state);
+		auto selected_character = state_temp.get_player(i)->get_current_character();
+
+		/* find the selected character among the character list */
+		int i = 0;
+		for (auto charac : characters)
+		{
+			if (charac == selected_character)
+				break;
+			i++;
+		}
+		/* create a tile to find the sprite we want in our tileset */
+		Tile tile, tileLeft, tileRight, tileUp, tileDown;
+
+		CharactersID id = selected_character->get_id();
+		switch (id)
+		{
+		case goku:
+			tile.setTile(0, 0, 42, 98);
+			tileLeft.setTile(634, 0, 94, 96);
+			tileRight.setTile(634, 0, 94, 96);
+			tileUp.setTile(224, 0, 89, 93);
+			tileDown.setTile(508, 288, 78, 77);
 			break;
-		i++;
-	}
-	/* create a tile to find the sprite we want in our tileset */
-	Tile tile, tileLeft, tileRight, tileUp, tileDown;
 
-	CharactersID id = selected_character->get_id();
-	switch (id)
-	{
-	case goku:
-		tile.setTile(0, 0, 42, 98);
-		tileLeft.setTile(634, 0, 94, 96);
-		tileRight.setTile(634, 0, 94, 96);
-		tileUp.setTile(224, 0, 89, 93);
-		tileDown.setTile(508, 288, 78, 77);
-		break;
+		case vegeta:
+			tile.setTile(0, 0, 50, 80);
+			break;
+		}
+		float scale = 3.f;
+		int speed = 2; // temporary
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+			surface[i]->setSpriteTexture(tileLeft);
+			surface[i]->getSprite().setScale(scale, scale);
+			surface[i]->getSprite().move(-speed, 0); //should be done by game engine
+		}
 
-	case vegeta:
-		tile.setTile(0, 0, 50, 80);
-		break;
-	}
-	float scale = 3.f;
-	int speed = 2; // temporary
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-		surface[i]->setSpriteTexture(tileLeft);
-		surface[i]->getSprite().setScale(scale, scale);
-		surface[i]->getSprite().move(-speed, 0); //should be done by game engine
-	}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+			surface[i]->setSpriteTexture(tileRight);
+			surface[i]->getSprite().setScale(-scale, scale);
+			surface[i]->getSprite().move(speed, 0);
+		}
 
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-		surface[i]->setSpriteTexture(tileRight);
-		surface[i]->getSprite().setScale(-scale, scale);
-		surface[i]->getSprite().move(speed, 0);
-	}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+			surface[i]->setSpriteTexture(tileUp);
+			surface[i]->getSprite().setScale(scale, scale);
+			surface[i]->getSprite().move(0, -speed);
+		}
 
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-		surface[i]->setSpriteTexture(tileUp);
-		surface[i]->getSprite().setScale(scale, scale);
-		surface[i]->getSprite().move(0, -speed);
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+			surface[i]->setSpriteTexture(tileDown);
+			surface[i]->getSprite().setScale(scale, scale);
+			surface[i]->getSprite().move(0, speed);
+		}
+		surface[i]->setSpriteLocation(selected_character->get_position().getPosition());
 	}
-
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-		surface[i]->setSpriteTexture(tileDown);
-		surface[i]->getSprite().setScale(scale, scale);
-		surface[i]->getSprite().move(0, speed);
-	}
-	surface[i]->setSpriteLocation(selected_character->get_position().getPosition());
-
 }

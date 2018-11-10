@@ -41,8 +41,10 @@ shared_ptr<Characters> Player::new_character(const CharactersID id)
 void Player::add_character(shared_ptr<Characters>& character)
 {
 	if (characters.size() < characters_range) // You can't add more characters than characters_range
+	{
 		characters.push_back(character);
 		current_character = character;
+	}
 }
 
 /* get a reference to your character number i */

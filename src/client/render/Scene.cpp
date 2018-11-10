@@ -28,18 +28,18 @@ void Scene::updateScene(/* some event */)
 /* draw all layers (time-consuming) */
 void Scene::draw()
 {
-	const sf::Vector2f init_position = position_in_map[0];
+	//const sf::Vector2f init_position = position_in_map[0];
 	//update_view(window_view, renderWindow, position_in_map, init_position);
 
-	if (observer_map->hasChanged(Map_maskChanged))
-	{
-		background.update();
-		observer_map->setEventID(Map_maskChanged, false);
-	}
+//	if (1)	//observer_map->hasChanged(Map_maskChanged))
+//	{
+//		background.update();
+		//observer_map->setEventID(Map_maskChanged, false);
+//	}
 	background.setSurface(renderWindow); // first the background
-	characters.updateSelectedCharacter();
+	
 	characters.setSurface(renderWindow); // on top of the background the characters
-	renderWindow.display();
+	
 
 /*	while (renderWindow.isOpen()) 
 	{
@@ -143,7 +143,15 @@ void Scene::update_view(sf::View& window_view, sf::RenderWindow& renderWindow, s
 }
 
 
-void Scene::set_observer_map(std::shared_ptr<Event> observer)
+void Scene::stateChanged(state::Event& event)
 {
-	observer_map = observer;
+	if (event.hasChanged(state::EventID::Map_maskChanged))
+		background.update();
+	
+	if (event.hasChanged(state::EventID::Character_positionChanged))
+	{
+		//cout << "entering stateChanged function\n";
+		characters.update();
+		//characters.updateSelectedCharacter(0);
+	}
 }

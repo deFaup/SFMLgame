@@ -42,12 +42,6 @@ Statistics::Statistics(CharactersID id)
 {
 	switch (id)
 	{
-	case default_value:
-		life_point =100;
-		attack_point = 10;
-		move_point = 10;
-		break;
-
 	case goku:
 		life_point = 100;
 		attack_point = 10;

@@ -8,6 +8,8 @@ CMakeCache.txt
 CMakeFiles
 
 *.h
+.dia~
+*.dia.autosave
 src/__state.dia
 src/_state.dia
 src/state.dia.autosave

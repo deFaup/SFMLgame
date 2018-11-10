@@ -11,18 +11,7 @@ using namespace state;
 Event::Event() : events() {}
 Event::~Event() {};
 
-void Event::setEventID(EventID ID, bool true_false) 
-{
-//	cout << "entering setEventID function\n";
-	events[ID] = true_false; 
-//	cout << "ID = ";
-//	cout << true_false << endl;
-//	cout << "leaving setEventID function\n";
-}
-
-const bool Event::getEventID(EventID ID) { return events[ID]; }
-
 bool Event::hasChanged(EventID ID)
 {
-	return events[ID];
+	return this->events[ID];
 }

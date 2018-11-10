@@ -2,25 +2,82 @@
 #include "Move.h"
 #include <iostream>
 #include <vector>
+#include "UserInput.h"
 
 using namespace engine;
 using namespace std;
 using namespace state;
 
-int Move::isLegit(state::GameState etat){
-	//if(etat.current_player->current_character->get_)
+// speed at xich we move sprtite/characters
+unsigned int speed = 2;
+
+Move::Move(ArrowDirection dir)
+{
+	switch (dir)
+	{
+	case arrow_left:
+		move_type = MoveLeft;
+		break;
+	case arrow_right:
+		move_type = MoveRight;
+		break;
+	case arrow_up:
+		move_type = MoveUp;
+		break;
+	case arrow_down:
+		move_type = MoveDown;
+		break;
+	default:
+		move_type = MoveNone;
+		break;
+	}
+}
+
+int Move::isLegit(state::GameState etat)
+{
+	if (move_type == MoveNone)
+		return -1;
+
+	int right_limit(0), down_limit(0);
+	etat.get_map().get_dimensions(right_limit, down_limit);
+
+	state::Position pos = etat.current_player->get_current_character()->get_position();
+	if (pos.getPositionX() <= 0 && move_type == MoveLeft)
+		return -1;
+	if (pos.getPositionX() >= right_limit && move_type == MoveRight)
+		return -1;
+	if (pos.getPositionY() <= 0 && move_type == MoveUp)
+		return -1;
+	if (pos.getPositionY() >= down_limit && move_type == MoveDown)
+		return -1;
+
 	return(0);
 }
 
-void Move::execute(state::GameState& etat){
+void Move::execute(state::GameState& etat)
+{
+	state::Position& pos = etat.current_player->get_current_character()->get_position();
 
-	/* get current_player and current_character */
-//	etat.current_player->get_current_character();
-	cout << "executing movement" << endl;
-	/*vector<std::vector<int>> mask = etat.map.get_mask();
-	shared_ptr<Characters> character = etat.current_player->get_character(1);
-	Position position = character->get_position();
-	position.setPosition(position.getPositionX()+1,position.getPositionY());*/
-	return;
+	switch (move_type)
+	{
+	case MoveLeft:
+		pos.increaseX(-speed);
+		break;
+	case MoveRight:
+		pos.increaseX(speed);
+		break;
+	case MoveUp:
+		pos.increaseY(-speed);
+		break;
+	case MoveDown:
+		pos.increaseY(speed);
+		break;
+	default:
+		break;
+	}
+	state::EventCharacters event(Character_positionChanged);
+	etat.current_player->get_current_character()->notifyObservers(event);
+
+	//std::cout << "executing movement" << endl;
 }
 

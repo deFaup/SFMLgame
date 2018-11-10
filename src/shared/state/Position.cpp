@@ -23,3 +23,7 @@ const Position Position::getPosition() const
 {
 	return *this;
 }
+
+void Position::increaseX(int increment) {	this->x += increment; }
+
+void Position::increaseY(int increment) {	this->y += increment; }

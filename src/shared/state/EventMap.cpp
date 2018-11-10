@@ -13,3 +13,9 @@ EventMap::EventMap()
 }
 
 EventMap::~EventMap() {};
+
+EventMap::EventMap(EventID ID)
+{
+	events[ID] = true;
+//	events[xxx] = false;
+}

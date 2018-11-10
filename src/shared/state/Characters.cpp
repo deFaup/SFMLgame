@@ -9,7 +9,7 @@ using namespace state;
 
 Characters::~Characters() {	/* cout << "Characters: "<< name << " deleted"<< endl; */ }
 
-Characters::Characters(Player* player): owner(player), id(default_value), number_of_attacks(0)
+Characters::Characters(Player* player): owner(player), id(goku), number_of_attacks(0)
 {
 	// call Statistics constructor and set stats to 100/10/10
 	// call Position constructor and set position to (0,0)

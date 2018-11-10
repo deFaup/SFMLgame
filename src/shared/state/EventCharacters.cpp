@@ -14,3 +14,9 @@ EventCharacters::EventCharacters()
 }
 
 EventCharacters::~EventCharacters() {};
+
+EventCharacters::EventCharacters(EventID ID)
+{
+	events[ID] = true;
+	//	events[xxx] = false;
+}

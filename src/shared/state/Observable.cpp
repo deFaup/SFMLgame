@@ -7,19 +7,21 @@ using namespace std;
 using namespace state;
 
 // init static member
-std::map<std::string, shared_ptr<Event>> Observable::observers;
+std::vector<std::shared_ptr<Observer>> Observable::observers;
 
-void Observable::registerObserver(string event_name, shared_ptr<Event> observer)
+void Observable::registerObserver(shared_ptr<Observer> observer)
 {
-	observers[event_name] = observer;
+	observers.push_back(observer);
 }
 
-void Observable::notifyObserver(string event_name, EventID ID)
+void Observable::notifyObservers(Event& event)
 {
-//	cout << "entering notifyObserver function\n";
-	observers[event_name]->setEventID(ID, true);
-//	cout << "leaving notifyObserver function\n";
-
+	for (auto obs : observers)
+	{
+		//cout << "entering notifyObserver function\n";
+		obs->stateChanged(event);
+		//cout << "leaving notifyObserver function\n";
+	}
 }
 
 int Observable::observers_size() { return observers.size(); }

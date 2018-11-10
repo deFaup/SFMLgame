@@ -25,7 +25,8 @@ void GameEngine::getUserInput(){
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)){
 		commande.isSpacePressed = 1;
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
 		commande.arrow_direction = arrow_left;
 	}
@@ -41,7 +42,8 @@ void GameEngine::getUserInput(){
 	{
 		commande.arrow_direction = arrow_down;
 	}
-	else if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
 		commande.isClicked = 1;
 	}
@@ -49,23 +51,20 @@ void GameEngine::getUserInput(){
 }
 
 void GameEngine::executeCommande(){
-	if(commande.isSpacePressed == 1){
+	if(commande.isSpacePressed == 1)
+	{
 		ChangePlayer tour_commande;
 		tour_commande.execute(etat);
 	}
-	if(commande.arrow_direction == arrow_left || commande.arrow_direction == arrow_right){
-		Move move_command;
-		if(commande.arrow_direction == arrow_left){
-			move_command.move_type = MoveLeft;
-		}
-		else{
-			move_command.move_type = MoveRight;
-		}
-		if(move_command.isLegit(etat) != -1){
-			move_command.execute(etat);
-		}
+
+	Move move_command(commande.arrow_direction);
+
+	if (move_command.isLegit(etat) != -1) {
+		move_command.execute(etat);
 	}
-	if(commande.isClicked == 1){
+
+	if(commande.isClicked == 1)
+	{
 		Attack attack_command;
 		attack_command.attack_position = commande.mouse_position;
 		attack_command.attack_number = 1;

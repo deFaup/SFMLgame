@@ -15,3 +15,9 @@ EventGameState::EventGameState()
 }
 
 EventGameState::~EventGameState() {};
+
+EventGameState::EventGameState(EventID ID)
+{
+	events[ID] = true;
+	//	events[xxx] = false;
+}
