@@ -161,21 +161,9 @@ void enginet()
 	sf::RenderWindow renderWindow;
 
 	GameState etat;
-	etat.new_map(3000, 2000);
-
-	for (int i = 0; i < 3; i++)
-	{
-		etat.new_player("Joueur " + to_string(i));
-		etat.new_character(i, vegeta);
-		etat.new_character(i, goku);
-		etat.get_player(i)->get_character(0)->get_position().setPosition(100 + i * 100, 100 + i * 100);
-		etat.get_player(i)->get_character(1)->get_position().setPosition(400 + i * 200, 400 + i * 200);
-	}
-
-	GameEngine moteur(etat);
-
-	shared_ptr<Scene> scene = make_shared<Scene>(etat, etat.get_map(), renderWindow);
-	Observable::registerObserver(scene);
+	GameEngine moteur(etat, renderWindow);
+	cout << "firs call to check ID" << endl;
+	moteur.check_stateID();
 
 	while (renderWindow.isOpen())
 	{
@@ -187,12 +175,14 @@ void enginet()
 			if (event.type == sf::Event::EventType::Closed)
 				renderWindow.close();
 		}
+
+		moteur.check_stateID();
 		renderWindow.clear();
-		scene->draw();
+		moteur.get_scene()->draw();
 		renderWindow.display();
 		
-		moteur.getUserInput();
-		moteur.executeCommande();
+	//	moteur.getUserInput();
+	//	moteur.executeCommande();
 		
 	}
 }

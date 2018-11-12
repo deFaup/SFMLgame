@@ -8,6 +8,8 @@ Position::Position() : x(0), y(0) {}
 void Position::setPosition (const unsigned int x, const unsigned int y){
 	this->x = x;
 	this->y = y;
+	state::EventCharacters event(Character_positionChanged);
+	notifyObservers(event);
 	return;
 }
 
@@ -24,6 +26,16 @@ const Position Position::getPosition() const
 	return *this;
 }
 
-void Position::increaseX(int increment) {	this->x += increment; }
+void Position::increaseX(int increment) 
+{
+	this->x += increment; 
+	state::EventCharacters event(Character_positionChanged);
+	notifyObservers(event);
+}
 
-void Position::increaseY(int increment) {	this->y += increment; }
+void Position::increaseY(int increment) 
+{	
+	this->y += increment; 
+	state::EventCharacters event(Character_positionChanged);
+	notifyObservers(event);
+}

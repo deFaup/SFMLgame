@@ -80,8 +80,6 @@ void Character::load_tilset()
 
 void Character::update()
 {
-	// TODO re-init character list
-
 	for (int i = 0; i < characters.size(); i++)
 	{// go through all characters
 
@@ -101,8 +99,6 @@ void Character::update()
 		}
 		surface[i]->setSpriteTexture(tile);
 		surface[i]->setSpriteLocation(characters[i]->get_position().getPosition());
-		/*cout << characters[i]->get_position().getPositionX();
-		cout << "\t" << characters[i]->get_position().getPositionY() << endl ;*/
 	}
 	//cout << "leaving character update function\n";
 }

@@ -32,7 +32,7 @@ shared_ptr<Characters> Player::new_character(const CharactersID id)
 	{
 		ptr = make_shared<Characters>(this, id);
 		characters.push_back(ptr);
-		current_character = ptr;
+		current_character = *(characters.begin());
 	}
 	return ptr;
 }
@@ -43,7 +43,7 @@ void Player::add_character(shared_ptr<Characters>& character)
 	if (characters.size() < characters_range) // You can't add more characters than characters_range
 	{
 		characters.push_back(character);
-		current_character = character;
+		current_character = *(characters.begin());
 	}
 }
 

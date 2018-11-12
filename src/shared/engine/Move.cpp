@@ -42,13 +42,13 @@ int Move::isLegit(state::GameState etat)
 	etat.get_map().get_dimensions(right_limit, down_limit);
 
 	state::Position pos = etat.current_player->get_current_character()->get_position();
-	if (pos.getPositionX() <= 0 && move_type == MoveLeft)
+	if (pos.getPositionX() < speed && move_type == MoveLeft)
 		return -1;
-	if (pos.getPositionX() >= right_limit && move_type == MoveRight)
+	if (pos.getPositionX() > (right_limit - speed) && move_type == MoveRight)
 		return -1;
-	if (pos.getPositionY() <= 0 && move_type == MoveUp)
+	if (pos.getPositionY() < speed && move_type == MoveUp)
 		return -1;
-	if (pos.getPositionY() >= down_limit && move_type == MoveDown)
+	if (pos.getPositionY() > (down_limit - speed) && move_type == MoveDown)
 		return -1;
 
 	return(0);
@@ -75,8 +75,9 @@ void Move::execute(state::GameState& etat)
 	default:
 		break;
 	}
-	state::EventCharacters event(Character_positionChanged);
-	etat.current_player->get_current_character()->notifyObservers(event);
+	// call to observers is automatic
+	// state::EventCharacters event(Character_positionChanged);
+	// etat.current_player->get_current_character()->notifyObservers(event);
 
 	//std::cout << "executing movement" << endl;
 }

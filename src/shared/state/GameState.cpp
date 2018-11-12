@@ -10,8 +10,10 @@ using namespace std;
 GameState::GameState()
 {
 //	cout << "GameState created" << endl;
-	state = not_started;
+	ID = not_started;
 }
+
+StateID& GameState::get_ID() { return ID; }
 
 /* Create a mask in the map object */
 void GameState::new_map(unsigned const int width, unsigned const int height)
@@ -34,7 +36,7 @@ void GameState::new_player(const std::string name)
 	{
 		shared_ptr<Player> ptr = make_shared<Player>(name);
 		players.push_back(ptr);
-		current_player = ptr;
+		current_player = *(players.begin());
 	}
 }
 

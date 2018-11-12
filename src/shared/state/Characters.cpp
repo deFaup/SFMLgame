@@ -65,6 +65,7 @@ unsigned int Characters::get_attack_cost (unsigned int numero_attack){
 unsigned int Characters::get_attack_damage (unsigned int numero_attack){
 	return(this->attack_damage[numero_attack-1]);
 	}
+
 void* Characters::get_attack_field_of_action (unsigned int numero_attack){
 	return(this->attack_field_of_action[numero_attack-1]);
 	}
