@@ -106,7 +106,7 @@ void GameEngine::getUserInput(){
 	{
 		commande.arrow_direction = arrow_down;
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return))
 	{
 		commande.isEnterPressed = 1;
 	}
