@@ -173,16 +173,14 @@ void enginet()
 
 		while (renderWindow.pollEvent(event))
 		{
+			//cout << "main while events" << endl;
 			moteur.look_sfEvents(event);
 		}
-
+		//cout << "check ID" << endl;
 		moteur.check_stateID();
 		renderWindow.clear();
 		moteur.get_scene()->draw();
 		renderWindow.display();
-		
-	//	moteur.getUserInput();
-	//	moteur.executeCommande();
 		
 	}
 }
