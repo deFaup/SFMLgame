@@ -11,6 +11,7 @@ sf::Sprite& Surface::getSprite()
 }
 
 void Surface::loadTexture(sf::Image& image){
+	image.createMaskFromColor(image.getPixel(0,0));
 	texture.loadFromImage(image);
 	return;
 }
