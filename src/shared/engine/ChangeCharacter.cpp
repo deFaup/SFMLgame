@@ -19,20 +19,6 @@ int ChangeCharacter::isLegit(state::GameState etat)
 
 void ChangeCharacter::execute(state::GameState& etat)
 {
-	/*static unsigned int i = 0;
-	unsigned int number_of_characters = etat.current_player->get_number_of_characters();
-
-	if (etat.get_number_of_player() > 0) // not so usefull here
-	{
-		etat.current_player->current_character = etat.current_player->get_character(i);
-		i++;
-	}
-
-	if (i >= number_of_characters)
-	{
-		i %= number_of_characters;
-		// move to next player with static function
-	}*/
 	unsigned int limit_player = etat.get_number_of_player();
 	unsigned int limit_character = etat.current_player->get_number_of_characters();
 
