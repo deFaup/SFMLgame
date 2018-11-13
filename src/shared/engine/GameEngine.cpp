@@ -10,7 +10,6 @@
 #include <iostream>
 
 using namespace state;
-using namespace render;
 using namespace engine;
 using namespace std;
 
@@ -21,6 +20,9 @@ GameEngine::GameEngine(state::GameState& etat, sf::RenderWindow& window) : etat(
 	commande.CtrlWasPressed = false;
 	commande.isRightClicked = false;
 	commande.isLeftClicked = false;
+
+	// init the game
+	check_stateID();
 }
 
 void GameEngine::check_stateID()
@@ -36,10 +38,6 @@ void GameEngine::check_stateID()
 			etat.new_character(i, vegeta);
 			etat.new_character(i, goku);
 		}
-
-		/* Now that we have a state with players, characters and a map we can create the scene */
-		scene = make_shared<Scene>(etat, etat.get_map(), renderWindow);
-		state::Observable::registerObserver(scene);
 
 		state::StateID& etat_id = etat.get_ID();
 		etat_id = team_selected;
@@ -159,8 +157,6 @@ void GameEngine::executeCommande()
 	move_commande.execute(etat);
 	return;
 }
-
-std::shared_ptr<render::Scene> GameEngine::get_scene() { return scene; }
 
 void GameEngine::look_sfEvents(sf::Event& event)
 {

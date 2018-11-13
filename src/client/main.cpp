@@ -163,6 +163,10 @@ void enginet()
 	GameState etat;
 	GameEngine moteur(etat, renderWindow);
 
+	shared_ptr<Scene> scene = make_shared<Scene>(etat, etat.get_map(), renderWindow);
+	state::Observable::registerObserver(scene);
+
+
 	// create players characters and map
 	moteur.check_stateID();
 
@@ -179,7 +183,7 @@ void enginet()
 		//cout << "check ID" << endl;
 		moteur.check_stateID();
 		renderWindow.clear();
-		moteur.get_scene()->draw();
+		scene->draw();
 		renderWindow.display();
 		
 	}
