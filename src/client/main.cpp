@@ -162,7 +162,8 @@ void enginet()
 
 	GameState etat;
 	GameEngine moteur(etat, renderWindow);
-	cout << "firs call to check ID" << endl;
+
+	// create players characters and map
 	moteur.check_stateID();
 
 	while (renderWindow.isOpen())
@@ -172,8 +173,7 @@ void enginet()
 
 		while (renderWindow.pollEvent(event))
 		{
-			if (event.type == sf::Event::EventType::Closed)
-				renderWindow.close();
+			moteur.look_sfEvents(event);
 		}
 
 		moteur.check_stateID();
