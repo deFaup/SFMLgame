@@ -67,7 +67,7 @@ void GameEngine::check_stateID()
 	else if (etat.get_ID() == team_placement)
 	{
 		static int counter = 0;
-		if (counter < etat.get_characters().size())
+		if (counter < etat.get_characters().size()+1)
 		{
 			getUserInput();
 			place_characters_with_mouse();
