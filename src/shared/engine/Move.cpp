@@ -9,7 +9,7 @@ using namespace std;
 using namespace state;
 
 // speed at xich we move sprtite/characters
-unsigned int speed = 2;
+unsigned int speed = 8;
 
 Move::Move(ArrowDirection dir)
 {
