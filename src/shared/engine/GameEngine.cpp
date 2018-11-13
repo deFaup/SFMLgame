@@ -82,6 +82,11 @@ void GameEngine::check_stateID()
 		}
 	}
 
+	else if (etat.get_ID() == started){
+		getUserInput();
+		executeCommande();
+	}
+
 	// reset event commands here as main first while loop functions are called more than those in the second one (pollEvents)
 	commande.SpaceWasPressed = false;
 	commande.EnterWasPressed = false;
@@ -93,7 +98,7 @@ void GameEngine::check_stateID()
 void GameEngine::getUserInput(){
 
 	commande.arrow_direction = arrow_none;
-	sf::Vector2i globalPosition = sf::Mouse::getPosition();
+	sf::Vector2i globalPosition = sf::Mouse::getPosition(renderWindow);
 	commande.mouse_position.setPosition(globalPosition.x,globalPosition.y);
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
@@ -148,6 +153,10 @@ void GameEngine::executeCommande()
 			attack_command.execute(etat);
 		}
 		*/
+	cout << "descente infernale" << endl;
+	ArrowDirection arrow = arrow_down;
+	Move move_commande(arrow);
+	move_commande.execute(etat);
 	return;
 }
 

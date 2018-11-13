@@ -58,20 +58,45 @@ int Move::isLegit(state::GameState etat)
 void Move::execute(state::GameState& etat)
 {
 	state::Position& pos = etat.current_player->get_current_character()->get_position();
+	std::vector<std::vector<int>> mask = etat.map.get_mask();
 
 	switch (move_type)
 	{
 	case MoveLeft:
-		pos.increaseX(-speed);
+		if(mask[pos.getPositionY()+250][pos.getPositionX()-speed] == 0){
+			pos.increaseX(-speed);
+		}
+		else{
+			unsigned int i = 0;
+			while(mask[pos.getPositionY()+250-i][pos.getPositionX()-speed] != 0){
+				i++;
+			}
+			pos.increaseX(-speed);
+			pos.increaseY(-i);
+		}
 		break;
 	case MoveRight:
-		pos.increaseX(speed);
+		if(mask[pos.getPositionY()+250][pos.getPositionX()+speed] == 0){
+			pos.increaseX(speed);
+		}
+		else{
+			unsigned int i = 0;
+			while(mask[pos.getPositionY()+250-i][pos.getPositionX()-speed] != 0){
+				i++;
+			}
+			pos.increaseX(speed);
+			pos.increaseY(-i);
+		}
 		break;
 	case MoveUp:
 		pos.increaseY(-speed);
 		break;
 	case MoveDown:
-		pos.increaseY(speed);
+		cout << pos.getPositionX() << " : " << pos.getPositionY() << endl;
+		cout << mask[pos.getPositionY()+250][pos.getPositionX()] << endl;
+		if(mask[pos.getPositionY()+250][pos.getPositionX()] == 0){
+			pos.increaseY(speed);
+		}
 		break;
 	default:
 		break;
