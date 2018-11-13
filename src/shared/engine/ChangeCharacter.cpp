@@ -19,7 +19,7 @@ int ChangeCharacter::isLegit(state::GameState etat)
 
 void ChangeCharacter::execute(state::GameState& etat)
 {
-	static unsigned int i = 0;
+	/*static unsigned int i = 0;
 	unsigned int number_of_characters = etat.current_player->get_number_of_characters();
 
 	if (etat.get_number_of_player() > 0) // not so usefull here
@@ -32,6 +32,28 @@ void ChangeCharacter::execute(state::GameState& etat)
 	{
 		i %= number_of_characters;
 		// move to next player with static function
+	}*/
+	unsigned int i = 0;
+	std::shared_ptr<Characters> t_character = etat.current_player->get_character(i);
+	while(t_character != etat.current_player->current_character){
+		i++;
+		t_character = etat.current_player->get_character(i);
+	}
+	if(nextcharacter == true){
+		if(i == (etat.current_player->get_number_of_characters()-1)){
+			etat.current_player->current_character = etat.current_player->get_character(0);
+		}
+		else{
+			etat.current_player->current_character = etat.current_player->get_character(i+1);
+		}
+	}
+	if(nextcharacter == false){
+		if(i == 0){
+			etat.current_player->current_character = etat.current_player->get_character(etat.current_player->get_number_of_characters()-1);
+		}
+		else{
+			etat.current_player->current_character = etat.current_player->get_character(i-1);
+		}
 	}
 	cout << "executing current character change" << endl;
 	return;
