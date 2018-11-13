@@ -33,7 +33,18 @@ void ChangeCharacter::execute(state::GameState& etat)
 		i %= number_of_characters;
 		// move to next player with static function
 	}*/
-	unsigned int i = 0;
+	unsigned int limit_player = etat.get_number_of_player();
+	unsigned int limit_character = etat.current_player->get_number_of_characters();
+
+	static unsigned int i(0), j(0);
+	etat.current_player = etat.get_player(i);
+	etat.current_player->current_character = etat.get_player(i)->get_character(j);
+
+	j++; 
+	i += j / limit_character;
+	j %= limit_character;
+	i %= limit_player;
+	/*
 	std::shared_ptr<Characters> t_character = etat.current_player->get_character(i);
 	while(t_character != etat.current_player->current_character){
 		i++;
@@ -55,6 +66,7 @@ void ChangeCharacter::execute(state::GameState& etat)
 			etat.current_player->current_character = etat.current_player->get_character(i-1);
 		}
 	}
+	*/
 	cout << "executing current character change" << endl;
 	return;
 }

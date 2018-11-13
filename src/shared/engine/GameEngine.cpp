@@ -14,7 +14,14 @@ using namespace render;
 using namespace engine;
 using namespace std;
 
-GameEngine::GameEngine(state::GameState& etat, sf::RenderWindow& window) : etat(etat), renderWindow(window) {}
+GameEngine::GameEngine(state::GameState& etat, sf::RenderWindow& window) : etat(etat), renderWindow(window) 
+{
+	commande.SpaceWasPressed = false;
+	commande.EnterWasPressed = false;
+	commande.CtrlWasPressed = false;
+	commande.isRightClicked = false;
+	commande.isLeftClicked = false;
+}
 
 void GameEngine::check_stateID()
 {
@@ -63,7 +70,8 @@ void GameEngine::check_stateID()
 		if (counter < etat.get_characters().size())
 		{
 			getUserInput();
-			if (commande.SpaceWasPressed == 1)
+			place_characters_with_mouse();
+			if (commande.isRightClicked == 1)
 				counter++;
 			executeCommande();
 		}
@@ -78,12 +86,13 @@ void GameEngine::check_stateID()
 	commande.SpaceWasPressed = false;
 	commande.EnterWasPressed = false;
 	commande.CtrlWasPressed = false;
+	commande.isLeftClicked = false;
+	commande.isRightClicked = false;
 }
 
 void GameEngine::getUserInput(){
 
 	commande.arrow_direction = arrow_none;
-	commande.isClicked = 0;
 	sf::Vector2i globalPosition = sf::Mouse::getPosition();
 	commande.mouse_position.setPosition(globalPosition.x,globalPosition.y);
 
@@ -99,32 +108,22 @@ void GameEngine::getUserInput(){
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 		commande.arrow_direction = arrow_down;
 
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-		commande.isClicked = 1;
-
 	return;
 }
 
 void GameEngine::executeCommande()
 {
-	/*
-	if (commande.SpaceWasPressed == 1)
-	{
-		ChangeCharacter useless_var;
-		cout << "space pressed2" << endl;
-		useless_var.execute(etat);
-	}
-	*/
 	if (commande.arrow_direction == arrow_up || commande.arrow_direction == arrow_down)
 	{
 		ChangeCharacter useless_var;
 		useless_var.execute(etat);
 	}
-	if (commande.EnterWasPressed == 1)
+/*	if (commande.EnterWasPressed == 1)
 	{
 		ChangePlayer tour_commande;
 		tour_commande.execute(etat);
 	}
+*/
 
 	// only execute left and right
 	if (commande.arrow_direction == arrow_left || commande.arrow_direction == arrow_right) {
@@ -134,15 +133,21 @@ void GameEngine::executeCommande()
 		}
 	}
 
-	if(commande.isClicked == 1)
+	// switch between characters of a player. then goes to next player
+	if (commande.isRightClicked == 1)
 	{
+		ChangeCharacter useless_var;
+		useless_var.execute(etat);
+		cout << "execute event click" << endl;
+	}
+		/*
 		Attack attack_command;
 		attack_command.attack_position = commande.mouse_position;
 		attack_command.attack_number = 1;
 		if(attack_command.isLegit(etat) != -1){
 			attack_command.execute(etat);
 		}
-	}
+		*/
 	return;
 }
 
@@ -150,18 +155,13 @@ std::shared_ptr<render::Scene> GameEngine::get_scene() { return scene; }
 
 void GameEngine::look_sfEvents(sf::Event& event)
 {
-	//cout << "engine events" << endl;
-	commande.SpaceWasPressed = false;
-	commande.EnterWasPressed = false;
-	commande.CtrlWasPressed = false;
-
 	if (event.type == sf::Event::Closed)
 		renderWindow.close();
 
 	else if(event.type == sf::Event::KeyReleased)
 	{
 		if (event.key.code == sf::Keyboard::Space) {
-			cout << "engine events space released\n";
+			//cout << "engine events space released\n";
 			commande.SpaceWasPressed = true;
 		}
 
@@ -171,4 +171,26 @@ void GameEngine::look_sfEvents(sf::Event& event)
 		else if (event.key.code == sf::Keyboard::LControl || sf::Keyboard::RControl)
 			commande.CtrlWasPressed = true;
 	}
+
+	else if (event.type == sf::Event::MouseButtonReleased)
+	{
+		if (event.mouseButton.button == sf::Mouse::Left)
+		{
+			commande.isLeftClicked = 1;
+			//cout << "engine events mouse left released\n";
+		}
+		if (event.mouseButton.button == sf::Mouse::Right)
+		{
+			commande.isRightClicked = 1;
+			cout << "engine events mouse right released\n";
+		}
+	}
+		
+}
+
+void GameEngine::place_characters_with_mouse()
+{
+	Move move_command(arrow_none);
+	// add a call to is legit
+	move_command.move_with_mouse(etat, commande.mouse_position);
 }

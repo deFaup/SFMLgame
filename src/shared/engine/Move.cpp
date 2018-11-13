@@ -11,6 +11,7 @@ using namespace state;
 // speed at xich we move sprtite/characters
 unsigned int speed = 8;
 
+// move method used when the game has started
 Move::Move(ArrowDirection dir)
 {
 	switch (dir)
@@ -82,3 +83,7 @@ void Move::execute(state::GameState& etat)
 	//std::cout << "executing movement" << endl;
 }
 
+void Move::move_with_mouse(state::GameState& etat,state::Position pos)
+{
+	etat.current_player->get_current_character()->get_position().setPosition(pos.getPositionX(), pos.getPositionY());
+}
