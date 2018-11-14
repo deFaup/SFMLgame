@@ -33,12 +33,24 @@ void GameEngine::check_stateID()
 	{
 		etat.new_map(3000, 2000);
 
-		for (int i = 0; i < 3; i++)
+		etat.new_player("Joueur");
+		etat.new_character(0, vegeta);
+		etat.new_character(0, goku);
+
+		etat.new_player("IA");
+		etat.new_character(1, vegeta);
+		etat.new_character(1, goku);
+
+		etat.new_player("IA");
+		etat.new_character(2, vegeta);
+		etat.new_character(2, goku);
+		
+		/*for (int i = 0; i < 3; i++)
 		{
 			etat.new_player("Joueur " + to_string(i));
 			etat.new_character(i, vegeta);
 			etat.new_character(i, goku);
-		}
+		}*/
 
 		state::StateID& etat_id = etat.get_ID();
 		etat_id = team_selected;
@@ -162,10 +174,8 @@ void GameEngine::check_stateID()
 	return;
 }*/
 
-void GameEngine::executeCommandes()
-{
-	for(int k = 0; k < commandes.size(); k++)
-	{
+void GameEngine::executeCommandes(){
+	for(int k = 0; k < commandes.size(); k++){
 		if(commandes[k].ID == arrow_left || commandes[k].ID == arrow_right){
 			Move move_command(commandes[k].ID);
 			if (move_command.isLegit(etat) != -1) {

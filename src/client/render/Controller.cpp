@@ -2,6 +2,7 @@
 #include <iostream>
 #include "define.hpp"
 #include "Controller.h"
+#include <string>
 
 using namespace std;
 //using namespace state;
@@ -14,8 +15,12 @@ void Controller::handle_sfEvents(sf::Event& event)
 {
 	if (event.type == sf::Event::Closed)
 		renderWindow.close();
-
-	else if (event.type == sf::Event::KeyPressed)
+	
+	if (engine.etat.current_player->name == "IA"){
+		return;
+	}	
+	
+	if (event.type == sf::Event::KeyPressed)
 	{
 		if (event.key.code == sf::Keyboard::Left)
 			add_command(sfEvents(arrow_left));
