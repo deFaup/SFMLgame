@@ -184,6 +184,43 @@ void enginet()
 		moteur.check_stateID();
 		renderWindow.clear();
 		scene->draw();
+
+		Statistics& stats = etat.current_player->get_current_character()->get_statistics();
+
+		sf::String string;
+
+		string += "Current Character Statistics:\n\nlife point : ";
+		string += std::to_string(stats.get_life_point());
+		string += "\nmove point : ";
+		string += std::to_string(stats.get_move_point());
+		string += "\nattack point : ";
+		string += std::to_string(stats.get_attack_point());
+
+
+		sf::Text text;
+
+		// choix de la police à utiliser
+		
+		sf:: Font font;
+		font.loadFromFile("arial.ttf");
+
+		text.setFont(font); // font est un sf::Font
+
+		// choix de la chaîne de caractères à afficher
+		text.setString(string);
+	
+		// choix de la taille des caractères
+		text.setCharacterSize(50); // exprimée en pixels, pas en points !
+
+		// choix de la couleur du texte
+		//text.setFillColor(sf::Color::Black);
+
+		// choix du style du texte
+		text.setStyle(sf::Text::Bold /*| sf::Text::Underlined*/);
+
+		// puis, dans la boucle de dessin, entre window.clear() et window.display()
+		renderWindow.draw(text);
+
 		renderWindow.display();
 		
 	}
