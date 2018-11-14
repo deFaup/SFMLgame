@@ -162,8 +162,10 @@ void GameEngine::check_stateID()
 	return;
 }*/
 
-void GameEngine::executeCommandes(){
-	for(int k = 0; k < commandes.size(); k++){
+void GameEngine::executeCommandes()
+{
+	for(int k = 0; k < commandes.size(); k++)
+	{
 		if(commandes[k].ID == arrow_left || commandes[k].ID == arrow_right){
 			Move move_command(commandes[k].ID);
 			if (move_command.isLegit(etat) != -1) {
