@@ -19,7 +19,7 @@ int ChangeCharacter::isLegit(state::GameState etat)
 
 void ChangeCharacter::execute(state::GameState& etat)
 {
-	unsigned int limit_player = etat.get_number_of_player();
+	/*unsigned int limit_player = etat.get_number_of_player();
 	unsigned int limit_character = etat.current_player->get_number_of_characters();
 
 	static unsigned int i(0), j(0);
@@ -29,8 +29,8 @@ void ChangeCharacter::execute(state::GameState& etat)
 	j++; 
 	i += j / limit_character;
 	j %= limit_character;
-	i %= limit_player;
-	/*
+	i %= limit_player;*/
+	unsigned int i = 0;
 	std::shared_ptr<Characters> t_character = etat.current_player->get_character(i);
 	while(t_character != etat.current_player->current_character){
 		i++;
@@ -52,7 +52,5 @@ void ChangeCharacter::execute(state::GameState& etat)
 			etat.current_player->current_character = etat.current_player->get_character(i-1);
 		}
 	}
-	*/
-	cout << "executing current character change" << endl;
 	return;
 }

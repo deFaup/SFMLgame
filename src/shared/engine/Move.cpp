@@ -2,17 +2,17 @@
 #include "Move.h"
 #include <iostream>
 #include <vector>
-#include "UserInput.h"
 
 using namespace engine;
 using namespace std;
 using namespace state;
+using namespace render;
 
 // speed at xich we move sprtite/characters
 unsigned int speed = 8;
 
 // move method used when the game has started
-Move::Move(ArrowDirection dir)
+Move::Move(render::sfEventsID dir)
 {
 	switch (dir)
 	{
