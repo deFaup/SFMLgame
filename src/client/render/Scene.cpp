@@ -2,7 +2,6 @@
 #include <iostream>
 #include "define.hpp"
 #include "Scene.h"
-#include <SFML/Graphics.hpp>
 
 using namespace std;
 using namespace state;
