@@ -196,40 +196,6 @@ void GameEngine::executeCommandes(){
 	return;
 }
 
-/*void GameEngine::look_sfEvents(sf::Event& event)
-{
-	if (event.type == sf::Event::Closed)
-		renderWindow.close();
-
-	else if(event.type == sf::Event::KeyReleased)
-	{
-		if (event.key.code == sf::Keyboard::Space) {
-			//cout << "engine events space released\n";
-			commande.SpaceWasPressed = true;
-		}
-
-		else if (event.key.code == sf::Keyboard::Return)
-			commande.EnterWasPressed = true;
-		
-		else if (event.key.code == sf::Keyboard::LControl || sf::Keyboard::RControl)
-			commande.CtrlWasPressed = true;
-	}
-
-	else if (event.type == sf::Event::MouseButtonReleased)
-	{
-		if (event.mouseButton.button == sf::Mouse::Left)
-		{
-			commande.isLeftClicked = 1;
-			//cout << "engine events mouse left released\n";
-		}
-		if (event.mouseButton.button == sf::Mouse::Right)
-		{
-			commande.isRightClicked = 1;
-			cout << "engine events mouse right released\n";
-		}
-	}
-		
-}*/
 
 void GameEngine::place_characters_with_mouse()
 {

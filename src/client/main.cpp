@@ -161,14 +161,14 @@ void enginet()
 	sf::RenderWindow renderWindow;
 
 	GameState etat;
-	GameEngine moteur(etat, renderWindow);
+	GameEngine engine(etat, renderWindow);
+	Controller controller(renderWindow, engine);
 
 	shared_ptr<Scene> scene = make_shared<Scene>(etat, etat.get_map(), renderWindow);
 	state::Observable::registerObserver(scene);
-
-
+	
 	// create players characters and map
-	moteur.check_stateID();
+	engine.check_stateID();
 
 	while (renderWindow.isOpen())
 	{
@@ -177,11 +177,11 @@ void enginet()
 
 		while (renderWindow.pollEvent(event))
 		{
+			controller.handle_sfEvents(event);
 			//cout << "main while events" << endl;
-			//moteur.look_sfEvents(event);
 		}
 		//cout << "check ID" << endl;
-		moteur.check_stateID();
+		engine.check_stateID();
 		renderWindow.clear();
 		scene->draw();
 
