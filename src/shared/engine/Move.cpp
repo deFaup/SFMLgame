@@ -51,6 +51,9 @@ int Move::isLegit(state::GameState etat)
 		return -1;
 	if (pos.getPositionY() > (down_limit - speed) && move_type == MoveDown)
 		return -1;
+	Statistics stats = etat.current_player->get_current_character()->get_statistics();
+	if (stats.get_move_point() == 0)
+		return -1;
 
 	return(0);
 }
@@ -59,42 +62,46 @@ void Move::execute(state::GameState& etat)
 {
 	state::Position& pos = etat.current_player->get_current_character()->get_position();
 	std::vector<std::vector<int>> mask = etat.map.get_mask();
+	Statistics& stats = etat.current_player->get_current_character()->get_statistics();
+	Statistics statsp(stats.get_life_point(),stats.get_attack_point(),stats.get_move_point()-1);
 
 	switch (move_type)
 	{
 	case MoveLeft:
-		if(mask[pos.getPositionY()+250][pos.getPositionX()-speed] == 0){
+		if(mask[pos.getPositionY()+270][pos.getPositionX()-speed] == 0){
 			pos.increaseX(-speed);
+			stats.set_statistics(statsp);
 		}
 		else{
 			unsigned int i = 0;
-			while(mask[pos.getPositionY()+250-i][pos.getPositionX()-speed] != 0){
+			while(mask[pos.getPositionY()+270-i][pos.getPositionX()-speed] != 0){
 				i++;
 			}
 			pos.increaseX(-speed);
 			pos.increaseY(-i);
+			stats.set_statistics(statsp);
 		}
 		break;
 	case MoveRight:
-		if(mask[pos.getPositionY()+250][pos.getPositionX()+speed] == 0){
+		if(mask[pos.getPositionY()+270][pos.getPositionX()+speed] == 0){
 			pos.increaseX(speed);
+			stats.set_statistics(statsp);
 		}
 		else{
 			unsigned int i = 0;
-			while(mask[pos.getPositionY()+250-i][pos.getPositionX()-speed] != 0){
+			while(mask[pos.getPositionY()+270-i][pos.getPositionX()-speed] != 0){
 				i++;
 			}
 			pos.increaseX(speed);
 			pos.increaseY(-i);
+			stats.set_statistics(statsp);
 		}
 		break;
 	case MoveUp:
 		pos.increaseY(-speed);
 		break;
 	case MoveDown:
-		cout << pos.getPositionX() << " : " << pos.getPositionY() << endl;
-		cout << mask[pos.getPositionY()+250][pos.getPositionX()] << endl;
-		if(mask[pos.getPositionY()+250][pos.getPositionX()] == 0){
+		if(mask[pos.getPositionY()+270][pos.getPositionX()] == 0){
 			pos.increaseY(speed);
 		}
 		break;

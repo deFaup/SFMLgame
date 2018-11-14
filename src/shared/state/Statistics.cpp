@@ -45,19 +45,19 @@ Statistics::Statistics(CharactersID id)
 	case goku:
 		life_point = 100;
 		attack_point = 10;
-		move_point = 10;
+		move_point = 100;
 		break;
 
 	case vegeta:
 		life_point = 100;
 		attack_point = 10;
-		move_point = 10;
+		move_point = 100;
 		break;
 
 	case miyo:
 		life_point = 100;
 		attack_point = 10;
-		move_point = 10;
+		move_point = 100;
 		break;
 	}
 }

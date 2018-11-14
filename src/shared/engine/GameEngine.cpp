@@ -151,10 +151,15 @@ void GameEngine::executeCommande()
 			attack_command.execute(etat);
 		}
 		*/
-	cout << "descente infernale" << endl;
-	ArrowDirection arrow = arrow_down;
-	Move move_commande(arrow);
-	move_commande.execute(etat);
+	if (etat.get_ID() == started){
+		for(int k = 0; k < etat.characters.size(); k++){
+			ChangeCharacter useless_var;
+			useless_var.execute(etat);	
+			ArrowDirection arrow = arrow_down;
+			Move move_commande(arrow);
+			move_commande.execute(etat);
+		}
+	}
 	return;
 }
 
