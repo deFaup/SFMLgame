@@ -178,7 +178,7 @@ void enginet()
 		while (renderWindow.pollEvent(event))
 		{
 			//cout << "main while events" << endl;
-			moteur.look_sfEvents(event);
+			//moteur.look_sfEvents(event);
 		}
 		//cout << "check ID" << endl;
 		moteur.check_stateID();
