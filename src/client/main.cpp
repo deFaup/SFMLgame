@@ -208,7 +208,7 @@ void enginet()
 		// choix de la police à utiliser
 		
 		sf:: Font font;
-		font.loadFromFile("arial.ttf");
+		font.loadFromFile("res/arial.ttf");
 
 		text.setFont(font); // font est un sf::Font
 

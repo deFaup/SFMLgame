@@ -17,7 +17,12 @@ void RandomAI::play(){
 		int nb_aleatoire = rand()%2;	
 		if(nb_aleatoire == 0 || nb_aleatoire == 1){
 			int nb_aleatoire2 = rand()%2;
-			if(nb_aleatoire == 0){
+			int nb_aleatoire3 = rand()%3;
+			for(int k = 0; k < nb_aleatoire3; k++){
+				sfEvents events(arrow_up);
+				moteur.add_command(events);
+			}
+			if(nb_aleatoire2 == 0){
 				for(int k =0; k < (rand()%100); k++){
 					sfEvents events(arrow_left);
 					moteur.add_command(events);
