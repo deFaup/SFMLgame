@@ -19,11 +19,13 @@ void testSFML() {
 #include "state.h"
 #include "render.h"
 #include "engine.h"
+#include "ai.h"
 
 using namespace std;
 using namespace state;
 using namespace render;
 using namespace engine;
+using namespace ai;
 
 /*************************************************************/
 /*--------- Unit tests for the package state ----------------*/
@@ -161,14 +163,16 @@ void enginet()
 	sf::RenderWindow renderWindow;
 
 	GameState etat;
-	GameEngine engine(etat, renderWindow);
-	Controller controller(renderWindow, engine);
+	GameEngine moteur(etat, renderWindow);
+	Controller controller(renderWindow, moteur);
+
+	RandomAI ia(moteur);
 
 	shared_ptr<Scene> scene = make_shared<Scene>(etat, etat.get_map(), renderWindow);
 	state::Observable::registerObserver(scene);
 	
 	// create players characters and map
-	engine.check_stateID();
+	moteur.check_stateID();
 
 	while (renderWindow.isOpen())
 	{
@@ -180,22 +184,22 @@ void enginet()
 			controller.handle_sfEvents(event);
 			//cout << "main while events" << endl;
 		}
+		ia.play();
 		//cout << "check ID" << endl;
-		engine.check_stateID();
+		moteur.check_stateID();
 		renderWindow.clear();
 		scene->draw();
 
 		Statistics& stats = etat.current_player->get_current_character()->get_statistics();
 
-		sf::String info;
+		sf::String string;
 
-		info += "Current Player: " + etat.current_player->name + "\n\n";
-		info += "Current Character Statistics:\nlife point : ";
-		info += std::to_string(stats.get_life_point());
-		info += "\nmove point : ";
-		info += std::to_string(stats.get_move_point());
-		info += "\nattack point : ";
-		info += std::to_string(stats.get_attack_point());
+		string += "Current Character Statistics:\n\nlife point : ";
+		string += std::to_string(stats.get_life_point());
+		string += "\nmove point : ";
+		string += std::to_string(stats.get_move_point());
+		string += "\nattack point : ";
+		string += std::to_string(stats.get_attack_point());
 
 
 		sf::Text text;
@@ -208,7 +212,7 @@ void enginet()
 		text.setFont(font); // font est un sf::Font
 
 		// choix de la chaîne de caractères à afficher
-		text.setString(info);
+		text.setString(string);
 	
 		// choix de la taille des caractères
 		text.setCharacterSize(50); // exprimée en pixels, pas en points !

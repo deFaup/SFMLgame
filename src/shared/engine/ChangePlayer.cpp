@@ -1,6 +1,7 @@
 #include "define.hpp"
 #include "ChangePlayer.h"
 #include <iostream>
+#include <memory>
 
 using namespace state;
 using namespace engine;
@@ -23,6 +24,7 @@ void ChangePlayer::execute(state::GameState& etat)
 		i++;
 		i %= etat.get_number_of_player();
 	}*/
+	/*std::shared_ptr<Characters> curr = etat.current_player->current_character;*/
 	unsigned int i = 0;
 	std::shared_ptr<Player> t_player = etat.get_player(i);
 	while(t_player != etat.current_player){
