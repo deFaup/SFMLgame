@@ -163,16 +163,16 @@ void enginet()
 	sf::RenderWindow renderWindow;
 
 	GameState etat;
-	GameEngine moteur(etat, renderWindow);
-	Controller controller(renderWindow, moteur);
+	GameEngine engine(etat, renderWindow);
+	Controller controller(renderWindow, engine);
 
-	RandomAI ia(moteur);
+	RandomAI ia(engine);
 
 	shared_ptr<Scene> scene = make_shared<Scene>(etat, etat.get_map(), renderWindow);
 	state::Observable::registerObserver(scene);
 	
 	// create players characters and map
-	moteur.check_stateID();
+	engine.check_stateID();
 
 	while (renderWindow.isOpen())
 	{
@@ -186,20 +186,21 @@ void enginet()
 		}
 		ia.play();
 		//cout << "check ID" << endl;
-		moteur.check_stateID();
+		engine.check_stateID();
 		renderWindow.clear();
 		scene->draw();
 
 		Statistics& stats = etat.current_player->get_current_character()->get_statistics();
 
-		sf::String string;
+		sf::String info;
 
-		string += "Current Character Statistics:\n\nlife point : ";
-		string += std::to_string(stats.get_life_point());
-		string += "\nmove point : ";
-		string += std::to_string(stats.get_move_point());
-		string += "\nattack point : ";
-		string += std::to_string(stats.get_attack_point());
+		info += "Current Player: " + etat.current_player->name + "\n\n";
+		info += "Current Character Statistics:\nlife point : ";
+		info += std::to_string(stats.get_life_point());
+		info += "\nmove point : ";
+		info += std::to_string(stats.get_move_point());
+		info += "\nattack point : ";
+		info += std::to_string(stats.get_attack_point());
 
 
 		sf::Text text;
@@ -212,7 +213,7 @@ void enginet()
 		text.setFont(font); // font est un sf::Font
 
 		// choix de la chaîne de caractères à afficher
-		text.setString(string);
+		text.setString(info);
 	
 		// choix de la taille des caractères
 		text.setCharacterSize(50); // exprimée en pixels, pas en points !
