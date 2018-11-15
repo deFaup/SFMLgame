@@ -159,7 +159,7 @@ void testGameState() {
 */
 
 void enginet()
-{
+{// problème à résoudre: une fois que l'on a touché le sol si l'on va tout à gauche de l'écran puis que l'on repart à droite ALORS seg fault
 	sf::RenderWindow renderWindow;
 
 	GameState etat;

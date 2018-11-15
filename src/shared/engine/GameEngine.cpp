@@ -33,17 +33,20 @@ void GameEngine::check_stateID()
 	{
 		etat.new_map(3000, 2000);
 
-		etat.new_player("Joueur");
+		etat.new_player("Joueur 1");
 		etat.new_character(0, vegeta);
 		etat.new_character(0, goku);
+		etat.new_character(0, miyo);
 
 		etat.new_player("IA");
 		etat.new_character(1, vegeta);
 		etat.new_character(1, goku);
+		etat.new_character(1, miyo);
 
-		etat.new_player("IA");
+		etat.new_player("Joueur 2");
 		etat.new_character(2, vegeta);
 		etat.new_character(2, goku);
+		etat.new_character(2, miyo);
 		
 		/*for (int i = 0; i < 3; i++)
 		{
