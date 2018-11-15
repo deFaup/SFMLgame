@@ -48,7 +48,7 @@ void Controller::handle_sfEvents(sf::Event& event)
 		else if (event.key.code == sf::Keyboard::LControl)
 			add_command(sfEvents(ctrl_l));
 
-		else if (sf::Keyboard::RControl)
+		else if (event.key.code == sf::Keyboard::RControl)
 			add_command(sfEvents(ctrl_r));
 	}
 

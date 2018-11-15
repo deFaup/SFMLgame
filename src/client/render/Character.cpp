@@ -22,7 +22,7 @@ Character::Character(const state::GameState& state) : state(state), characters(r
 		characters = state_temp.get_characters();
 	}
 
-	for (int i = 0; i < characters.size(); i++)
+	for (unsigned int i = 0; i < characters.size(); i++)
 	{// for each character in game
 
 		/* instantiation of a unique surface */
@@ -37,7 +37,7 @@ Character::Character(const state::GameState& state) : state(state), characters(r
 	/*scale*/
 	float scale = 3.5f;
 	
-	for (int i = 0; i < characters.size(); i++)
+	for (unsigned int i = 0; i < characters.size(); i++)
 	{
 		/* Linking its Surface texure to its Tileset */
 		surface[i]->loadTexture(tileset[i]->getImage());
@@ -55,25 +55,29 @@ Character::Character(const state::GameState& state) : state(state), characters(r
 
 void Character::load_tilset()
 {
-	for (int i = 0; i < characters.size(); i++)
+	for (unsigned int i = 0; i < characters.size(); i++)
 	{
 		CharactersID id = characters[i]->get_id();
 		switch (id)
 		{
-			case goku:
+			case goku://stand: 136x153 pos 140x4585
 				tileset[i]->setImageFile("res/DBZ_gokusheet2.gif");
 			break;
 
 			case vegeta:
 				tileset[i]->setImageFile("res/DBZ_vegeta.gif");
-			break;		
+			break;	
+
+			case miyo:
+				tileset[i]->setImageFile("res/Computer - Eternal Fighter Zero - Mio Kouzuki.png");
+				break;
 		}
 	}
 }
 
 void Character::update()
 {
-	for (int i = 0; i < characters.size(); i++)
+	for (unsigned int i = 0; i < characters.size(); i++)
 	{// go through all characters
 
 		/* create a tile to find the sprite we want in our tileset */
@@ -89,6 +93,9 @@ void Character::update()
 		case vegeta:
 			tile.setTile(0, 0, 50, 80);
 			break;
+
+		case miyo:
+			tile.setTile(437, 2029, 68, 90);
 		}
 		surface[i]->setSpriteTexture(tile);
 		surface[i]->setSpriteLocation(characters[i]->get_position().getPosition());
@@ -98,7 +105,7 @@ void Character::update()
 
 void Character::setSurface(sf::RenderWindow& window)
 {
-	for (int i = 0; i < characters.size(); i++)
+	for (unsigned int i = 0; i < characters.size(); i++)
 	{
 		surface[i]->draw(window);
 	}
