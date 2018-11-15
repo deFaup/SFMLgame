@@ -163,7 +163,7 @@ void enginet()
 	sf::RenderWindow renderWindow;
 
 	GameState etat;
-	GameEngine engine(etat, renderWindow);
+	GameEngine engine(renderWindow, etat);
 	Controller controller(renderWindow, engine);
 
 	RandomAI ia(engine);

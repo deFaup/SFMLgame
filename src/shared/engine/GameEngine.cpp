@@ -14,7 +14,7 @@ using namespace engine;
 using namespace std;
 using namespace render;
 
-GameEngine::GameEngine(state::GameState& etat, sf::RenderWindow& window) : etat(etat), renderWindow(window) 
+GameEngine::GameEngine(sf::RenderWindow& window, state::GameState& etat) : renderWindow(window), etat(etat)
 {
 	/*commande.SpaceWasPressed = false;
 	commande.EnterWasPressed = false;
@@ -175,7 +175,7 @@ void GameEngine::check_stateID()
 }*/
 
 void GameEngine::executeCommandes(){
-	for(int k = 0; k < commandes.size(); k++){
+	for(unsigned int k = 0; k < commandes.size(); k++){
 		if(commandes[k].ID == arrow_left || commandes[k].ID == arrow_right){
 			Move move_command(commandes[k].ID);
 			if (move_command.isLegit(etat) != -1) {
