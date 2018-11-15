@@ -12,7 +12,7 @@ sf::Vector2f position_in_map[2]; //[1] is the position with mouse coordinates
 
 /* Scene constructor share its references to the state and to the Map */
 /* We share the map as doing state.get_map() wasn't working */
-Scene::Scene(const GameState& state, const Map& map, sf::RenderWindow& window) : state(state), background(state, map), characters(state), renderWindow(window)
+Scene::Scene(sf::RenderWindow& window, const GameState& state, const Map& map) : renderWindow(window), state(state), background(state, map), characters(state)
 {
 	cout << "Scene created" << endl;
 	// new things
@@ -99,19 +99,19 @@ void Scene::update_view(sf::View& window_view, sf::RenderWindow& renderWindow, s
 	int map_size[2] = { 0 };
 	state.get_map().get_dimensions(map_size[0], map_size[1]);
 
-	if (x >= renderWindow.getPosition().x + renderWindow.getSize().x -100)
+	if (x >= (unsigned int)renderWindow.getPosition().x + renderWindow.getSize().x -100)
 		position_in_map[0].x += 10;
 
-	if (x <= renderWindow.getPosition().x /*- renderWindow.getSize().x/2*/ + 100) {
+	if (x <= (unsigned int)renderWindow.getPosition().x + 100) {
 		cout << "going left1 " << endl;
 		position_in_map[0].x -= 10;
 	}
 		
-	if (y >= renderWindow.getPosition().y + renderWindow.getSize().y - 100) {
+	if (y >= (unsigned int)renderWindow.getPosition().y + renderWindow.getSize().y - 100) {
 		position_in_map[0].y += 10;
 	}
 		
-	if (y <= renderWindow.getPosition().y + 100) {
+	if (y <= (unsigned int)renderWindow.getPosition().y + 100) {
 		cout << "going up1 " << endl;
 		position_in_map[0].y -= 10;
 	}

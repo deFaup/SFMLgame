@@ -168,7 +168,7 @@ void enginet()
 
 	RandomAI ia(engine);
 
-	shared_ptr<Scene> scene = make_shared<Scene>(etat, etat.get_map(), renderWindow);
+	shared_ptr<Scene> scene = make_shared<Scene>(renderWindow, etat, etat.get_map());
 	state::Observable::registerObserver(scene);
 	
 	// create players characters and map
