@@ -7,7 +7,11 @@
 using namespace std;
 using namespace state;
 
-Characters::~Characters() {	/* cout << "Characters: "<< name << " deleted"<< endl; */ }
+Characters::~Characters()
+{
+	for (unsigned int i = 0; i < number_of_attacks; i++)
+		delete[] &(attack[i]);
+}
 
 Characters::Characters(Player* player): owner(player), id(goku), number_of_attacks(0)
 {
@@ -39,10 +43,10 @@ unsigned int Characters::get_number_of_attacks(){
 	return(this->number_of_attacks);
 }
 
-void Characters::addAttack (Attacks attaque){
+void Characters::addAttack (Attacks& attaque){
 	if(number_of_attacks < MAX_NB_ATTACK)
 	{
-		attack[number_of_attacks+1] = attaque;
+		attack[number_of_attacks] = attaque;
 		number_of_attacks++;
 	}
 	return;

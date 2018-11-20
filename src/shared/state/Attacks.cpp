@@ -8,7 +8,7 @@ Attacks::Attacks()
 	/*nbline = 15;
 	nbcolumn = 15;
 	attack_field_of_action = new unsigned int*[nbcolumn];
-	for (int i = 0; i < nbcolumn; i++)
+	for (unsigned int i = 0; i < nbcolumn; i++)
 		attack_field_of_action[i] = new unsigned int[nbline];*/
 }
 
@@ -16,9 +16,9 @@ Attacks::Attacks(unsigned int column, unsigned int line, unsigned int scope, uns
 {
 	nbline = line;
 	nbcolumn = column;
-	attack_field_of_action = new unsigned int*[nbcolumn];
-	for (int i = 0; i < nbcolumn; i++)
-		attack_field_of_action[i] = new unsigned int[nbline];
+	/*attack_field_of_action = new unsigned int*[nbcolumn];
+	for (unsigned int i = 0; i < nbcolumn; i++)
+		attack_field_of_action[i] = new unsigned int[nbline];*/
 	attack_cost = cost;
 	attack_scope = scope;
 	attack_field_of_action = field;
@@ -26,7 +26,7 @@ Attacks::Attacks(unsigned int column, unsigned int line, unsigned int scope, uns
 
 Attacks::~Attacks()
 {
-	for (int i = 0; i < nbcolumn; i++)
+	for (unsigned int i = 0; i < nbcolumn; i++)
 		delete[] attack_field_of_action[i];
 	delete[] attack_field_of_action;
 }
