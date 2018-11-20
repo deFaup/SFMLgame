@@ -43,10 +43,10 @@ unsigned int Characters::get_number_of_attacks(){
 	return(this->number_of_attacks);
 }
 
-void Characters::addAttack (Attacks attaque){
+void Characters::addAttack (Attacks& attaque){
 	if(number_of_attacks < MAX_NB_ATTACK)
 	{
-		attack[number_of_attacks+1] = attaque;
+		attack[number_of_attacks] = attaque;
 		number_of_attacks++;
 	}
 	return;
