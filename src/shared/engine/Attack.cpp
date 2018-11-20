@@ -11,9 +11,9 @@ int Attack::isLegit(state::GameState etat){
 	shared_ptr<Characters> character = etat.current_player->get_current_character();
 	Statistics& stats = character->get_statistics();
 	
-	if(character->get_attack_cost(attack_number) >= stats.get_attack_point()){
+	/*if(character->get_attack_cost(attack_number) >= stats.get_attack_point()){
 		return(-1);
-	}
+	}*/
 	return(0);
 }
 
