@@ -5,20 +5,20 @@ using namespace state;
 
 Attacks::Attacks()
 {
-	int m = 15;
-	int n = 15;
-	attack_field_of_action = new unsigned int*[m];
-	for (int i = 0; i < m; i++)
-		attack_field_of_action[i] = new unsigned int[n];
+	/*nbline = 15;
+	nbcolumn = 15;
+	attack_field_of_action = new unsigned int*[nbcolumn];
+	for (int i = 0; i < nbcolumn; i++)
+		attack_field_of_action[i] = new unsigned int[nbline];*/
 }
 
-Attacks::Attacks(unsigned int scope, unsigned int cost, unsigned int ** field)
+Attacks::Attacks(unsigned int column, unsigned int line, unsigned int scope, unsigned int cost, unsigned int ** field)
 {
-	int m = 15;
-	int n = 15;
-	attack_field_of_action = new unsigned int*[m];
-	for (int i = 0; i < m; i++)
-		attack_field_of_action[i] = new unsigned int[n];
+	nbline = line;
+	nbcolumn = column;
+	attack_field_of_action = new unsigned int*[nbcolumn];
+	for (int i = 0; i < nbcolumn; i++)
+		attack_field_of_action[i] = new unsigned int[nbline];
 	attack_cost = cost;
 	attack_scope = scope;
 	attack_field_of_action = field;
@@ -26,9 +26,7 @@ Attacks::Attacks(unsigned int scope, unsigned int cost, unsigned int ** field)
 
 Attacks::~Attacks()
 {
-	int m = 15;
-	int n = 15;
-	for (int i = 0; i < m; i++)
+	for (int i = 0; i < nbcolumn; i++)
 		delete[] attack_field_of_action[i];
 	delete[] attack_field_of_action;
 }
