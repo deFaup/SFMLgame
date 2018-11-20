@@ -30,7 +30,8 @@ using namespace ai;
 /*************************************************************/
 /*--------- Unit tests for the package state ----------------*/
 /*************************************************************/
-
+//statistiques, position
+//
 /* Test de la classe statistiques */
 void testStatistics()
 {
@@ -260,6 +261,15 @@ int main(int argc, char* argv[])
 		if (strcmp(argv[1], "engine") == 0)
 		{
 			enginet();
+		}
+		if (strcmp(argv[1], "random_ai") == 0)
+		{
+			enginet();
+		}
+		if (strcmp(argv[1], "test") == 0)
+		{
+			#include "unit_test.hpp"
+			result();
 		}
 	}
 	return 0;
