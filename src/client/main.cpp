@@ -27,48 +27,8 @@ using namespace render;
 using namespace engine;
 using namespace ai;
 
-/*************************************************************/
-/*--------- Unit tests for the package state ----------------*/
-/*************************************************************/
-//statistiques, position
-//
-/* Test de la classe statistiques */
-void testStatistics()
-{
-	// Setters
-	cout << "\n\nTest de la classe Statistics" << endl;
-	//Statistics stats;
-	int vie, attaque, deplacement;
-	cout << "Entrer nombre de point de vie (valeur entre 0 et 2000)" << endl;
-	cin >> vie;
-	cout << "Entrer nombre de point d'attaque (valeur entre 0 et 2000)" << endl;
-	cin >> attaque;
-	cout << "Entrer nombre de point de deplacement (valeur entre 0 et 2000)" << endl;
-	cin >> deplacement;
-	Statistics stats(vie, attaque, deplacement);
-	stats.set_statistics(stats);
-	cout << "\n" << "vie = " << stats.get_life_point() << "\n" << "attaque = " << stats.get_attack_point() << "\n" << "deplacement = " << stats.get_move_point();
-	cout << endl << "Fin du test de Statistics" << endl << endl;
-}
-
 /* Test de la classe Characters */
-/*void testCharacters(){
 
-cout << "\n\nTest de la classe Characters (5 attaques maximum)" << endl;
-Characters perso("test class Characters");
-
-cout << "\n\nVerification des ajouts d'attaques possibles\n" << endl;
-
-void * random(0);
-for (int i = 0; i< 7; i++)
-{
-cout << "\tAjout d'une attaque a la liste du personnage" << endl;
-perso.addAttack(10,10,random);
-cout << "\tNombre d'attaque enregistre = " << perso.get_number_of_attacks() << endl << endl;
-}
-
-cout << endl << "Fin du test de Characters" << endl << endl;
-}*/
 
 /* Test de la classe Player */
 /*void testPlayer()
@@ -245,7 +205,7 @@ int main(int argc, char* argv[])
 
 		if (strcmp(argv[1], "state") == 0)
 		{
-			testStatistics();
+			//testStatistics();
 			//testCharacters();
 			//testPlayer();
 			testGameState();
@@ -269,7 +229,8 @@ int main(int argc, char* argv[])
 		if (strcmp(argv[1], "test") == 0)
 		{
 			#include "unit_test.hpp"
-			result();
+			result_statistics();
+			result_position();
 		}
 	}
 	return 0;
