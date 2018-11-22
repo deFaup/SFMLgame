@@ -37,16 +37,6 @@ shared_ptr<Characters> Player::new_character(const CharactersID id)
 	return ptr;
 }
 
-/* to be deleted (+delete in main's tests) */
-void Player::add_character(shared_ptr<Characters>& character)
-{
-	if (characters.size() < characters_range) // You can't add more characters than characters_range
-	{
-		characters.push_back(character);
-		current_character = *(characters.begin());
-	}
-}
-
 /* get a reference to your character number i */
 std::shared_ptr<Characters>& Player::get_character(unsigned int i)
 {
@@ -81,16 +71,3 @@ std::shared_ptr<Characters> Player::get_current_character(){
 	return(current_character);
 }
 
-ostream& operator<<(ostream& flux, Player const& player)
-{
-	flux << "player name: " << player.name << endl;
-	flux << "player characters: " << player.get_number_of_characters() << endl;
-	flux << "player's characters: " << endl;
-	/*
-	for (auto character : player.characters)
-	{
-		flux << "\t" << ;
-	}
-	*/
-	return flux;
-}
