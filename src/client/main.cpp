@@ -128,10 +128,11 @@ void enginet()
 	Controller controller(renderWindow, engine);
 
 	RandomAI ia(engine);
-
+	cout << "main:l.130 IA created\n\n" << endl;
 	shared_ptr<Scene> scene = make_shared<Scene>(renderWindow, etat, etat.get_map());
+	cout << "main:l.132 scene created\n\n" << endl;
 	state::Observable::registerObserver(scene);
-	
+	cout << "main:l.134 observers listed" << endl;
 	// create players characters and map
 	engine.check_stateID();
 

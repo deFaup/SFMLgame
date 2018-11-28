@@ -9,8 +9,13 @@ using namespace std;
 
 GameState::GameState()
 {
-//	cout << "GameState created" << endl;
+	cout << "GameState created" << endl;
 	ID = not_started;
+}
+//	
+GameState::~GameState()
+{
+	cout << "GameState deleteted" << endl;
 }
 
 StateID& GameState::get_ID() { return ID; }
@@ -71,7 +76,7 @@ const shared_ptr<Player>& GameState::get_player(unsigned int i) const
 }
 
 /* return a reference to the characters list */
-const vector<shared_ptr<Characters>>& GameState::get_characters() const {	return characters;	}
+const vector<shared_ptr<Characters>> GameState::get_characters() const {  return characters;  }
 
 /* return a const reference of the state's map*/
 const Map& GameState::get_map() const { return map; }

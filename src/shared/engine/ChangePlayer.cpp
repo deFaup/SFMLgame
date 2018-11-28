@@ -7,7 +7,7 @@ using namespace state;
 using namespace engine;
 using namespace std;
 
-int ChangePlayer::isLegit(state::GameState etat)
+int ChangePlayer::isLegit(state::GameState& etat)
 {
 	if (etat.get_ID() == not_started || etat.get_ID() == team_selected)
 		return -1;

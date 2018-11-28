@@ -34,7 +34,7 @@ Move::Move(render::sfEventsID dir)
 	}
 }
 
-int Move::isLegit(state::GameState etat)
+int Move::isLegit(state::GameState& etat)
 {
 	if (move_type == MoveNone)
 		return -1;

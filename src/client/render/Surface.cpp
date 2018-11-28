@@ -2,8 +2,13 @@
 #include "state.h"
 #include "Tile.h"
 #include "Surface.h"
+#include <iostream>
+
 
 using namespace render;
+
+Surface::Surface() { std::cout << "Surface created" << std::endl; }
+Surface::~Surface() { std::cout << "Surface deleted" << std::endl; }
 
 sf::Sprite& Surface::getSprite()
 {

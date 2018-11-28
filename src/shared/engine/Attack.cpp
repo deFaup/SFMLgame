@@ -7,7 +7,8 @@ using namespace engine;
 using namespace std;
 using namespace state;
 
-int Attack::isLegit(state::GameState etat){
+int Attack::isLegit(state::GameState& etat)
+{
 	shared_ptr<Characters> character = etat.current_player->get_current_character();
 	Statistics& stats = character->get_statistics();
 	

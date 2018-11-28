@@ -6,6 +6,8 @@
 using namespace std;
 using namespace render;
 
+Background::~Background() { cout << "background deleted" << endl; }
+
 Background::Background(const state::GameState& state, const state::Map& map) : state(state), map(map)
 {
 	/* the background is initialized straight into the constructor */
@@ -33,6 +35,7 @@ Background::Background(const state::GameState& state, const state::Map& map) : s
 
 	/* update the background to represent the state's map */
 	update();
+	cout << "Background created" << endl;
 }
 
 /* Update the background if the mask has changed */

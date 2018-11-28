@@ -10,11 +10,13 @@ using namespace render;
 sf::View window_view;
 sf::Vector2f position_in_map[2]; //[1] is the position with mouse coordinates
 
+Scene::~Scene(){ std::cout << "Scene deleted" << std::endl; }
+
 /* Scene constructor share its references to the state and to the Map */
 /* We share the map as doing state.get_map() wasn't working */
 Scene::Scene(sf::RenderWindow& window, const GameState& state, const Map& map) : renderWindow(window), state(state), background(state, map), characters(state)
 {
-	cout << "Scene created" << endl;
+	std::cout << "Scene created" << std::endl;
 	// new things
 	init_window(window_view, renderWindow, position_in_map);
 }

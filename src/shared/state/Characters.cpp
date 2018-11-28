@@ -9,6 +9,8 @@ using namespace state;
 
 Characters::~Characters()
 {
+	cout << "Characters: " << id << " deleted" << endl;
+
 	for (unsigned int i = 0; i < number_of_attacks; i++)
 		delete[] &(attack[i]);
 }

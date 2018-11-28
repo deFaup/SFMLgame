@@ -38,17 +38,16 @@ void GameEngine::check_stateID()
 		etat.new_character(0, goku);
 		etat.new_character(0, miyo);
 
-		etat.new_player("IA");
+		etat.new_player("Joueur 2");
 		etat.new_character(1, vegeta);
 		etat.new_character(1, goku);
 		etat.new_character(1, miyo);
 
-		etat.new_player("Joueur 2");
+/*		etat.new_player("IA");
 		etat.new_character(2, vegeta);
 		etat.new_character(2, goku);
-		etat.new_character(2, miyo);
-		
-		/*for (int i = 0; i < 3; i++)
+		etat.new_character(2, miyo);		
+*/		/*for (int i = 0; i < 3; i++)
 		{
 			etat.new_player("Joueur " + to_string(i));
 			etat.new_character(i, vegeta);
@@ -64,7 +63,7 @@ void GameEngine::check_stateID()
 	{
 		unsigned int i = 10;
 
-		for (auto characters_in_game : const_cast<vector<shared_ptr<Characters>>&> (etat.get_characters()) )
+		for (auto characters_in_game : etat.get_characters() )
 		{
 			characters_in_game->get_position().setPosition(i, 0);
 			int width(0), height(0);
@@ -104,7 +103,8 @@ void GameEngine::check_stateID()
 	commande.EnterWasPressed = false;
 	commande.CtrlWasPressed = false;
 	commande.isLeftClicked = false;
-	commande.isRightClicked = false;*/
+	commande.isRightClicked = false;
+	*/
 }
 
 /*void GameEngine::getUserInput(){
@@ -134,38 +134,37 @@ void GameEngine::check_stateID()
 	{
 		ChangeCharacter useless_var;
 		useless_var.execute(etat);
-	}*/
-/*	if (commande.EnterWasPressed == 1)
+	}
+	if (commande.EnterWasPressed == 1)
 	{
 		ChangePlayer tour_commande;
 		tour_commande.execute(etat);
 	}
-*/
 
 	// only execute left and right
-/*	if (commande.arrow_direction == arrow_left || commande.arrow_direction == arrow_right) {
+	if (commande.arrow_direction == arrow_left || commande.arrow_direction == arrow_right) {
 		Move move_command(commande.arrow_direction);
 		if (move_command.isLegit(etat) != -1) {
 			move_command.execute(etat);
 		}
 	}
-*/
+
 	// switch between characters of a player. then goes to next player
-/*	if (commande.isRightClicked == 1)
+	if (commande.isRightClicked == 1)
 	{
 		ChangeCharacter useless_var;
 		useless_var.execute(etat);
 		cout << "execute event click" << endl;
-	}*/
-		/*
+	}
+		
 		Attack attack_command;
 		attack_command.attack_position = commande.mouse_position;
 		attack_command.attack_number = 1;
 		if(attack_command.isLegit(etat) != -1){
 			attack_command.execute(etat);
 		}
-		*/
-/*	if (etat.get_ID() == started){
+		
+	if (etat.get_ID() == started){
 		for(int k = 0; k < etat.characters.size(); k++){
 			ChangeCharacter useless_var;
 			useless_var.execute(etat);	
@@ -178,8 +177,10 @@ void GameEngine::check_stateID()
 }*/
 
 void GameEngine::executeCommandes(){
-	for(unsigned int k = 0; k < commandes.size(); k++){
-		if(commandes[k].ID == arrow_left || commandes[k].ID == arrow_right){
+	for(unsigned int k = 0; k < commandes.size(); k++)
+	{
+		if(commandes[k].ID == arrow_left || commandes[k].ID == arrow_right)
+		{
 			Move move_command(commandes[k].ID);
 			if (move_command.isLegit(etat) != -1) {
 				move_command.execute(etat);

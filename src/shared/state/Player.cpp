@@ -16,12 +16,12 @@ Player::Player() : name("Un-named Player")
 
 Player::Player (string name) : name(name) 
 {
-	/*cout << "Player: " << name << " created" << endl;*/ 
+	cout << "Player: " << name << " created" << endl;
 }
 
 Player::~Player() 
 {
-	/* cout << "Player: " << name << " deleted" << endl; */
+	cout << "Player: " << name << " deleted" << endl;
 }
 
 /* create and add a character to the player */

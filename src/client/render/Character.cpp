@@ -10,18 +10,10 @@ using namespace render;
 using namespace state;
 using namespace std;
 
-// variables that are used to initialize our const reference characters but temporarly
-std::vector<std::shared_ptr<state::Characters>> temp;
-std::vector<std::shared_ptr<state::Characters>>& ref_temp = temp;
+Character::~Character(){ cout << "Character deleted" << endl; }
 
-Character::Character(const state::GameState& state) : state(state), characters(ref_temp)
+Character::Character(const state::GameState& state) : state(state), characters(state.get_characters())
 {
-	/* get all existing characters */
-	{
-		auto state_temp = const_cast<GameState&> (state);
-		characters = state_temp.get_characters();
-	}
-
 	for (unsigned int i = 0; i < characters.size(); i++)
 	{// for each character in game
 
@@ -51,6 +43,7 @@ Character::Character(const state::GameState& state) : state(state), characters(r
 	}
 
 	update();
+	cout << "Character created" << endl;
 }
 
 void Character::load_tilset()

@@ -32,7 +32,7 @@ void Position::increaseX(int increment)
 	this->x += increment; 
 	state::EventCharacters event(Character_positionChanged);
 	notifyObservers(event);
-	std::cout << "x_pos= " << x << "\t y_pos= " << y << std::endl;
+	//std::cout << "x_pos= " << x << "\t y_pos= " << y << std::endl;
 }
 
 void Position::increaseY(int increment) 
@@ -40,5 +40,5 @@ void Position::increaseY(int increment)
 	this->y += increment; 
 	state::EventCharacters event(Character_positionChanged);
 	notifyObservers(event);
-	std::cout << "x_pos= " << x << "\t y_pos= " << y << std::endl;
+	//std::cout << "x_pos= " << x << "\t y_pos= " << y << std::endl;
 }
