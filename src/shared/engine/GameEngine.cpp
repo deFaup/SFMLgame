@@ -197,7 +197,7 @@ void GameEngine::executeCommandes(){
 		if(commandes[k].ID == left_click){
 			Attack attack_command;
 			attack_command.attack_position = commandes[k].mouse_position;
-			attack_command.attack_number = 1;
+			attack_command.attack_number = 0;
 			if(attack_command.isLegit(etat) != -1){
 				attack_command.execute(etat);
 			}

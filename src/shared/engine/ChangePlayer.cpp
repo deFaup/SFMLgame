@@ -26,6 +26,9 @@ void ChangePlayer::execute(state::GameState& etat)
 	}*/
 	/*std::shared_ptr<Characters> curr = etat.current_player->current_character;*/
 	unsigned int i = 0;
+	for(unsigned int k = 0; k < etat.current_player->get_number_of_characters(); k++ ){
+		etat.current_player->get_character(k)->get_statistics().reset_all_but_life(etat.current_player->get_character(k)->get_id());
+	}
 	std::shared_ptr<Player> t_player = etat.get_player(i);
 	while(t_player != etat.current_player){
 		i++;

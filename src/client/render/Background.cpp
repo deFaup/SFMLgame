@@ -45,7 +45,8 @@ void Background::update()
 	sf::Image& image = tileset[0]->getImage();
 
 	/* get the mask of state's map */
-	const vector<vector<int>>& mask(map.get_mask()); 
+	state::Map mapl = map;
+	vector<vector<int>>& mask = mapl.get_mask(); 
 	
 	/* get map dimensions */
 	int width(0), height(0);

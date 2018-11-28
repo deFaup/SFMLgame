@@ -46,3 +46,13 @@ unsigned int ** Attacks::get_attack_field_of_action()
 	return attack_field_of_action ;
 }
 
+unsigned int Attacks::get_nbcolumn()
+{
+	return nbcolumn ;
+}
+
+unsigned int Attacks::get_nbline()
+{
+	return nbline ;
+}
+

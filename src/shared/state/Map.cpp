@@ -35,7 +35,7 @@ void Map::get_dimensions(int& width, int& height) const
 	height = this->height;
 }
 
-const vector<vector<int>>& Map::get_mask() const{
+vector<vector<int>>& Map::get_mask() {
 	return(mask);
 }
 
