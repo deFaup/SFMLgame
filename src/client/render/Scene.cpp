@@ -13,54 +13,21 @@ sf::Vector2f position_in_map[2]; //[1] is the position with mouse coordinates
 Scene::~Scene(){ std::cout << "Scene deleted" << std::endl; }
 
 /* Scene constructor share its references to the state and to the Map */
-/* We share the map as doing state.get_map() wasn't working */
-Scene::Scene(sf::RenderWindow& window, const GameState& state, const Map& map) : renderWindow(window), state(state), background(state, map), characters(state)
+Scene::Scene(sf::RenderWindow& window, const GameState& gamestate) 
+	: renderWindow(window), state(gamestate), background(gamestate, gamestate.map), characters(gamestate)
 {
 	std::cout << "Scene created" << std::endl;
-	// new things
 	init_window(window_view, renderWindow, position_in_map);
 }
 
-void Scene::updateScene(/* some event */)
-{
-	// the function looks at what have changed and only displays the changes
-}
-
-/* draw all layers (time-consuming) */
+/* draw our surfaces with the draw method of SFML (called from draw method in Surface) */
 void Scene::draw()
 {
 	//const sf::Vector2f init_position = position_in_map[0];
 	//update_view(window_view, renderWindow, position_in_map, init_position);
 
-//	if (1)	//observer_map->hasChanged(Map_maskChanged))
-//	{
-//		background.update();
-		//observer_map->setEventID(Map_maskChanged, false);
-//	}
-	background.setSurface(renderWindow); // first the background
-	
+	background.setSurface(renderWindow); // first the background	
 	characters.setSurface(renderWindow); // on top of the background the characters
-	
-
-/*	while (renderWindow.isOpen()) 
-	{
-		// Process events
-		sf::Event event;
-
-		while (renderWindow.pollEvent(event)) 
-		{
-			if (event.type == sf::Event::EventType::Closed)
-				renderWindow.close();
-		}
-		renderWindow.clear();
-
-		update_view(window_view, renderWindow, position_in_map, init_position);
-
-		background.setSurface(renderWindow); // first the background
-		characters.setSurface(renderWindow); // on top of the background the characters
-		renderWindow.display();
-	}
-*/
 }
 
 /* config the view position for the beginning */

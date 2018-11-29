@@ -165,15 +165,36 @@ cout << "\tNombre d'attaque enregistre = " << perso.get_number_of_attacks() << e
 
 cout << endl << "Fin du test de Characters" << endl << endl;
 }*/
-
-/********************************/
-//			Player				//	 
-/********************************/
-
-
 int result_characters()
 {
 	cout << "\n\n";
 
 	return 0;
 }
+/********************************/
+//			Player				//	 
+/********************************/
+
+/* Test de la classe Player */
+/*void testPlayer()
+{
+cout << "\n\nTest de la classe Player" << endl;
+Player joueur;
+
+cout << "\nChoix du nombre maximum de personnages par joueur. Ici 4 (au +5)" << endl;
+Player::set_characters_range(4);
+
+cout << "Verification\n" << endl;
+for (int i = 0; i< 7; i++)
+{
+{
+shared_ptr<Characters> perso = make_shared<Characters>();
+cout << "\tAjout d'un personnage a la liste du du joueur" << endl;
+joueur.add_character(perso);
+cout << "\tNombre de joueur enregistre = " << joueur.get_number_of_characters() << endl << endl;
+}
+}
+cout << "\nNous avons au total " << joueur.get_number_of_characters() << " personnages pour notre joueur\n" << endl;
+
+cout << "\nFin du test de Player" << endl << endl;
+}*/
