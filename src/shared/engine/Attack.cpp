@@ -86,7 +86,7 @@ void Attack::execute(state::GameState& etat){
 
 
 	// modification/destruction de la map sur les endroits impactés
-	std::vector<std::vector<int>>& mask = etat.map.get_mask();
+	std::vector<std::vector<int>> mask = etat.map.get_mask();
 	for(unsigned int i = 0; i < size_x; i++){
 		for(unsigned int j = 0; j < size_y; j++){
 			if(matrix[i][j] != 0 &&

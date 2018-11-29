@@ -107,7 +107,7 @@ void enginet()
 	shared_ptr<Scene> scene = make_shared<Scene>(renderWindow, etat);
 	cout << "main:l.132 scene created\n\n" << endl;
 	state::Observable::registerObserver(scene);
-	cout << "main:l.134 observers listed" << endl;
+	cout << "main:l.134 observers listed\n" << endl;
 	// create players characters and map
 	engine.check_stateID();
 
