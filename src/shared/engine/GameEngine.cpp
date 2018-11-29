@@ -67,7 +67,7 @@ void GameEngine::check_stateID()
 		{
 			characters_in_game->get_position().setPosition(i, 0);
 			int width(0), height(0);
-			etat.get_map().get_dimensions(width, height);
+			etat.map.get_dimensions(width, height);
 			i += 100 % width;
 		}
 

@@ -66,13 +66,13 @@ void Scene::update_view(sf::View& window_view, sf::RenderWindow& renderWindow, s
 
 	//temporary
 	int map_size[2] = { 0 };
-	state.get_map().get_dimensions(map_size[0], map_size[1]);
+	state.map.get_dimensions(map_size[0], map_size[1]);
 
 	if (x >= (unsigned int)renderWindow.getPosition().x + renderWindow.getSize().x -100)
 		position_in_map[0].x += 10;
 
 	if (x <= (unsigned int)renderWindow.getPosition().x + 100) {
-		cout << "going left1 " << endl;
+		std::cout << "going left1 " << std::endl;
 		position_in_map[0].x -= 10;
 	}
 		

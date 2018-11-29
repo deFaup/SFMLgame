@@ -78,11 +78,8 @@ const shared_ptr<Player>& GameState::get_player(unsigned int i) const
 /* return a reference to the characters list */
 const vector<shared_ptr<Characters>> GameState::get_characters() const {  return characters;  }
 
-/* return a const reference of the state's map*/
-const Map& GameState::get_map() const { return map; }
-
-/* to limit the possible number of players */
-/* the range is also limited by MAX_NB_PLAYER in define.hpp */
+/* Limit the maximum number of characters the players can choose
+	The range is also limited by MAX_NB_PLAYER in define.hpp */
 void GameState::set_characters_range(unsigned int range)
 {
 	Player::set_characters_range(range);

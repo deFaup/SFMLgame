@@ -40,7 +40,7 @@ int Move::isLegit(state::GameState& etat)
 		return -1;
 
 	int right_limit(0), down_limit(0);
-	etat.get_map().get_dimensions(right_limit, down_limit);
+	etat.map.get_dimensions(right_limit, down_limit);
 
 	state::Position pos = etat.current_player->get_current_character()->get_position();
 	if (pos.getPositionX() < speed && move_type == MoveLeft)
