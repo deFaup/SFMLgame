@@ -14,16 +14,10 @@ using namespace engine;
 using namespace std;
 using namespace render;
 
-GameEngine::GameEngine(sf::RenderWindow& window, state::GameState& etat) : renderWindow(window), etat(etat)
+GameEngine::GameEngine(state::GameState& etat) : etat(etat)
 {
-	/*commande.SpaceWasPressed = false;
-	commande.EnterWasPressed = false;
-	commande.CtrlWasPressed = false;
-	commande.isRightClicked = false;
-	commande.isLeftClicked = false;*/
-
 	// init the game
-	check_stateID();
+	//check_stateID();
 }
 
 void GameEngine::check_stateID()

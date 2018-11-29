@@ -8,10 +8,14 @@ using namespace render;
 
 Background::~Background() { cout << "background deleted" << endl; }
 
-Background::Background(const state::GameState& state, const state::Map& map) : state(state), map(map)
+Background::Background(const state::GameState& state) : state(state), map(state.map) {}
+
+void Background::new_background_layer()
 {
 	/* the background is initialized straight into the constructor */
-	
+	// peut être mettre une boucle while !surface.empty() surface.pop_back()
+	// cad qu'il faut vider les vecteurs et tout supprimé si on fait une nouvelle partie sans relancer le jeu.
+	// même chose pour character layer
 	/* instantiation of a unique work surface */
 	surface.push_back( make_unique<Surface>() );
 	
@@ -35,7 +39,7 @@ Background::Background(const state::GameState& state, const state::Map& map) : s
 
 	/* update the background to represent the state's map */
 	update();
-	cout << "Background created" << endl;
+	cout << "New background created\n" << endl;
 }
 
 /* Update the background if the mask has changed */
@@ -57,10 +61,12 @@ void Background::update()
 	sf::Image& sol = tileset[3]->getImage();
 
 	sf::Vector2u size_ciel(ciel.getSize()), size_herbe(herbe.getSize());
-
-	for (int y = 0; y < height; y++) { //y == height
-		for (int x = 0; x < width; x++) { // x== width
-			if (mask[y][x] == 1) {
+	for (int y = 0; y < height; y++) //y == height
+	{
+		for (int x = 0; x < width; x++) // x== width
+		{ 
+			if (mask[y][x] == 1) 
+			{
 				image.setPixel(x, y, sol.getPixel(x, y));
 			}
 			else if (mask[y][x] == 2) {

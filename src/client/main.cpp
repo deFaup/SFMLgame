@@ -98,32 +98,43 @@ void enginet()
 {// problème à résoudre: une fois que l'on a touché le sol si l'on va tout à gauche de l'écran puis que l'on repart à droite ALORS seg fault
 	sf::RenderWindow renderWindow;
 
+	/* le thread render/main aura une méthode class whatever pour afficher un menu dans renderwindow.
+	Dans le menu on choisit le nombre de joueurs et de personnages + autres paramètres si besoin.
+	Ensuite tous ces paramètres sont transmis au gameEngine qui va ensuite modifier le state.
+	Seul le moteur peut modifier l'état pour que cela marche en mode réseau.
+	La méthode menu sera appelé par l'engine au premier call de check state ID
+	*/
+
 	GameState etat;
-	GameEngine engine(renderWindow, etat);
+	GameEngine engine(etat);
 	Controller controller(renderWindow, engine);
-
+	
 	RandomAI ia(engine);
-	cout << "main:l.130 IA created\n\n" << endl;
+	cout << "main: IA created" << endl; 	
+	
 	shared_ptr<Scene> scene = make_shared<Scene>(renderWindow, etat);
-	cout << "main:l.132 scene created\n\n" << endl;
+	cout << "main: scene created\n" << endl;
+	
 	state::Observable::registerObserver(scene);
-	cout << "main:l.134 observers listed\n" << endl;
-	// create players characters and map
-	engine.check_stateID();
-
+	cout << "main: observers listed\n" << endl;
+	
 	while (renderWindow.isOpen())
 	{
 		// Process events
 		sf::Event event;
-
 		while (renderWindow.pollEvent(event))
 		{
 			controller.handle_sfEvents(event);
-			//cout << "main while events" << endl;
+		}
+
+		engine.check_stateID(); //create the team when id is not started
+		if (etat.get_ID() == team_selected)
+		{
+			scene->background.new_background_layer();
+			scene->characters.new_character_layer();
 		}
 		ia.play();
-		//cout << "check ID" << endl;
-		engine.check_stateID();
+
 		renderWindow.clear();
 		scene->draw();
 

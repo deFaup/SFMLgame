@@ -8,14 +8,16 @@
 
 using namespace std;
 using namespace state;
-Map::Map()
+Map::Map() : width(1), height(1), mask()
 {
 	cout << "map created" << endl;
 }
+
 Map::~Map()
 {
 	cout << "map deleted" << endl;
 }
+
 void Map::set_screen_dimensions() {
 
 	width = sf::VideoMode::getDesktopMode().width;

@@ -12,8 +12,13 @@ using namespace std;
 
 Character::~Character(){ cout << "Character deleted" << endl; }
 
-Character::Character(const state::GameState& state) : state(state), characters(state.get_characters())
+Character::Character(const state::GameState& state) : state(state), characters()//state.get_characters()) 
+{}
+
+void Character::new_character_layer()
 {
+	characters = state.get_characters();
+
 	for (unsigned int i = 0; i < characters.size(); i++)
 	{// for each character in game
 
@@ -39,11 +44,10 @@ Character::Character(const state::GameState& state) : state(state), characters(s
 
 		sf::Sprite& sprite( surface[i]->getSprite() );
 		sprite.setScale(scale, scale);
-
 	}
 
 	update();
-	cout << "Character created" << endl;
+	cout << "Character created\n" << endl;
 }
 
 void Character::load_tilset()

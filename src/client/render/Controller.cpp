@@ -16,9 +16,13 @@ void Controller::handle_sfEvents(sf::Event& event)
 	if (event.type == sf::Event::Closed)
 		renderWindow.close();
 	
-	if (engine.etat.current_player->name == "IA"){
-		return;
-	}	
+	if (engine.etat.ID == state::StateID::started)
+	{
+		if (engine.etat.current_player->name == "IA")
+		{
+			return;
+		}
+	}
 	
 	if (event.type == sf::Event::KeyPressed)
 	{
