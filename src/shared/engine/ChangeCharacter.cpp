@@ -10,7 +10,7 @@ using namespace engine;
 
 int ChangeCharacter::isLegit(state::GameState& etat)
 {
-	if (etat.get_ID() == not_started || etat.get_ID() == team_selected)
+	if (etat.ID == (not_started || team_selected) )
 		return -1;
 
 	else return 0;

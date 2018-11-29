@@ -128,7 +128,7 @@ void enginet()
 		}
 
 		engine.check_stateID(); //create the team when id is not started
-		if (etat.get_ID() == team_selected)
+		if (etat.ID == team_selected)
 		{
 			scene->background.new_background_layer();
 			scene->characters.new_character_layer();

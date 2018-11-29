@@ -18,8 +18,6 @@ GameState::~GameState()
 	cout << "GameState deleteted" << endl;
 }
 
-StateID& GameState::get_ID() { return ID; }
-
 /* Create a mask in the map object */
 void GameState::new_map(unsigned const int width, unsigned const int height)
 {

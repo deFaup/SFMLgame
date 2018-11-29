@@ -23,7 +23,7 @@ GameEngine::GameEngine(state::GameState& etat) : etat(etat)
 void GameEngine::check_stateID()
 {
 	/* Create players, characters and a map. Will be rewritten when menu is implemented */
-	if (etat.get_ID() == not_started)
+	if (etat.ID == not_started)
 	{
 		etat.new_map(3000, 2000);
 
@@ -48,12 +48,12 @@ void GameEngine::check_stateID()
 			etat.new_character(i, goku);
 		}*/
 
-		state::StateID& etat_id = etat.get_ID();
+		state::StateID& etat_id = etat.ID;
 		etat_id = team_selected;
 	}
 
 	/* place all characters in line at the top of the map */
-	else if (etat.get_ID() == team_selected)
+	else if (etat.ID == team_selected)
 	{
 		unsigned int i = 10;
 
@@ -65,13 +65,13 @@ void GameEngine::check_stateID()
 			i += 100 % width;
 		}
 
-		state::StateID& etat_id = etat.get_ID();
+		state::StateID& etat_id = etat.ID;
 		etat_id = team_placement;
 	}
 
 	/* Let user move their character with the mouse
 		Valid position using space */
-	else if (etat.get_ID() == team_placement)
+	else if (etat.ID == team_placement)
 	{
 		/*static int counter = 0;
 		if (counter < etat.get_characters().size()+1)
@@ -83,22 +83,15 @@ void GameEngine::check_stateID()
 		}*/
 		//else
 		//{
-			state::StateID& etat_id = etat.get_ID();
+			state::StateID& etat_id = etat.ID;
 			etat_id = started;
 		//}
 	}
 
-	else if (etat.get_ID() == started){
+	else if (etat.ID == started){
 		executeCommandes();
 	}
 
-	// reset event commands here as main first while loop functions are called more than those in the second one (pollEvents)
-	/*commande.SpaceWasPressed = false;
-	commande.EnterWasPressed = false;
-	commande.CtrlWasPressed = false;
-	commande.isLeftClicked = false;
-	commande.isRightClicked = false;
-	*/
 }
 
 /*void GameEngine::getUserInput(){
