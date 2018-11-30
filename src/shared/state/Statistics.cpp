@@ -104,3 +104,24 @@ void state::Statistics::reset_all_but_life(CharactersID id)
 		break;
 	}
 }
+
+void Statistics::set_life_point(int offset)
+{
+	life_point += offset;
+	life_point %= MAX_LIFE_POINT;
+	life_point = (life_point < 0) ? 0 : life_point; // set to 0 if negative
+}
+
+void Statistics::set_attack_point(int offset)
+{
+	attack_point += offset;
+	attack_point %= MAX_ATTACK_POINT;
+	attack_point = (attack_point < 0) ? 0 : attack_point; // set to 0 if negative
+}
+
+void Statistics::set_move_point(int offset)
+{
+	move_point += offset;
+	move_point %= MAX_MOVE_POINT;
+	move_point = (move_point < 0) ? 0 : move_point; // set to 0 if negative
+}
