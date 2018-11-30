@@ -46,6 +46,9 @@ void GameState::new_player(const std::string name)
 /* create a new character for player i */
 void GameState::new_character(const unsigned int player_id, const CharactersID character_id)
 {
+	if (player_id > get_number_of_player())
+		throw std::invalid_argument("in GameState::new_character player_id is not valid");
+	
 	shared_ptr<Characters> ptr(0);
 	ptr = get_player(player_id)->new_character(character_id);
 	characters.push_back(ptr);
