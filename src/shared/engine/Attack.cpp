@@ -99,6 +99,7 @@ void Attack::execute(state::GameState& etat){
 			}
 		}
 	}
+	etat.map.set_mask(mask);
 	state::EventCharacters event(Map_maskChanged);
 	etat.map.notifyObservers(event);
 	

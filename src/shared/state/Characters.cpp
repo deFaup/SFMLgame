@@ -11,8 +11,9 @@ Characters::~Characters()
 {
 	cout << "Characters: " << id << " deleted" << endl;
 
-	for (unsigned int i = 0; i < number_of_attacks; i++)
-		delete[] &(attack[i]);
+	for (unsigned int i = 0; i < number_of_attacks; i++){
+		delete &(attack[i]);
+	}
 }
 
 /* Create a character of id=id with a defined owner, stats depending on the ID and position to (0,0) */

@@ -72,8 +72,10 @@ std::shared_ptr<Characters> Player::get_current_character(){
 }
 
 void Player::delete_character(unsigned int i){
-	characters.erase(characters.begin() + i);
-	current_character = characters[i];
+	if(characters.size() > 1){
+		characters.erase(characters.begin() + i);	
+		current_character = characters[i];
+	}
 }
 
 

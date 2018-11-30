@@ -41,6 +41,10 @@ vector<vector<int>> Map::get_mask() const {
 	return(mask);
 }
 
+void Map::set_mask(vector<vector<int>> mask){
+	this->mask = mask;
+}
+
 void Map::set_dimensions(const int width, const int height){
 
 	this->width = width;
