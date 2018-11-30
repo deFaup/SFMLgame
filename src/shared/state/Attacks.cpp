@@ -31,6 +31,7 @@ Attacks::~Attacks()
 	for (unsigned int i = 0; i < nbcolumn; i++)
 		delete[] attack_field_of_action[i];
 	delete[] attack_field_of_action;
+}
 
 unsigned int Attacks::get_attack_cost()
 {
