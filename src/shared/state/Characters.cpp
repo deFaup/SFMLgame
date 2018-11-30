@@ -11,13 +11,13 @@ Characters::~Characters()
 {
 	cout << "Characters: " << id << " deleted" << endl;
 
-	for (unsigned int i = 0; i < number_of_attacks; i++){
+	/*for (unsigned int i = 0; i < number_of_attacks; i++){
 		delete &(attack[i]);
-	}
+	}*/
 }
 
 /* Create a character of id=id with a defined owner, stats depending on the ID and position to (0,0) */
-Characters::Characters(Player* player, CharactersID id): owner(player), id(id), stats(id), number_of_attacks(0)
+Characters::Characters(Player* player, CharactersID id): owner(player), id(id), stats(id)
 {
 	cout << "Characters: " << id << " created" << endl;
 	//Statistics my_stat(20, 21, 22);
@@ -33,17 +33,16 @@ Position& Characters::get_position() { return position; }
 
 Statistics& Characters::get_statistics() { return stats; }
 
-Attacks& Characters::get_attack(unsigned int i) { return attack[i]; }
+Attacks& Characters::get_attack(unsigned int i) { return attacks[i]; }
 
 unsigned int Characters::get_number_of_attacks(){
-	return(this->number_of_attacks);
+	return(attacks.size());
 }
 
 void Characters::addAttack (Attacks& attaque){
-	if(number_of_attacks < MAX_NB_ATTACK)
+	if(attacks.size() < MAX_NB_ATTACK)
 	{
-		attack[number_of_attacks] = attaque;
-		number_of_attacks++;
+		attacks.push_back(attaque);
 	}
 	return;
 }

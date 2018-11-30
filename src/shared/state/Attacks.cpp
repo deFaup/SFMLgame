@@ -14,7 +14,7 @@ Attacks::Attacks()
 		attack_field_of_action[i] = new unsigned int[nbline];*/
 }
 
-Attacks::Attacks(unsigned int column, unsigned int line, unsigned int scope, unsigned int cost, unsigned int ** field)
+Attacks::Attacks(unsigned int column, unsigned int line, unsigned int scope, unsigned int cost, std::vector<std::vector<unsigned int>> field)
 {
 	nbline = line;
 	nbcolumn = column;
@@ -28,9 +28,9 @@ Attacks::Attacks(unsigned int column, unsigned int line, unsigned int scope, uns
 
 Attacks::~Attacks()
 {
-	for (unsigned int i = 0; i < nbcolumn; i++)
+	/*for (unsigned int i = 0; i < nbcolumn; i++)
 		delete[] attack_field_of_action[i];
-	delete[] attack_field_of_action;
+	delete[] attack_field_of_action;*/
 }
 
 unsigned int Attacks::get_attack_cost()
@@ -43,9 +43,9 @@ unsigned int Attacks::get_attack_scope()
 	return attack_scope ;
 }
 
-unsigned int ** Attacks::get_attack_field_of_action()
+std::vector<std::vector<unsigned int>> * Attacks::get_attack_field_of_action()
 {
-	return attack_field_of_action ;
+	return &attack_field_of_action ;
 }
 
 unsigned int Attacks::get_nbcolumn()
