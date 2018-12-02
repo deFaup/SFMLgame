@@ -13,7 +13,7 @@ Characters::~Characters()
 }
 
 /* Create a character of id=id with a defined owner, stats depending on the ID and position to (0,0) */
-Characters::Characters(Player* player, CharactersID id): owner(player), id(id), stats(this, id), position(this)
+Characters::Characters(Player* player, CharactersID id): stats(this, id), position(this), owner(player), id(id)
 {
 	cout << "Characters: " << id << " created" << endl;
 	//Statistics my_stat(20, 21, 22);
