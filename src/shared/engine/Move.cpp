@@ -51,7 +51,7 @@ int Move::isLegit(state::GameState& etat)
 		return -1;
 	if (pos.getPositionY() > (down_limit - speed) && move_type == MoveDown)
 		return -1;
-	Statistics stats = etat.current_player->get_current_character()->get_statistics();
+	Statistics stats = etat.current_player->get_current_character()->stats;
 	if (stats.get_move_point() == 0)
 		return -1;
 
@@ -62,7 +62,7 @@ void Move::execute(state::GameState& etat)
 {
 	state::Position& pos = etat.current_player->get_current_character()->position;
 	std::vector<std::vector<int>> mask = etat.map.get_mask();
-	Statistics& stats = etat.current_player->get_current_character()->get_statistics();
+	Statistics& stats = etat.current_player->get_current_character()->stats;
 	Statistics statsp(stats.get_life_point(),stats.get_attack_point(),stats.get_move_point()-1);
 
 	switch (move_type)

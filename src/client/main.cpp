@@ -138,7 +138,7 @@ void enginet()
 		renderWindow.clear();
 		scene->draw();
 
-		Statistics& stats = etat.current_player->get_current_character()->get_statistics();
+		Statistics& stats = etat.current_player->get_current_character()->stats;
 
 		sf::String info;
 

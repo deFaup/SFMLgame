@@ -17,15 +17,13 @@ Characters::Characters(Player* player, CharactersID id): owner(player), id(id), 
 {
 	cout << "Characters: " << id << " created" << endl;
 	//Statistics my_stat(20, 21, 22);
-	//get_statistics().set_statistics(my_stat);
-	//cout << "\tstats: life_point = " << get_statistics().get_attack_point() << endl;
-	//cout << "\tstats: attack_point = " << get_statistics().get_attack_point() << endl;
-	//cout << "\tstats: move_point = " << get_statistics().get_move_point() << endl;
+	//stats.set_statistics(my_stat);
+	//cout << "\tstats: life_point = " << stats().get_attack_point() << endl;
+	//cout << "\tstats: attack_point = " << stats.get_attack_point() << endl;
+	//cout << "\tstats: move_point = " << stats.get_move_point() << endl;
 }
 
 CharactersID Characters::get_id() const{ return id; }
-
-Statistics& Characters::get_statistics() { return stats; }
 
 Attacks& Characters::get_attack(unsigned int i) { return attacks[i]; }
 

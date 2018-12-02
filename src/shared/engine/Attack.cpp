@@ -12,7 +12,7 @@ using namespace state;
 int Attack::isLegit(state::GameState& etat)
 {
 	shared_ptr<Characters> character = etat.current_player->get_current_character();
-	Statistics& stats = character->get_statistics();
+	Statistics& stats = character->stats;
 	
 	std::vector<std::vector<unsigned int>> matrix;
 	for(unsigned int i = 0; i < 501; i++)
@@ -45,7 +45,7 @@ void Attack::execute(state::GameState& etat){
 
 	// reduction du nombre de point d'attaque pour ce tour
 	shared_ptr<Characters> character = etat.current_player->get_current_character();
-	Statistics& stats = character->get_statistics();
+	Statistics& stats = character->stats;
 	Statistics statsf(stats.get_life_point(),stats.get_attack_point()-character->get_attack(attack_number).get_attack_cost(),stats.get_move_point());
 	stats.set_statistics(statsf);
 
@@ -75,7 +75,7 @@ void Attack::execute(state::GameState& etat){
 			   positionY <= (attack_position.getPositionY() + size_y/2) &&
 			   positionY >= (attack_position.getPositionY() - size_y/2)){
 				// diminution du nombre de point de vie du personnage si l'attaque l'a atteinte
-				Statistics& statsa = cons_char->get_statistics();
+				Statistics& statsa = cons_char->stats;
 				Statistics statsn(statsa.get_life_point() - matrix[positionX - attack_position.getPositionX() + size_x/2]	[positionY - attack_position.getPositionY() + size_y/2],statsa.get_attack_point(),statsa.get_move_point());
 				statsa.set_statistics(statsn);
 				if(statsa.get_life_point() == 0){
