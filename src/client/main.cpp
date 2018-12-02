@@ -76,7 +76,7 @@ void testGameState() {
 	cout << "nombre de joueurs: " << etat.get_number_of_player() << endl;
 
 	etat.new_character(0, goku);
-	etat.get_player(0)->get_character(0)->get_position().setPosition(200, 200);
+	etat.get_player(0)->get_character(0)->position.setPosition(200, 200);
 	cout << "nombre de personnages du joueur 0: " << etat.get_player(0)->get_number_of_characters() << endl;
 
 
@@ -85,7 +85,7 @@ void testGameState() {
 
 	etat.new_character(1, vegeta);
 	cout << "nombre de personnages du joueur 1: " << etat.get_player(1)->get_number_of_characters() << endl;
-	etat.get_player(1)->get_character(0)->get_position().setPosition(400, 400);
+	etat.get_player(1)->get_character(0)->position.setPosition(400, 400);
 
 	cout << "\nnombre de personnages: " << etat.characters.size() << endl;
 
@@ -107,7 +107,7 @@ void enginet()
 
 	GameState etat;
 	GameEngine engine(etat);
-	Controller controller(renderWindow, engine);
+	Controller controller(renderWindow, engine, etat);
 	
 	RandomAI ia(engine);
 	cout << "main: IA created" << endl; 	

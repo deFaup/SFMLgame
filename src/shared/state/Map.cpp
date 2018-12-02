@@ -8,6 +8,7 @@
 
 using namespace std;
 using namespace state;
+
 Map::Map() : width(1), height(1), mask()
 {
 	cout << "map created" << endl;
@@ -41,8 +42,11 @@ vector<vector<int>> Map::get_mask() const {
 	return(mask);
 }
 
-void Map::set_mask(vector<vector<int>> mask){
+void Map::set_mask(vector<vector<int>> mask)
+{
 	this->mask = mask;
+	state::EventMap event(Map_maskChanged);
+	notifyObservers(event);
 }
 
 void Map::set_dimensions(const int width, const int height){

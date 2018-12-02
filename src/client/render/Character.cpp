@@ -95,7 +95,7 @@ void Character::update()
 			tile.setTile(437, 2029, 68, 90);
 		}
 		surface[i]->setSpriteTexture(tile);
-		surface[i]->setSpriteLocation(characters[i]->get_position().getPosition());
+		surface[i]->setSpriteLocation(characters[i]->position);
 	}
 	//cout << "leaving character update function\n";
 }
@@ -106,42 +106,43 @@ void Character::setSurface(sf::RenderWindow& window)
 	{
 		surface[i]->draw(window);
 	}
-	
 }
 
-//void Character::updateSelectedCharacter(unsigned int i)
-//{
-//	if (i < state.get_number_of_player())
-//	{
-//		auto state_temp = const_cast<GameState&> (state);
-//		auto selected_character = state_temp.get_player(i)->get_current_character();
-//
-//		/* find the selected character among the character list */
-//		int i = 0;
-//		for (auto charac : characters)
-//		{
-//			if (charac == selected_character)
-//				break;
-//			i++;
-//		}
-//		/* create a tile to find the sprite we want in our tileset */
-//		Tile tile, tileLeft, tileRight, tileUp, tileDown;
-//
-//		CharactersID id = selected_character->get_id();
-//		switch (id)
-//		{
-//		case goku:
-//			tile.setTile(0, 0, 42, 98);
-//			tileLeft.setTile(634, 0, 94, 96);
-//			tileRight.setTile(634, 0, 94, 96);
-//			tileUp.setTile(224, 0, 89, 93);
-//			tileDown.setTile(508, 288, 78, 77);
-//			break;
-//
-//		case vegeta:
-//			tile.setTile(0, 0, 50, 80);
-//			break;
-//		}
-//		surface[i]->setSpriteLocation(selected_character->get_position().getPosition());
-//	}
-//}
+void Character::update_one_character(Characters* char_to_update)
+{
+	/* find the position of the given character among the list of characters for the current GameState */
+	int i = 0;
+	for (auto charac : characters)
+	{
+		if (charac.get() == char_to_update)
+			break;
+		i++;
+	}
+
+	/* create a tile to find the sprite we want in our tileset */ // to be deprecated
+	Tile tile; // , tileLeft, tileRight, tileUp, tileDown;
+
+	CharactersID id = characters[i]->get_id();
+	switch (id)
+	{
+	case goku:
+		tile.setTile(0, 0, 42, 98);
+		//tileLeft.setTile(634, 0, 94, 96);
+		//tileRight.setTile(634, 0, 94, 96);
+		//tileUp.setTile(224, 0, 89, 93);
+		//tileDown.setTile(508, 288, 78, 77);
+		break;
+
+	case vegeta:
+		tile.setTile(0, 0, 50, 80);
+		break;
+	case miyo:
+		tile.setTile(437, 2029, 68, 90);
+		break;
+
+	default:
+		break;
+	}
+	surface[i]->setSpriteTexture(tile);
+	surface[i]->setSpriteLocation(characters[i]->position);
+}

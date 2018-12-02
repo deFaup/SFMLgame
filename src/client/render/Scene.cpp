@@ -110,16 +110,20 @@ void Scene::update_view(sf::View& window_view, sf::RenderWindow& renderWindow, s
 
 }
 
-
 void Scene::stateChanged(state::Event& event)
 {
+	//cout << "entering stateChanged function\n";
+
 	if (event.hasChanged(state::EventID::Map_maskChanged))
 		background.update();
 	
 	if (event.hasChanged(state::EventID::Character_positionChanged))
 	{
-		//cout << "entering stateChanged function\n";
-		characters.update();
-		//characters.updateSelectedCharacter(0);
+		EventCharacters* event_character = (EventCharacters*) &event;
+
+		if (event_character->changed_character) // if ptr to character is not null
+			characters.update_one_character(event_character->changed_character);
+		else
+			characters.update();
 	}
 }

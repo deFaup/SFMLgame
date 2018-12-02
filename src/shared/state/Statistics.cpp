@@ -6,8 +6,10 @@
 #include "define.hpp"
 #include "Statistics.h"
 using namespace state;
+using namespace std;
 
-state::Statistics::Statistics (int vie, int attaque, int deplacement){
+state::Statistics::Statistics (int vie, int attaque, int deplacement): owner(NULL)
+{
 	if(0 <= vie && vie <= MAX_LIFE_POINT){
 		this->life_point = vie;
 	}
@@ -38,7 +40,7 @@ state::Statistics::Statistics (int vie, int attaque, int deplacement){
 	return;
 }
 
-Statistics::Statistics(CharactersID id)
+Statistics::Statistics(Characters* owner, CharactersID id) : owner(owner)
 {
 	switch (id)
 	{
@@ -62,17 +64,11 @@ Statistics::Statistics(CharactersID id)
 	}
 }
 
-unsigned int state::Statistics::get_life_point (){
-	return(this->life_point);
-}
+unsigned int state::Statistics::get_life_point () {	return(this->life_point); }
 
-unsigned int state::Statistics::get_attack_point (){
-	return(this->attack_point);
-}
+unsigned int state::Statistics::get_attack_point () { return(this->attack_point); }
 
-unsigned int state::Statistics::get_move_point (){
-	return(this->move_point);
-}
+unsigned int state::Statistics::get_move_point () { return(this->move_point); }
 
 void state::Statistics::set_statistics(Statistics given_stats)
 {
@@ -105,23 +101,28 @@ void state::Statistics::reset_all_but_life(CharactersID id)
 	}
 }
 
-void Statistics::set_life_point(int offset)
+void Statistics::increase_life_point(int offset)
 {
 	life_point += offset;
-	life_point %= MAX_LIFE_POINT;
-	life_point = (life_point < 0) ? 0 : life_point; // set to 0 if negative
+	if (life_point <= 0)
+	{
+		//state::EventCharacters event(Character_positionChanged);
+		//notifyObservers(event);
+		life_point = 0;
+	}
+	life_point = (life_point > MAX_LIFE_POINT) ? MAX_LIFE_POINT : life_point; // set to MAX_LIFE_POINT if too hgh
 }
 
-void Statistics::set_attack_point(int offset)
+void Statistics::increase_attack_point(int offset)
 {
 	attack_point += offset;
-	attack_point %= MAX_ATTACK_POINT;
 	attack_point = (attack_point < 0) ? 0 : attack_point; // set to 0 if negative
+	attack_point = (attack_point > MAX_ATTACK_POINT) ? MAX_ATTACK_POINT : attack_point; // set to MAX_LIFE_POINT if too hgh
 }
 
-void Statistics::set_move_point(int offset)
+void Statistics::increase_move_point(int offset)
 {
 	move_point += offset;
-	move_point %= MAX_MOVE_POINT;
 	move_point = (move_point < 0) ? 0 : move_point; // set to 0 if negative
+	move_point = (move_point > MAX_MOVE_POINT) ? MAX_MOVE_POINT : move_point; // set to MAX_LIFE_POINT if too hgh
 }

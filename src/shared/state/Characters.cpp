@@ -10,14 +10,10 @@ using namespace state;
 Characters::~Characters()
 {
 	cout << "Characters: " << id << " deleted" << endl;
-
-	/*for (unsigned int i = 0; i < number_of_attacks; i++){
-		delete &(attack[i]);
-	}*/
 }
 
 /* Create a character of id=id with a defined owner, stats depending on the ID and position to (0,0) */
-Characters::Characters(Player* player, CharactersID id): owner(player), id(id), stats(id)
+Characters::Characters(Player* player, CharactersID id): owner(player), id(id), stats(this, id), position(this)
 {
 	cout << "Characters: " << id << " created" << endl;
 	//Statistics my_stat(20, 21, 22);
@@ -28,8 +24,6 @@ Characters::Characters(Player* player, CharactersID id): owner(player), id(id), 
 }
 
 CharactersID Characters::get_id() const{ return id; }
-
-Position& Characters::get_position() { return position; }
 
 Statistics& Characters::get_statistics() { return stats; }
 

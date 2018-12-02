@@ -42,7 +42,7 @@ int Move::isLegit(state::GameState& etat)
 	int right_limit(0), down_limit(0);
 	etat.map.get_dimensions(right_limit, down_limit);
 
-	state::Position pos = etat.current_player->get_current_character()->get_position();
+	state::Position pos = etat.current_player->get_current_character()->position;
 	if (pos.getPositionX() < speed && move_type == MoveLeft)
 		return -1;
 	if (pos.getPositionX() > (right_limit - speed) && move_type == MoveRight)
@@ -60,7 +60,7 @@ int Move::isLegit(state::GameState& etat)
 
 void Move::execute(state::GameState& etat)
 {
-	state::Position& pos = etat.current_player->get_current_character()->get_position();
+	state::Position& pos = etat.current_player->get_current_character()->position;
 	std::vector<std::vector<int>> mask = etat.map.get_mask();
 	Statistics& stats = etat.current_player->get_current_character()->get_statistics();
 	Statistics statsp(stats.get_life_point(),stats.get_attack_point(),stats.get_move_point()-1);
@@ -117,5 +117,5 @@ void Move::execute(state::GameState& etat)
 
 void Move::move_with_mouse(state::GameState& etat,state::Position pos)
 {
-	etat.current_player->get_current_character()->get_position().setPosition(pos.getPositionX(), pos.getPositionY());
+	etat.current_player->get_current_character()->position.setPosition(pos.getPositionX(), pos.getPositionY());
 }

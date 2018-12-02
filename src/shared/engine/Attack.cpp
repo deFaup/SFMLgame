@@ -64,11 +64,11 @@ void Attack::execute(state::GameState& etat){
 		shared_ptr<Player> cons_player = etat.players[k];
 		for(unsigned int i = 0; i < cons_player->get_number_of_characters(); i++){
 			shared_ptr<Characters> cons_char = cons_player->get_character(i);
-			unsigned int positionX = cons_char->get_position().getPositionX();
-			unsigned int positionY = cons_char->get_position().getPositionY();
+			unsigned int positionX = cons_char->position.getPositionX();
+			unsigned int positionY = cons_char->position.getPositionY();
 
 			// Pour facilité les tests
-			attack_position = character->get_position();
+			attack_position = character->position;
 
 			if(positionX <= (attack_position.getPositionX() + size_x/2) &&
 			   positionX >= (attack_position.getPositionX() - size_x/2) &&
@@ -103,8 +103,6 @@ void Attack::execute(state::GameState& etat){
 		}
 	}
 	etat.map.set_mask(mask);
-	state::EventCharacters event(Map_maskChanged);
-	etat.map.notifyObservers(event);
 	
 	// destruction de la matrice stockant temporairement le champ d'action de l'attaque
 	/*for (unsigned int i = 0; i < size_x; i++)
@@ -114,4 +112,3 @@ void Attack::execute(state::GameState& etat){
 	cout << "executing attack" << endl;
 	return;
 }
-

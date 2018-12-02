@@ -9,7 +9,8 @@ using namespace std;
 using namespace render;
 using namespace engine;
 
-Controller::Controller(sf::RenderWindow& renderWindow, engine::GameEngine& engine) : renderWindow(renderWindow), engine(engine) {}
+Controller::Controller(sf::RenderWindow& renderWindow, engine::GameEngine& engine, state::GameState& gameState) 
+	: renderWindow(renderWindow), engine(engine), gameState(gameState) {}
 
 void Controller::handle_sfEvents(sf::Event& event)
 {
@@ -18,7 +19,7 @@ void Controller::handle_sfEvents(sf::Event& event)
 	
 	if (engine.etat.ID == state::StateID::started)
 	{
-		if (engine.etat.current_player->name == "IA")
+		if (gameState.current_player->name == "IA")
 		{
 			return;
 		}
