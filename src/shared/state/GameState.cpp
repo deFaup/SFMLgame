@@ -85,3 +85,27 @@ void GameState::set_characters_range(unsigned int range)
 {
 	Player::set_characters_range(range);
 }
+
+void GameState::delete_character(Characters* character_to_delete)
+{
+	if ( !characters.empty() ) //if there is more than one character
+	{
+		/* find the shared ptr of the dead character in the GameState characters vector */
+		int index = 0;
+		for (auto charac : characters)
+		{
+			if (charac.get() == character_to_delete)
+			{
+				break;
+			}
+			index++;
+		}
+
+		characters.erase(characters.begin() + index);
+		cout << index << " erased in gamestate\n";
+	}
+
+	else
+		throw std::runtime_error("GameState.cpp in delete_character, deleting a character but there are no characters");
+
+}

@@ -75,6 +75,13 @@ void state::Statistics::set_statistics(Statistics given_stats)
 	life_point = given_stats.life_point;
 	attack_point = given_stats.attack_point;
 	move_point = given_stats.move_point;
+
+	if (life_point <= 0)
+	{
+		life_point = 0; // we can't kill the character from a function that only exist because the character exist
+		state::EventCharacters event(owner, Character_isDead);
+		notifyObservers(event);
+	}
 }
 
 void state::Statistics::reset_all_but_life(CharactersID id)
@@ -106,9 +113,13 @@ void Statistics::increase_life_point(int offset)
 	life_point += offset;
 	if (life_point <= 0)
 	{
-		//state::EventCharacters event(Character_positionChanged);
-		//notifyObservers(event);
+		// erase this character from the vector of character in Player
 		life_point = 0;
+		//auto id = this->owner->get_id();
+		//*(this)->owner->reset_stats();// ->get_Player();
+		state::EventCharacters event(owner, Character_isDead);
+		notifyObservers(event);
+		
 	}
 	life_point = (life_point > MAX_LIFE_POINT) ? MAX_LIFE_POINT : life_point; // set to MAX_LIFE_POINT if too hgh
 }

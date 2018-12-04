@@ -13,8 +13,8 @@ sf::Vector2f position_in_map[2]; //[1] is the position with mouse coordinates
 Scene::~Scene(){ std::cout << "Scene deleted" << std::endl; }
 
 /* Scene constructor share its reference to the GameState */
-Scene::Scene(sf::RenderWindow& window, const GameState& gamestate) 
-	: renderWindow(window), state(gamestate), background(gamestate), characters(gamestate)
+Scene::Scene(sf::RenderWindow& window, GameState& gameState) 
+	: renderWindow(window), gameState(gameState), background(gameState), characters(gameState)
 {
 	std::cout << "Scene created" << std::endl;
 	init_window(window_view, renderWindow, position_in_map);
@@ -66,7 +66,7 @@ void Scene::update_view(sf::View& window_view, sf::RenderWindow& renderWindow, s
 
 	//temporary
 	int map_size[2] = { 0 };
-	state.map.get_dimensions(map_size[0], map_size[1]);
+	gameState.map.get_dimensions(map_size[0], map_size[1]);
 
 	if (x >= (unsigned int)renderWindow.getPosition().x + renderWindow.getSize().x -100)
 		position_in_map[0].x += 10;
@@ -117,7 +117,7 @@ void Scene::stateChanged(state::Event& event)
 	if (event.hasChanged(state::EventID::Map_maskChanged))
 		background.update();
 	
-	if (event.hasChanged(state::EventID::Character_positionChanged))
+	else if (event.hasChanged(state::EventID::Character_positionChanged))
 	{
 		EventCharacters* event_character = (EventCharacters*) &event;
 
@@ -125,5 +125,38 @@ void Scene::stateChanged(state::Event& event)
 			characters.update_one_character(event_character->changed_character);
 		else
 			characters.update();
+	}
+	else if (event.hasChanged(state::EventID::Character_isDead))
+	{
+		std::cout << "your character is dead !" << std::endl;
+		EventCharacters* event_character = (EventCharacters*) &event;
+		Player* player = event_character->changed_character->get_Player();
+		
+		unsigned int index(0);
+		/* find the shared ptr to the dead character in the player characters vector */
+		for (unsigned int i = 0; i < player->get_number_of_characters(); i++)
+		{
+			if ((*player).get_character(i).get() == event_character->changed_character)
+			{
+				index = i;
+				break;
+			}
+		}
+		shared_ptr<state::Characters> temp = player->get_character(index);
+		std::cout << "references to this character= " << temp.use_count() << endl;
+		// in this part we have to delete the dead character from all the vector then update the scene
+		
+		// delete in Player (current_character and vector characters)
+		player->delete_character(index);
+		std::cout << "references to this character= " << temp.use_count() << endl;
+
+		// delete in GameState (vector characters)
+		gameState.delete_character(event_character->changed_character);
+		std::cout << "references to this character= " << temp.use_count() << endl;
+
+		// delete in render::Character
+		characters.delete_character(event_character->changed_character);
+		std::cout << "references to this character= " << temp.use_count() << endl;
+
 	}
 }

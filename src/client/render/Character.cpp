@@ -146,3 +146,29 @@ void Character::update_one_character(Characters* char_to_update)
 	surface[i]->setSpriteTexture(tile);
 	surface[i]->setSpriteLocation(characters[i]->position);
 }
+
+void Character::delete_character(Characters* character_to_delete)
+{
+	if (!characters.empty()) //if there is more than one character
+	{
+		/* find the shared ptr of the dead character in the GameState characters vector */
+		int index = 0;
+		for (auto charac : characters)
+		{
+			if (charac.get() == character_to_delete)
+			{
+				break;
+			}
+			index++;
+		}
+
+		tileset.erase(tileset.begin() + index);
+		surface.erase(surface.begin() + index);
+		characters = state.get_characters();
+		cout << index << " erased in render character\n";
+	}
+
+	else
+		throw std::runtime_error("render::Character.cpp in delete_character, deleting a character but there are no characters");
+	
+}

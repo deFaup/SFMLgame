@@ -44,4 +44,4 @@ void Characters::reset_stats()
 	stats.reset_all_but_life(id);
 }
 
-
+Player* Characters::get_Player() { return owner; }

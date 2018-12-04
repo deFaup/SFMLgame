@@ -40,10 +40,12 @@ shared_ptr<Characters> Player::new_character(const CharactersID id)
 /* get a reference to your character number i */
 std::shared_ptr<Characters>& Player::get_character(unsigned int i)
 {
-	if (i >= get_number_of_characters())
-	{
-		throw std::invalid_argument("you can't access to a non existent character");
-	}
+	if (i >= get_number_of_characters() && i!=0 )//only if there are characters and i is too high
+		throw std::invalid_argument("Player.cpp in get_character,i bigger than number of characters");
+
+	else if (characters.empty())
+		throw std::invalid_argument("Player.cpp in get_character, this player has no characters");
+
 	else
 		return characters[i];
 }
@@ -55,9 +57,7 @@ void Player::select_character(unsigned int character_index)
 		current_character = characters[character_index];
 }
 
-unsigned int Player::get_number_of_characters() const{
-	return(characters.size());
-}
+unsigned int Player::get_number_of_characters() const{ return(characters.size()); }
 
 void Player::set_characters_range(unsigned int range)
 {
@@ -67,15 +67,33 @@ void Player::set_characters_range(unsigned int range)
 		characters_range = MAX_NB_CHARACTER;
 }
 
-std::shared_ptr<Characters> Player::get_current_character(){
-	return(current_character);
+std::shared_ptr<Characters> Player::get_current_character() 
+{
+	if (current_character)
+		return(current_character); 
+	else
+		throw std::runtime_error("Player.cpp in get_current_character, this player has no character");
 }
 
-void Player::delete_character(unsigned int i){
-	if(characters.size() > 1){
+void Player::delete_character(unsigned int i)
+{
+	if (characters.size() > 1 && (i < characters.size()) ) //if the player has more than one character
+	{
 		characters.erase(characters.begin() + i);	
-		current_character = characters[i];
+		current_character = characters[0];
 	}
+	else if (characters.size() == 1) // if he has only one player then the player has lost
+	{
+		characters.pop_back(); // delete the last character of this player
+		current_character = NULL; 
+		// this player has to be deleted now
+		// TO DO but in scene.cpp not here as you can't kill an object from a function within the object
+	}
+	else if (characters.empty())
+		throw std::runtime_error("Player.cpp in delete_character, deleting a character but player has no character");
+
+	else
+		throw std::runtime_error("Player.cpp in delete_character, argument i is bigger than the number of characters");
 }
 
 
