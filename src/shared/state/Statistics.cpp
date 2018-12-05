@@ -116,8 +116,7 @@ void Statistics::increase_life_point(int offset)
 		// erase this character from the vector of character in Player
 		life_point = 0;
 		state::EventCharacters event(owner, Character_isDead);
-		notifyObservers(event);
-		
+		notifyObservers(event);	
 	}
 	life_point = (life_point > MAX_LIFE_POINT) ? MAX_LIFE_POINT : life_point; // set to MAX_LIFE_POINT if too high
 }

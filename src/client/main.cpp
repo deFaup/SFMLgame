@@ -120,6 +120,8 @@ void enginet()
 	
 	while (renderWindow.isOpen())
 	{
+		renderWindow.display();
+
 		// Process events
 		sf::Event event;
 		while (renderWindow.pollEvent(event))
@@ -175,7 +177,7 @@ void enginet()
 		// puis, dans la boucle de dessin, entre window.clear() et window.display()
 		renderWindow.draw(text);
 
-		renderWindow.display();
+		//renderWindow.display();
 		
 	}
 }

@@ -165,7 +165,7 @@ void Character::delete_character(Characters* character_to_delete)
 		tileset.erase(tileset.begin() + index);
 		surface.erase(surface.begin() + index);
 		characters = state.get_characters();
-		cout << index << " erased in render character\n";
+		// cout << "character " << index << " erased in render character\n";
 	}
 
 	else

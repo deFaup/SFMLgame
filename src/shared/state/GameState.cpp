@@ -94,7 +94,7 @@ void GameState::delete_character(Characters* character_to_delete)
 			if (charac.get() == character_to_delete)
 			{
 				characters.erase(characters.begin() + index);
-				cout << "character " << index << " erased in gamestate\n";
+				// cout << "character " << index << " erased in gamestate\n";
 				break;
 			}
 			index++;
@@ -106,6 +106,7 @@ void GameState::delete_character(Characters* character_to_delete)
 
 }
 
+//delete a player and set the GameState ID to end when there is only one player left.
 void GameState::delete_player(Player* player_to_delete)
 {
 	if (players.size() > 1) // at least two players
@@ -120,8 +121,8 @@ void GameState::delete_player(Player* player_to_delete)
 
 				if (current_player == player) // player_to_delete was the current_player an died
 					current_player = players[(index == players.size()) ? 0 : index];
+				// if index == players.size we our of vector boundaries so we set 0
 
-				cout << "player " << index << " erased in gamestate\n";
 				break;
 			}
 			index++;
