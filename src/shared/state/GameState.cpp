@@ -81,31 +81,60 @@ const vector<shared_ptr<Characters>> GameState::get_characters() const {  return
 
 /* Limit the maximum number of characters the players can choose
 	The range is also limited by MAX_NB_PLAYER in define.hpp */
-void GameState::set_characters_range(unsigned int range)
-{
-	Player::set_characters_range(range);
-}
+void GameState::set_characters_range(unsigned int range) { Player::set_characters_range(range); }
 
 void GameState::delete_character(Characters* character_to_delete)
 {
-	if ( !characters.empty() ) //if there is more than one character
+	if ( !characters.empty() ) // if the vector is not empty we can delete something
 	{
 		/* find the shared ptr of the dead character in the GameState characters vector */
-		int index = 0;
+		int index = 0; 
 		for (auto charac : characters)
 		{
 			if (charac.get() == character_to_delete)
 			{
+				characters.erase(characters.begin() + index);
+				cout << "character " << index << " erased in gamestate\n";
+				break;
+			}
+			index++;
+		}
+	}
+
+	else
+		throw std::runtime_error("GameState.cpp in delete_character, deleting a character but there are no characters");
+
+}
+
+void GameState::delete_player(Player* player_to_delete)
+{
+	if (players.size() > 1) // at least two players
+	{
+		/* find the shared ptr of the dead player in the GameState players vector */
+		unsigned int index(0);
+		for (auto player : players)
+		{
+			if (player.get() == player_to_delete)
+			{
+				players.erase(players.begin() + index);
+
+				if (current_player == player) // player_to_delete was the current_player an died
+					current_player = players[(index == players.size()) ? 0 : index];
+
+				cout << "player " << index << " erased in gamestate\n";
 				break;
 			}
 			index++;
 		}
 
-		characters.erase(characters.begin() + index);
-		cout << index << " erased in gamestate\n";
+		if (players.size() == 1)
+			ID = StateID::end;
 	}
 
+	else if (players.size() == 1)
+		throw std::runtime_error("GameState.cpp in delete_player, can not delete the last player");
+
 	else
-		throw std::runtime_error("GameState.cpp in delete_character, deleting a character but there are no characters");
+		throw std::runtime_error("GameState.cpp in delete_player, no player to delete");
 
 }

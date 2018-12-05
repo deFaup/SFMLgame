@@ -86,8 +86,11 @@ void Player::delete_character(unsigned int i)
 	{
 		characters.pop_back(); // delete the last character of this player
 		current_character = NULL; 
+
 		// this player has to be deleted now
-		// TO DO but in scene.cpp not here as you can't kill an object from a function within the object
+		state::EventPlayer event(this, Player_isDead);
+		notifyObservers(event);
+
 	}
 	else if (characters.empty())
 		throw std::runtime_error("Player.cpp in delete_character, deleting a character but player has no character");

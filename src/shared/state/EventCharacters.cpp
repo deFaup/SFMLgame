@@ -1,6 +1,7 @@
 // includes
 #include "define.hpp"
 #include "EventCharacters.h"
+#include "EventPlayer.h"
 
 using namespace std;
 using namespace state;
@@ -20,3 +21,8 @@ EventCharacters::EventCharacters(Characters* changed_character, EventID ID): cha
 }
 
 EventCharacters::~EventCharacters() {};
+
+EventPlayer::EventPlayer(Player* changed_player, EventID ID) : changed_player(changed_player)
+{
+	events[ID] = true;
+}

@@ -126,6 +126,7 @@ void Scene::stateChanged(state::Event& event)
 		else
 			characters.update();
 	}
+
 	else if (event.hasChanged(state::EventID::Character_isDead))
 	{
 		std::cout << "your character is dead !" << std::endl;
@@ -143,20 +144,46 @@ void Scene::stateChanged(state::Event& event)
 			}
 		}
 		shared_ptr<state::Characters> temp = player->get_character(index);
-		std::cout << "references to this character= " << temp.use_count() << endl;
-		// in this part we have to delete the dead character from all the vector then update the scene
+		std::cout << "references to this character= " << temp.use_count() << endl; //7 or 6
+		// in this part we delete all shared ptr to the dead character
 		
 		// delete in Player (current_character and vector characters)
 		player->delete_character(index);
-		std::cout << "references to this character= " << temp.use_count() << endl;
+		std::cout << "references to this character= " << temp.use_count() << endl; //5
 
 		// delete in GameState (vector characters)
 		gameState.delete_character(event_character->changed_character);
-		std::cout << "references to this character= " << temp.use_count() << endl;
+		std::cout << "references to this character= " << temp.use_count() << endl; //4
 
 		// delete in render::Character
 		characters.delete_character(event_character->changed_character);
-		std::cout << "references to this character= " << temp.use_count() << endl;
+		std::cout << "references to this character= " << temp.use_count() << endl; //3
 
+	}//2 once we exit this namespace and 0 when we leave engine::Attack::execute
+
+	else if (event.hasChanged(state::EventID::Player_isDead))
+	{
+		std::cout << "your player is dead !" << std::endl;
+
+		EventPlayer* event_player = (EventPlayer*) &event;
+		Player* player = event_player->changed_player;
+
+		unsigned int index(0);
+		/* find the shared ptr to the dead character in the player characters vector */
+		shared_ptr<state::Player> temp;
+		for (unsigned int i = 0; i < gameState.get_number_of_player(); i++)
+		{
+			if (gameState.get_player(i).get() == player)
+			{
+				index = i;
+				temp = gameState.get_player(index);
+				break;
+			}
+		}
+
+		std::cout << "references to this character= " << temp.use_count() << endl; //2 or 3
+
+		// in this part we delete all shared ptr to the dead player
+		gameState.delete_player(player);
 	}
 }

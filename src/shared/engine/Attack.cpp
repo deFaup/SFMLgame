@@ -61,7 +61,7 @@ void Attack::execute(state::GameState& etat){
 
 	// parcours de tout les personnages du jeu pour savoir si il sont impacté par l'attaque
 	for(unsigned int k = 0; k < etat.players.size(); k++){
-		shared_ptr<Player> cons_player = etat.players[k];
+		shared_ptr<Player> cons_player = etat.get_player(k);
 		for(unsigned int i = 0; i < cons_player->get_number_of_characters(); i++){
 			shared_ptr<Characters> cons_char = cons_player->get_character(i);
 			unsigned int positionX = cons_char->position.getPositionX();
