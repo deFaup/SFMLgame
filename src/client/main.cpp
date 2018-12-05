@@ -96,7 +96,28 @@ void testGameState() {
 
 void enginet()
 {// problème à résoudre: une fois que l'on a touché le sol si l'on va tout à gauche de l'écran puis que l'on repart à droite ALORS seg fault
-	sf::RenderWindow renderWindow;
+	sf::RenderWindow renderWindow(sf::VideoMode(1102,869), "menu test");
+
+	sf::Texture pic; 
+	pic.loadFromFile("res/menu.png");
+	sf::Sprite menu_sprite(pic);
+
+	bool Return_key_pressed(false);
+	while (!Return_key_pressed)
+	{
+		sf::Event event;
+		while (renderWindow.pollEvent(event))
+		{
+			if (event.type == sf::Event::KeyReleased)
+			{
+				if (event.key.code == sf::Keyboard::Return)
+					Return_key_pressed = true;
+			}
+		}
+		renderWindow.draw(menu_sprite);
+		renderWindow.display();
+		renderWindow.clear();
+	}
 
 	/* le thread render/main aura une méthode class whatever pour afficher un menu dans renderwindow.
 	Dans le menu on choisit le nombre de joueurs et de personnages + autres paramètres si besoin.
@@ -108,16 +129,16 @@ void enginet()
 	GameState etat;
 	GameEngine engine(etat);
 	Controller controller(renderWindow, engine, etat);
-	
+
 	RandomAI ia(engine);
-	cout << "main: IA created" << endl; 	
-	
+	cout << "main: IA created" << endl;
+
 	shared_ptr<Scene> scene = make_shared<Scene>(renderWindow, etat);
 	cout << "main: scene created\n" << endl;
-	
+
 	state::Observable::registerObserver(scene);
 	cout << "main: observers listed\n" << endl;
-	
+
 	while (renderWindow.isOpen())
 	{
 		renderWindow.display();
@@ -129,7 +150,7 @@ void enginet()
 			controller.handle_sfEvents(event);
 		}
 
-		engine.check_stateID(); //create the team when id is not started
+		engine.check_stateID(); //create the team when id is "not started"
 		if (etat.ID == team_selected)
 		{
 			scene->background.new_background_layer();

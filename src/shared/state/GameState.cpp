@@ -123,6 +123,7 @@ void GameState::delete_player(Player* player_to_delete)
 					current_player = players[(index == players.size()) ? 0 : index];
 				// if index == players.size we our of vector boundaries so we set 0
 
+				cout << "number of players " << players.size() << endl;
 				break;
 			}
 			index++;
