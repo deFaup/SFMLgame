@@ -1,3 +1,4 @@
+.gitignore
 *~
 build
 bin
@@ -18,4 +19,9 @@ src/state.dia~
 configure.bat
 rm.bat
 
-src/.vs
+.vs
+worms_game.sln
+worms_game.vcxproj
+worms_game.vcxproj.filters
+worms_game.vcxproj.user
+x64
