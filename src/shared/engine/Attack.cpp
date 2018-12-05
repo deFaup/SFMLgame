@@ -78,12 +78,12 @@ void Attack::execute(state::GameState& etat){
 				Statistics& statsa = cons_char->stats;
 				Statistics statsn(statsa.get_life_point() - matrix[positionX - attack_position.getPositionX() + size_x/2]	[positionY - attack_position.getPositionY() + size_y/2],statsa.get_attack_point(),statsa.get_move_point());
 				statsa.set_statistics(statsn);
-				if(statsa.get_life_point() == 0)
-				{
-					// suppression du joueur si sa vie atteint 0
-					//cons_player->delete_character(i);
-					// le joueur est supprimer du jeu par contre il reste affiché
-				}
+				//if(statsa.get_life_point() == 0)
+				//{
+				//	 suppression du joueur si sa vie atteint 0
+				//	cons_player->delete_character(i);
+				//	 le joueur est supprimer du jeu par contre il reste affiché
+				//}
 			}
 		}
 	}
