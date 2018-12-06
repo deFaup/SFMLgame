@@ -32,7 +32,7 @@ void GameEngine::check_stateID()
 		etat.new_character(0, goku);
 		etat.new_character(0, miyo);
 
-		etat.new_player("Joueur 2");
+		etat.new_player("IA");
 		etat.new_character(1, vegeta);
 		etat.new_character(1, goku);
 		etat.new_character(1, miyo);
@@ -182,6 +182,7 @@ void GameEngine::executeCommandes()
 {
 	while (!commandes.empty())
 	{
+		cout << "execution des commandes" << endl;
 		if (commandes.front().ID == enter)
 		{
 			ChangePlayer useless_var;

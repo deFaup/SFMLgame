@@ -131,7 +131,7 @@ void enginet()
 	GameEngine engine(etat); std::thread thread_engine;
 	Controller controller(renderWindow, engine, etat);
 
-	RandomAI ia(engine);
+	HyAI ia(engine);
 	cout << "main: IA created" << endl;
 
 	shared_ptr<Scene> scene = make_shared<Scene>(renderWindow, etat);
@@ -163,6 +163,7 @@ void enginet()
 		//	scene->characters.new_character_layer();
 		//}
 		ia.play();
+		//engine.check_stateID();
 
 		renderWindow.clear();
 		scene->draw();
