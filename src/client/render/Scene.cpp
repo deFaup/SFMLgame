@@ -112,7 +112,7 @@ void Scene::update_view(sf::View& window_view, sf::RenderWindow& renderWindow, s
 
 void Scene::stateChanged(state::Event& event)
 {
-	//cout << "entering stateChanged function\n";
+	cout << "entering stateChanged function\n";
 
 	if (event.hasChanged(state::EventID::Map_maskChanged))
 		background.update();
@@ -144,23 +144,23 @@ void Scene::stateChanged(state::Event& event)
 				break;
 			}
 		}
-		//shared_ptr<state::Characters> temp = player->get_character(index);
-		// std::cout << "references to this character= " << temp.use_count() << endl; //7 or 6
+		shared_ptr<state::Characters> temp = player->get_character(index);
+		 std::cout << "references to this character= " << temp.use_count() << endl; //7 or 6 (5 if 1 in Attack)
 		// in this part we delete all shared ptr to the dead character
 		
 		// delete in Player (current_character and vector characters)
 		player->delete_character(index);
-		// std::cout << "references to this character= " << temp.use_count() << endl; //5
+		 std::cout << "references to this character= " << temp.use_count() << endl; //5
 
 		// delete in GameState (vector characters)
 		gameState.delete_character(event_character->changed_character);
-		// std::cout << "references to this character= " << temp.use_count() << endl; //4
+		 std::cout << "references to this character= " << temp.use_count() << endl; //4
 
 		// delete in render::Character
 		characters.delete_character(event_character->changed_character);
-		// std::cout << "references to this character= " << temp.use_count() << endl; //3
+		 std::cout << "references to this character= " << temp.use_count() << endl; //3
 
-	}//2 once we exit this namespace and 0 when we leave engine::Attack::execute
+	}//2 once we exit this namespace and 0 when we leave engine::Attack::execute (or only 1 in Attack)
 
 	else if (event.hasChanged(state::EventID::Player_isDead))
 	{

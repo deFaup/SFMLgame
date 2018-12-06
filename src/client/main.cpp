@@ -155,7 +155,7 @@ void enginet()
 		{ 
 			controller.handle_sfEvents(event);
 		}
-
+		//cout << "main ID: " << (etat.ID != state::StateID::end);
 		//engine.check_stateID();
 		//if (etat.ID == team_selected)
 		//{
@@ -207,7 +207,7 @@ void enginet()
 		//renderWindow.display();
 		
 	}
-	engine.game_ended = true;
+	
 	thread_engine.join();
 	cout << "engine thread closed\n";
 }

@@ -62,7 +62,7 @@ void GameEngine::check_stateID()
 			characters_in_game->position.setPosition(i, 0);
 			int width(0), height(0);
 			etat.map.get_dimensions(width, height);
-			i += 100 % width;
+			i += 200 % width;
 		}
 
 		auto& etat_id = etat.ID;
@@ -83,8 +83,10 @@ void GameEngine::check_stateID()
 		}*/
 		//else
 		//{
-		auto& etat_id = etat.ID;
-		etat_id = started;
+		executeCommandes();
+
+//		auto& etat_id = etat.ID;
+//		etat_id = started;
 
 		//}
 	}
@@ -101,7 +103,10 @@ void GameEngine::check_stateID()
 
 void GameEngine::workLoop()
 {
-	while (etat.ID != state::StateID::end || !game_ended) { check_stateID(); }
+	while (!((etat.ID == state::StateID::end) || game_ended))
+	{
+		check_stateID();
+	}
 }
 
 /*void GameEngine::getUserInput(){
@@ -173,36 +178,52 @@ void GameEngine::workLoop()
 	return;
 }*/
 
-void GameEngine::executeCommandes(){
-	for(unsigned int k = 0; k < commandes.size(); k++)
+void GameEngine::executeCommandes()
+{
+	while (!commandes.empty())
 	{
-		if(commandes[k].ID == arrow_left || commandes[k].ID == arrow_right)
+		if (commandes.front().ID == enter)
 		{
-			Move move_command(commandes[k].ID);
+			ChangePlayer useless_var;
+			useless_var.execute(etat);
+		}
+		
+		else if ((commandes.front().ID == arrow_left) || (commandes.front().ID == arrow_right))
+		{
+			Move move_command(commandes.front().ID);
 			if (move_command.isLegit(etat) != -1) {
 				move_command.execute(etat);
 			}
 		}
-		if(commandes[k].ID == arrow_up || commandes[k].ID == arrow_down){
-			ChangeCharacter useless_var;
-			useless_var.execute(etat);
-		}
-		if(commandes[k].ID == enter){
-			ChangePlayer useless_var;
-			useless_var.execute(etat);
-		}
-		if(commandes[k].ID == left_click){
-			Attack attack_command;
-			attack_command.attack_position = commandes[k].mouse_position;
-			attack_command.attack_number = 0;
-			if(attack_command.isLegit(etat) != -1){
-				attack_command.execute(etat);
+
+		if (etat.ID == team_placement) //commands to place your characters then start the game
+		{
+			if (commandes.front().ID == space)
+				etat.ID = started;
+
+			else if ((commandes.front().ID == arrow_up) || (commandes.front().ID == arrow_down))
+			{
+				ChangeCharacter useless_var;
+				useless_var.execute(etat);
 			}
 		}
+		
+		else if (etat.ID == started)
+		{
+			if (commandes.front().ID == left_click)
+			{
+				Attack attack_command;
+				attack_command.attack_position = commandes.front().mouse_position;
+				attack_command.attack_number = 0;
+
+				if (attack_command.isLegit(etat) != -1)
+					attack_command.execute(etat);
+			}
+		}
+	
+		commandes.pop();
 	}
-	while(commandes.size() != 0){
-		commandes.pop_back();
-	}
+
 	render::sfEventsID arrow = arrow_down;
 	Move move_commande(arrow);
 	move_commande.execute(etat);
@@ -217,6 +238,6 @@ void GameEngine::place_characters_with_mouse()
 }
 
 void GameEngine::add_command(render::sfEvents commande){
-	commandes.push_back(commande);
+	commandes.push(commande);
 }
 

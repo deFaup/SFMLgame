@@ -15,7 +15,10 @@ Controller::Controller(sf::RenderWindow& renderWindow, engine::GameEngine& engin
 void Controller::handle_sfEvents(sf::Event& event)
 {
 	if (event.type == sf::Event::Closed)
+	{
 		renderWindow.close();
+		engine.game_ended = true;
+	}
 	
 	if (engine.etat.ID == state::StateID::started)
 	{
@@ -42,10 +45,8 @@ void Controller::handle_sfEvents(sf::Event& event)
 
 	else if (event.type == sf::Event::KeyReleased)
 	{
-		if (event.key.code == sf::Keyboard::Space) {
-			//cout << "engine events space released\n";
+		if (event.key.code == sf::Keyboard::Space)
 			add_command(sfEvents(space));
-		}
 
 		else if (event.key.code == sf::Keyboard::Return)
 			add_command(sfEvents(enter));
