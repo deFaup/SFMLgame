@@ -144,7 +144,7 @@ void enginet()
 	scene->background.new_background_layer();
 	scene->characters.new_character_layer();
 
-	//thread_engine = thread(&engine::GameEngine::workLoop, &engine);
+	thread_engine = thread(&engine::GameEngine::workLoop, &engine);
 	while (renderWindow.isOpen())
 	{
 		renderWindow.display();
@@ -163,7 +163,7 @@ void enginet()
 		//	scene->characters.new_character_layer();
 		//}
 		ia.play();
-		engine.check_stateID();
+		//engine.check_stateID();
 
 		renderWindow.clear();
 		scene->draw();
@@ -209,7 +209,7 @@ void enginet()
 		
 	}
 	engine.game_ended = true;
-	//thread_engine.join();
+	thread_engine.join();
 	cout << "engine thread closed\n";
 }
 
