@@ -200,16 +200,16 @@ void GameEngine::executeCommandes()
 			}
 		}
 
+		else if ((commandes.front().ID == arrow_up) || (commandes.front().ID == arrow_down))
+		{
+			ChangeCharacter useless_var;
+			useless_var.execute(etat);
+		}
+
 		if (etat.ID == team_placement) //commands to place your characters then start the game
 		{
 			if (commandes.front().ID == space)
 				etat.ID = started;
-
-			else if ((commandes.front().ID == arrow_up) || (commandes.front().ID == arrow_down))
-			{
-				ChangeCharacter useless_var;
-				useless_var.execute(etat);
-			}
 		}
 		
 		else if (etat.ID == started)
