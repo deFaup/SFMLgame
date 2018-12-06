@@ -47,19 +47,19 @@ Statistics::Statistics(Characters* owner, CharactersID id) : owner(owner)
 	case goku:
 		life_point = 100;
 		attack_point = 10;
-		move_point = 100;
+		move_point = MAX_MOVE_POINT;
 		break;
 
 	case vegeta:
 		life_point = 100;
 		attack_point = 10;
-		move_point = 100;
+		move_point = MAX_MOVE_POINT;
 		break;
 
 	case miyo:
 		life_point = 100;
 		attack_point = 10;
-		move_point = 100;
+		move_point = MAX_MOVE_POINT;
 		break;
 	}
 }

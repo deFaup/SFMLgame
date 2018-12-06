@@ -83,6 +83,10 @@ void GameEngine::check_stateID()
 		}*/
 		//else
 		//{
+		render::sfEventsID arrow = arrow_down;
+		Move move_commande(arrow);
+		move_commande.execute(etat);
+
 		executeCommandes();
 
 //		auto& etat_id = etat.ID;
@@ -182,7 +186,6 @@ void GameEngine::executeCommandes()
 {
 	while (!commandes.empty())
 	{
-		cout << "execution des commandes" << endl;
 		if (commandes.front().ID == enter)
 		{
 			ChangePlayer useless_var;
