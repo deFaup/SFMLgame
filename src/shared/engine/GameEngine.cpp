@@ -40,7 +40,7 @@ void GameEngine::check_stateID()
 /*		etat.new_player("IA");
 		etat.new_character(2, vegeta);
 		etat.new_character(2, goku);
-		etat.new_character(2, miyo);		
+		etat.new_character(2, miyo);
 */		/*for (int i = 0; i < 3; i++)
 		{
 			etat.new_player("Joueur " + to_string(i));
@@ -48,7 +48,7 @@ void GameEngine::check_stateID()
 			etat.new_character(i, goku);
 		}*/
 
-		state::StateID& etat_id = etat.ID;
+		auto& etat_id = etat.ID;
 		etat_id = team_selected;
 	}
 
@@ -57,7 +57,7 @@ void GameEngine::check_stateID()
 	{
 		unsigned int i = 10;
 
-		for (auto characters_in_game : etat.get_characters() )
+		for (auto characters_in_game : etat.get_characters())
 		{
 			characters_in_game->position.setPosition(i, 0);
 			int width(0), height(0);
@@ -65,7 +65,7 @@ void GameEngine::check_stateID()
 			i += 100 % width;
 		}
 
-		state::StateID& etat_id = etat.ID;
+		auto& etat_id = etat.ID;
 		etat_id = team_placement;
 	}
 
@@ -83,15 +83,25 @@ void GameEngine::check_stateID()
 		}*/
 		//else
 		//{
-			state::StateID& etat_id = etat.ID;
-			etat_id = started;
+		auto& etat_id = etat.ID;
+		etat_id = started;
+
 		//}
 	}
 
-	else if (etat.ID == started){
+	else if (etat.ID == started) {
 		executeCommandes();
 	}
 
+	else if (etat.ID == state::StateID::end)
+	{
+		cout << " vous avez remportez le jeu !! Bravo\n";
+	}
+}
+
+void GameEngine::workLoop()
+{
+	while (etat.ID != state::StateID::end || !game_ended) { check_stateID(); }
 }
 
 /*void GameEngine::getUserInput(){
@@ -198,7 +208,6 @@ void GameEngine::executeCommandes(){
 	move_commande.execute(etat);
 	return;
 }
-
 
 void GameEngine::place_characters_with_mouse()
 {

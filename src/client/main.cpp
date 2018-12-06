@@ -20,6 +20,7 @@ void testSFML() {
 #include "render.h"
 #include "engine.h"
 #include "ai.h"
+#include <thread>
 
 using namespace std;
 using namespace state;
@@ -127,7 +128,7 @@ void enginet()
 	*/
 
 	GameState etat;
-	GameEngine engine(etat);
+	GameEngine engine(etat); std::thread thread_engine;
 	Controller controller(renderWindow, engine, etat);
 
 	RandomAI ia(engine);
@@ -139,6 +140,11 @@ void enginet()
 	state::Observable::registerObserver(scene);
 	cout << "main: observers listed\n" << endl;
 
+	engine.check_stateID(); //create the team when id is "not started", id="team selected"
+	scene->background.new_background_layer();
+	scene->characters.new_character_layer();
+
+	thread_engine = thread(&engine::GameEngine::workLoop, &engine);
 	while (renderWindow.isOpen())
 	{
 		renderWindow.display();
@@ -146,16 +152,16 @@ void enginet()
 		// Process events
 		sf::Event event;
 		while (renderWindow.pollEvent(event))
-		{
+		{ 
 			controller.handle_sfEvents(event);
 		}
 
-		engine.check_stateID(); //create the team when id is "not started"
-		if (etat.ID == team_selected)
-		{
-			scene->background.new_background_layer();
-			scene->characters.new_character_layer();
-		}
+		//engine.check_stateID();
+		//if (etat.ID == team_selected)
+		//{
+		//	scene->background.new_background_layer();
+		//	scene->characters.new_character_layer();
+		//}
 		ia.play();
 
 		renderWindow.clear();
@@ -201,6 +207,9 @@ void enginet()
 		//renderWindow.display();
 		
 	}
+	engine.game_ended = true;
+	thread_engine.join();
+	cout << "engine thread closed\n";
 }
 
 int main(int argc, char* argv[])
