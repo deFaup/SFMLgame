@@ -37,6 +37,7 @@ void Scene::init_window(sf::View& window_view, sf::RenderWindow& renderWindow, s
 	state::Map::get_screen_dimensions(width, height);
 	width -= 10;	height -= 150;
 	renderWindow.create(sf::VideoMode(width, height), "SFML game", sf::Style::Titlebar | sf::Style::Close);
+	renderWindow.setFramerateLimit(60);
 
 //	window_view.setSize(width, height);
 	window_view.setSize(3000, 2000);

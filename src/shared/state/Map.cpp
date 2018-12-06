@@ -82,7 +82,7 @@ void Map::create_mask ()
 	//affiche(mask);
 }
 
-void Map::fill_mask_with_x(auto& mask, const int x){
+void Map::fill_mask_with_x(std::vector<std::vector<int>>& mask, const int x){
     
     for (int i = 0; i < height; i++)
     {
@@ -91,7 +91,7 @@ void Map::fill_mask_with_x(auto& mask, const int x){
     } 	//*4
 }
 
-void Map::affiche(const auto& mask){
+void Map::affiche(const std::vector<std::vector<int>>& mask){
     
     for (int i = 0; i < height; i++){
         for (int j = 0; j < width; j++){
@@ -103,7 +103,7 @@ void Map::affiche(const auto& mask){
     }
 }
 
-void Map::puts_zero(auto& mask, const int x, const int y) {
+void Map::puts_zero(std::vector<std::vector<int>>& mask, const int x, const int y) {
 	/* if mask(xxx xxx) = 2 then
 	we put all values in the col xxx from the beginning to xxx to 0 (reduce 1)
 	*/
