@@ -695,6 +695,7 @@ struct stdlib_includes {
    int random;
    int sfmlGraphics;
    int jsoncpp;
+   int atomic;
 };
 
 void print_include_stdlib(struct stdlib_includes* si,char* name) {
@@ -755,6 +756,10 @@ void print_include_stdlib(struct stdlib_includes* si,char* name) {
            print ("#include <thread>\n");
            si->thread = 1;
        }
+       if (!si->atomic && strstr(name,"std::atomic")) {
+           print ("#include <atomic>\n");
+           si->atomic = 1;
+       }     
        if (!si->memory 
        && (strstr(name,"std::queue")
        ||  strstr(name,"std::priority_queue"))) {
