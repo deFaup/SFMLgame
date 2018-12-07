@@ -113,7 +113,7 @@ void Scene::update_view(sf::View& window_view, sf::RenderWindow& renderWindow, s
 
 void Scene::stateChanged(state::Event& event)
 {
-	cout << "entering stateChanged function\n";
+//	cout << "entering stateChanged function\n";
 
 	if (event.hasChanged(state::EventID::Map_maskChanged))
 		background.update();

@@ -155,15 +155,8 @@ void enginet()
 		{ 
 			controller.handle_sfEvents(event);
 		}
-		//cout << "main ID: " << (etat.ID != state::StateID::end);
-		//engine.check_stateID();
-		//if (etat.ID == team_selected)
-		//{
-		//	scene->background.new_background_layer();
-		//	scene->characters.new_character_layer();
-		//}
+
 		ia.play();
-		//engine.check_stateID();
 
 		renderWindow.clear();
 		scene->draw();
@@ -252,6 +245,11 @@ int main(int argc, char* argv[])
 			result_statistics();
 			result_position();
 		}
+		if (strcmp(argv[1], "heuristic_ai") == 0)
+		{
+			enginet();
+		}
+
 	}
 	return 0;
 }
