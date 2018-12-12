@@ -31,17 +31,17 @@ void GameEngine::check_stateID()
 		etat.new_character(0, vegeta);
 		etat.new_character(0, vegeta);
 		etat.new_character(0, vegeta);
-
+/*
 		etat.new_player("Joueur 2");
 		etat.new_character(1, goku);
 		etat.new_character(1, goku);
 		etat.new_character(1, goku);
-
-/*		etat.new_player("IA");
-		etat.new_character(2, vegeta);
-		etat.new_character(2, goku);
-		etat.new_character(2, miyo);
-*/		/*for (int i = 0; i < 3; i++)
+*/
+		etat.new_player("IA");
+		etat.new_character(1, miyo);
+		etat.new_character(1, miyo);
+		etat.new_character(1, miyo);
+		/*for (int i = 0; i < 3; i++)
 		{
 			etat.new_player("Joueur " + to_string(i));
 			etat.new_character(i, vegeta);
@@ -114,27 +114,6 @@ void GameEngine::workLoop()
 	}
 }
 
-/*void GameEngine::getUserInput(){
-
-	commande.arrow_direction = arrow_none;
-	sf::Vector2i globalPosition = sf::Mouse::getPosition(renderWindow);
-	commande.mouse_position.setPosition(globalPosition.x,globalPosition.y);
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-		commande.arrow_direction = arrow_left;
-
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-		commande.arrow_direction = arrow_right;
-
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-		commande.arrow_direction = arrow_up;
-
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-		commande.arrow_direction = arrow_down;
-
-	return;
-}*/
-
 /*void GameEngine::executeCommande()
 {
 	if (commande.arrow_direction == arrow_up || commande.arrow_direction == arrow_down)
@@ -185,7 +164,6 @@ void GameEngine::workLoop()
 
 void GameEngine::executeCommandes()
 {
-	updating = true;
 	while (!commandes.empty())
 	{
 		if (commandes.front().ID == enter)
@@ -221,15 +199,16 @@ void GameEngine::executeCommandes()
 				Attack attack_command;
 				attack_command.attack_position = commandes.front().mouse_position;
 				attack_command.attack_number = 0;
-
+				updating = true;
 				if (attack_command.isLegit(etat) != -1)
 					attack_command.execute(etat);
+				updating = false;
 			}
 		}
 	
 		commandes.pop();
 	}
-	updating = false;
+
 	render::sfEventsID arrow = arrow_down;
 	Move move_commande(arrow);
 	move_commande.execute(etat);
