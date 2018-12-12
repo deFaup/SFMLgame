@@ -188,8 +188,13 @@ void GameEngine::executeCommandes()
 
 		if (etat.ID == team_placement) //commands to place your characters then start the game
 		{
-			if (commandes.front().ID == space)
-				etat.ID = started;
+			static unsigned int players_placed = 0;
+			if (commandes.front().ID == enter)
+				players_placed++;
+			// when all players have pressed enter once then we can start the game.
+			// if one player presses enter several time it will keep the others from placing correctly
+
+			etat.ID = (players_placed == etat.get_number_of_player()) ?  started:team_placement;
 		}
 		
 		else if (etat.ID == started)
@@ -199,7 +204,7 @@ void GameEngine::executeCommandes()
 				Attack attack_command;
 				attack_command.attack_position = commandes.front().mouse_position;
 				attack_command.attack_number = 0;
-				updating = true;
+				updating = true; // we forbid any call to scene.draw in main.cpp
 				if (attack_command.isLegit(etat) != -1)
 					attack_command.execute(etat);
 				updating = false;

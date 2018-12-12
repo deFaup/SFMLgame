@@ -111,8 +111,6 @@ void GameState::delete_player(Player* player_to_delete)
 {
 	if (players.size() > 1) // at least two players
 	{
-		cout << "GameState::delete_player ";
-
 		/* find the shared ptr of the dead player in the GameState players vector */
 		unsigned int index(0);
 		for (auto player : players)
@@ -125,9 +123,7 @@ void GameState::delete_player(Player* player_to_delete)
 				if (current_player == player) // player_to_delete was the current_player and died
 					current_player = players[(index == players.size()) ? 0 : index];
 				// if index == players.size we our of vector boundaries so we set 0
-				
-				cout << "GameState::delete_player End\n";
-				cout << "number of players " << players.size() << endl;
+
 				break;
 			}
 			index++;

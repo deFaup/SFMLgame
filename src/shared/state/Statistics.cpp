@@ -74,20 +74,16 @@ unsigned int state::Statistics::get_move_point () { return(this->move_point); }
 
 void state::Statistics::set_statistics(Statistics given_stats)
 {
-	
 	life_point = given_stats.life_point;
 	attack_point = given_stats.attack_point;
 	move_point = given_stats.move_point;
 
 	if (life_point <= 0)
 	{
-		cout << "state::Statistics set_statistics begin: dead character\n";
 		life_point = 0; // we can't kill the character from a function that only exist because the character exist
 		state::EventCharacters event(owner, Character_isDead);
 		notifyObservers(event);
-		cout << "state::Statistics set_statistics end\n";
 	}
-	
 }
 
 void state::Statistics::reset_all_but_life(CharactersID id)
@@ -119,7 +115,6 @@ void Statistics::increase_life_point(int offset)
 	life_point += offset;
 	if (life_point <= 0)
 	{
-		// erase this character from the vector of character in Player
 		life_point = 0;
 		state::EventCharacters event(owner, Character_isDead);
 		notifyObservers(event);	

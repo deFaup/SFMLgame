@@ -3,7 +3,6 @@
 #include <cmath>
 #include <iostream>
 #include <cstdlib>
-#include <unistd.h>
 #include <ctime>
 
 #include "engine/Move.h"
@@ -36,7 +35,7 @@ void HyAI::play()
 
 	// In this part we are going to move down each character one by one
 
-			static state::Position previous_position; static int i = 0;
+			static state::Position previous_position; static unsigned int i = 0;
 			previous_position = ia_player->get_current_character()->position;
 
 			// Move down the current character of the AI
@@ -57,35 +56,35 @@ void HyAI::play()
 			{
 				sfEvents next_player(enter);
 				moteur.add_command(next_player);
-				moteur.add_command(sfEvents(space)); // now the game has started!
+				//moteur.add_command(sfEvents(space)); // now the game has started!
 			}
 		}
 
 		else if (moteur.etat.ID == state::StateID::started)
 		{
-			static std::shared_ptr<state::Characters> cible;
-			static std::shared_ptr<state::Characters> attaquant;
-			static int distancemin;
+			static std::shared_ptr<state::Characters> target;
+			static std::shared_ptr<state::Characters> attacker;
+			static unsigned int distancemin;
 			static bool isCharacterChoose = false;
 
-			// selection du joueur à prendre pour cible
+			// selection du joueur à prendre pour target
 			if (!isCharacterChoose) 
 			{
 				distancemin = 10000;
 				for (unsigned int j = 0; j < moteur.etat.current_player->get_number_of_characters(); j++) 
 				{
-					std::shared_ptr<state::Characters>& test_char = moteur.etat.current_player->get_character(j);
+					std::shared_ptr<state::Characters>& potential_attacker = moteur.etat.current_player->get_character(j);
 					for (unsigned int i = 0; i < moteur.etat.characters.size(); i++) 
 					{
-						std::shared_ptr<state::Characters>& curr_char = moteur.etat.characters[i];
-						if (curr_char->get_Player() != moteur.etat.current_player.get()) 
+						std::shared_ptr<state::Characters>& potential_target = moteur.etat.characters[i];
+						if (potential_target->get_Player() != moteur.etat.current_player.get()) 
 						{
-							int var = curr_char->position.getPositionX() - test_char->position.getPositionX();
+							int var = potential_target->position.getPositionX() - potential_attacker->position.getPositionX();
 							var = (int)abs((double)var);
-							if (var <= distancemin) {
-								cible = curr_char;
-								attaquant = test_char;
-								distancemin = sqrt((curr_char->position.getPositionY() - test_char->position.getPositionY())*(curr_char->position.getPositionY() - test_char->position.getPositionY()) + (curr_char->position.getPositionX() - test_char->position.getPositionX())*(curr_char->position.getPositionX() - test_char->position.getPositionX()));
+							if (var <= (int)distancemin) {
+								target = potential_target;
+								attacker = potential_attacker;
+								distancemin = sqrt((potential_target->position.getPositionY() - potential_attacker->position.getPositionY())*(potential_target->position.getPositionY() - potential_attacker->position.getPositionY()) + (potential_target->position.getPositionX() - potential_attacker->position.getPositionX())*(potential_target->position.getPositionX() - potential_attacker->position.getPositionX()));
 							}
 						}
 					}
@@ -94,31 +93,31 @@ void HyAI::play()
 			}
 			else {
 				for (unsigned int i = 0; i < moteur.etat.characters.size(); i++) {
-					std::shared_ptr<state::Characters>& curr_char = moteur.etat.characters[i];
-					if (curr_char->get_Player() != moteur.etat.current_player.get()) 
+					std::shared_ptr<state::Characters>& potential_target = moteur.etat.characters[i];
+					if (potential_target->get_Player() != moteur.etat.current_player.get()) 
 					{
-						int var = curr_char->position.getPositionX() - attaquant->position.getPositionX();
+						int var = potential_target->position.getPositionX() - attacker->position.getPositionX();
 						var = (int)abs((double)var);
-						if (var <= distancemin) {
-							cible = curr_char;
-							distancemin = sqrt((curr_char->position.getPositionY() - attaquant->position.getPositionY())*(curr_char->position.getPositionY() - attaquant->position.getPositionY()) + (curr_char->position.getPositionX() - attaquant->position.getPositionX())*(curr_char->position.getPositionX() - attaquant->position.getPositionX()));
+						if (var <= (int)distancemin) {
+							target = potential_target;
+							distancemin = sqrt((potential_target->position.getPositionY() - attacker->position.getPositionY())*(potential_target->position.getPositionY() - attacker->position.getPositionY()) + (potential_target->position.getPositionX() - attacker->position.getPositionX())*(potential_target->position.getPositionX() - attacker->position.getPositionX()));
 						}
 					}
 				}
 			}
-			moteur.etat.current_player->current_character = attaquant;
+			moteur.etat.current_player->current_character = attacker;
 			unsigned int attack_number = 0;
 			bool isReachable = false;
-			// vérifie si la cible est à portée d'attaque et si oui avec quelle attaque
-			for (unsigned int i = 0; i < attaquant->get_number_of_attacks(); i++) {
-				if (attaquant->get_attack(i).get_attack_scope() >= distancemin) {
+			// vérifie si la target est à portée d'attaque et si oui avec quelle attaque
+			for (unsigned int i = 0; i < attacker->get_number_of_attacks(); i++) {
+				if (attacker->get_attack(i).get_attack_scope() >= distancemin) {
 					attack_number = i;
 					isReachable = true;
 				}
 			}
 			// en déduit la commande à lancer
 			if (isReachable) {
-				if (attaquant->stats.get_attack_point() == 0) {
+				if (attacker->stats.get_attack_point() == 0) {
 					sfEvents events(enter);
 					moteur.add_command(events);
 					isCharacterChoose = false;
@@ -126,19 +125,19 @@ void HyAI::play()
 				}
 				else {
 					sfEvents events(left_click);
-					events.mouse_position = cible->position;
+					events.mouse_position = target->position;
 					moteur.add_command(events);
 					return;
 				}
 			}
 			else {
-				if (attaquant->stats.get_move_point() == 0) {
+				if (attacker->stats.get_move_point() == 0) {
 					sfEvents events(enter);
 					moteur.add_command(events);
 					isCharacterChoose = true;
 					return;
 				}
-				else if (cible->position.getPositionX() <= attaquant->position.getPositionX()) {
+				else if (target->position.getPositionX() <= attacker->position.getPositionX()) {
 					sfEvents events(arrow_left);
 					moteur.add_command(events);
 					return;

@@ -78,10 +78,9 @@ void Attack::execute(state::GameState& etat)
 		k < (int)etat.players.size() && etat.get_number_of_player() > 1;
 		k++)
 	{	
-		std::cout << "Attack:get_player " << k << endl;
 		shared_ptr<Player> cons_player = etat.get_player(k);
 		for(int i = 0; i < (int)cons_player->get_number_of_characters(); i++){
-			std::cout << "Attack:get_character " << i << endl;
+
 			shared_ptr<Characters> cons_char = cons_player->get_character(i);
 			unsigned int positionX = cons_char->position.getPositionX();
 			unsigned int positionY = cons_char->position.getPositionY();
@@ -92,7 +91,7 @@ void Attack::execute(state::GameState& etat)
 			   positionY >= (attack_position.getPositionY() - size_y/2)){
 				
 				// diminution du nombre de point de vie du personnage si l'attaque l'a atteinte
-				cout << "engine::Attack modif stat of: " << cons_player->name << ": " << cons_char->get_id() << endl;
+
 				Statistics& statsa = cons_char->stats;
 				Statistics statsn(statsa.get_life_point() - matrix[positionX - attack_position.getPositionX() + size_x/2]	[positionY - attack_position.getPositionY() + size_y/2],statsa.get_attack_point(),statsa.get_move_point());
 				statsa.set_statistics(statsn);
@@ -103,11 +102,8 @@ void Attack::execute(state::GameState& etat)
 					if (cons_player->get_number_of_characters() == 0)
 					{
 						k--; // decrease k since we've just reduced the number of players
-						std::cout << "Attack: player is dead " << endl;
 					}
-					std::cout << "Attack:references to this character= " << cons_char.use_count() << endl;
 				}
-				cout << "engine::Attack modif stat end\n";
 			}
 		}
 	}
