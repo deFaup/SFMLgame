@@ -79,21 +79,21 @@ void Player::delete_character(unsigned int i)
 {
 	if (characters.size() > 1 && (i < characters.size()) ) //if the player has more than one character
 	{
-		cout << name << ": Player delete character begin\n";
+		cout << "Player::delete_character of " << name << ". Begin\n";
 		characters.erase(characters.begin() + i);	
 		current_character = characters[0];
-		cout << name << ": Player delete character end\n";
+		cout << "Player::delete_character of " << name << ". End\n";
 	}
 	else if (characters.size() == 1) // if he has only one player then the player has lost
 	{
-		cout << name << ": Player delete last character begin\n";
+		cout << "Player::delete_(last)character of " << name << ". Begin\n";
 		characters.pop_back(); // delete the last character of this player
 		current_character = NULL; 
 		
 		// this player has to be deleted now
 		state::EventPlayer event(this, Player_isDead);
 		notifyObservers(event);
-		cout << name << ": Player delete last character end\n";
+		cout << "Player::delete_(last)character of " << name << ". End\n";
 	}
 	else if (characters.empty())
 		throw std::runtime_error("Player.cpp in delete_character, deleting a character but player has no character");

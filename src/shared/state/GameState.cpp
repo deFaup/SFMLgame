@@ -111,18 +111,22 @@ void GameState::delete_player(Player* player_to_delete)
 {
 	if (players.size() > 1) // at least two players
 	{
+		cout << "GameState::delete_player ";
+
 		/* find the shared ptr of the dead player in the GameState players vector */
 		unsigned int index(0);
 		for (auto player : players)
 		{
 			if (player.get() == player_to_delete)
 			{
+				cout << player->name << ". Begin\n";
 				players.erase(players.begin() + index);
 
-				if (current_player == player) // player_to_delete was the current_player an died
+				if (current_player == player) // player_to_delete was the current_player and died
 					current_player = players[(index == players.size()) ? 0 : index];
 				// if index == players.size we our of vector boundaries so we set 0
-
+				
+				cout << "GameState::delete_player End\n";
 				cout << "number of players " << players.size() << endl;
 				break;
 			}
@@ -133,8 +137,10 @@ void GameState::delete_player(Player* player_to_delete)
 			ID = StateID::end;
 	}
 
-	else if (players.size() == 1)
-		throw std::runtime_error("GameState.cpp in delete_player, can not delete the last player");
+	else if (players.size() == 1) {
+		cout << "can't delete last player for now. sorry :(\n";
+		//throw std::runtime_error("GameState.cpp in delete_player, can not delete the last player");
+	}
 
 	else
 		throw std::runtime_error("GameState.cpp in delete_player, no player to delete");

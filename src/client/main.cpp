@@ -159,6 +159,7 @@ void enginet()
 		ia.play();
 
 		renderWindow.clear();
+		while (engine.updating) {}
 		scene->draw();
 
 		Statistics& stats = etat.current_player->get_current_character()->stats;

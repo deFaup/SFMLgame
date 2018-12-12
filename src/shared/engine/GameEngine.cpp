@@ -14,7 +14,7 @@ using namespace engine;
 using namespace std;
 using namespace render;
 
-GameEngine::GameEngine(state::GameState& etat) : etat(etat)
+GameEngine::GameEngine(state::GameState& etat) : etat(etat), updating(false)
 {
 	// init the game
 	//check_stateID();
@@ -29,13 +29,13 @@ void GameEngine::check_stateID()
 
 		etat.new_player("Joueur 1");
 		etat.new_character(0, vegeta);
-		etat.new_character(0, goku);
-		etat.new_character(0, miyo);
+		etat.new_character(0, vegeta);
+		etat.new_character(0, vegeta);
 
-		etat.new_player("IA");
-		etat.new_character(1, vegeta);
+		etat.new_player("Joueur 2");
 		etat.new_character(1, goku);
-		etat.new_character(1, miyo);
+		etat.new_character(1, goku);
+		etat.new_character(1, goku);
 
 /*		etat.new_player("IA");
 		etat.new_character(2, vegeta);
@@ -97,6 +97,7 @@ void GameEngine::check_stateID()
 
 	else if (etat.ID == started) {
 		executeCommandes();
+		//cout << "check_stateID: started end\n" << endl;
 	}
 
 	else if (etat.ID == state::StateID::end)
@@ -184,6 +185,7 @@ void GameEngine::workLoop()
 
 void GameEngine::executeCommandes()
 {
+	updating = true;
 	while (!commandes.empty())
 	{
 		if (commandes.front().ID == enter)
@@ -227,7 +229,7 @@ void GameEngine::executeCommandes()
 	
 		commandes.pop();
 	}
-
+	updating = false;
 	render::sfEventsID arrow = arrow_down;
 	Move move_commande(arrow);
 	move_commande.execute(etat);

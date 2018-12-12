@@ -25,9 +25,10 @@ void Scene::draw()
 {
 	//const sf::Vector2f init_position = position_in_map[0];
 	//update_view(window_view, renderWindow, position_in_map, init_position);
-
+	std::cout << "Scene::draw begin" << std::endl;
 	background.setSurface(renderWindow); // first the background	
 	characters.setSurface(renderWindow); // on top of the background the characters
+	std::cout << "Scene::draw end" << std::endl;
 }
 
 /* config the view position for the beginning */
@@ -132,7 +133,7 @@ void Scene::stateChanged(state::Event& event)
 	{
 		EventCharacters* event_character = (EventCharacters*) &event;
 		Player* player = event_character->changed_character->get_Player();
-		std::cout << "player: " << player->name << " character: ";
+		std::cout << "Scene::stateChanged Player: " << player->name << " character: ";
 		std::cout << event_character->changed_character->get_id() << " is dead !" << std::endl;
 
 		unsigned int index(0);
@@ -146,20 +147,22 @@ void Scene::stateChanged(state::Event& event)
 			}
 		}
 		shared_ptr<state::Characters> temp = player->get_character(index);
-		 std::cout << "references to this character= " << temp.use_count() << endl; //7 or 6 (5 if 1 in Attack)
+		std::cout << "references to this character= " << temp.use_count() << endl; //7 or 6 (5 if 1 in Attack)
 		// in this part we delete all shared ptr to the dead character
 		
 		// delete in Player (current_character and vector characters)
 		player->delete_character(index);
-		 std::cout << "references to this character= " << temp.use_count() << endl; //5
+		std::cout << "references to this character= " << temp.use_count() << endl; //5
 
 		// delete in GameState (vector characters)
 		gameState.delete_character(event_character->changed_character);
-		 std::cout << "references to this character= " << temp.use_count() << endl; //4
+		std::cout << "references to this character= " << temp.use_count() << endl; //4
 
 		// delete in render::Character
 		characters.delete_character(event_character->changed_character);
-		 std::cout << "references to this character= " << temp.use_count() << endl; //3
+		std::cout << "references to this character= " << temp.use_count() << endl; //3
+
+		std::cout << "Scene::stateChanged character: END\n";
 
 	}//2 once we exit this namespace and 0 when we leave engine::Attack::execute (or only 1 in Attack)
 
@@ -167,7 +170,7 @@ void Scene::stateChanged(state::Event& event)
 	{
 		EventPlayer* event_player = (EventPlayer*) &event;
 		Player* player = event_player->changed_player;
-		std::cout << "player: " << player->name << " is dead !" << std::endl;
+		std::cout << "Scene::stateChanged  Player: " << player->name << " is dead !" << std::endl;
 
 		/*
 		//unsigned int index(0);
@@ -186,5 +189,6 @@ void Scene::stateChanged(state::Event& event)
 		*/
 		// in this part we delete all shared ptr to the dead player
 		gameState.delete_player(player);
+		std::cout << "Scene::stateChanged Player: END\n";
 	}
 }

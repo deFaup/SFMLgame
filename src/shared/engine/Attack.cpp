@@ -41,49 +41,73 @@ int Attack::isLegit(state::GameState& etat)
 	return(0);
 }
 
-void Attack::execute(state::GameState& etat){
-
+void Attack::execute(state::GameState& etat)
+{
+	cout << "\nAttack::execute begin" << endl;
 	// reduction du nombre de point d'attaque pour ce tour
-	shared_ptr<Characters> character = etat.current_player->get_current_character();
-	Statistics& stats = character->stats;
-	Statistics statsf(stats.get_life_point(),stats.get_attack_point()-character->get_attack(attack_number).get_attack_cost(),stats.get_move_point());
-	stats.set_statistics(statsf);
+	unsigned int size_x, size_y;
+	std::vector<std::vector<unsigned int>> matrix;
+	{
+		shared_ptr<Characters> character = etat.current_player->get_current_character();
+		character->stats.increase_attack_point(0 - character->get_attack(attack_number).get_attack_cost() );
 
-	// recuperation de la matrice de champ d'action de l'attaque
-	unsigned int size_x = character->get_attack(attack_number).get_nbcolumn();
-	unsigned int size_y = character->get_attack(attack_number).get_nbline();
-	cout << size_x << ", " << size_y << endl;
+		// Pour facilité les tests
+		attack_position = character->position; 
+
+		// recuperation de la matrice de champ d'action de l'attaque
+		size_x = character->get_attack(attack_number).get_nbcolumn();
+		size_y = character->get_attack(attack_number).get_nbline();
+		cout << size_x << ", " << size_y << endl;
+
+		matrix = *(character->get_attack(attack_number).get_attack_field_of_action());
+	}
+	
 	/*unsigned int **matrix = character->get_attack(attack_number).get_attack_field_of_action();
 	matrix = new unsigned int*[size_x];
 	for (unsigned int i = 0; i < size_x; i++)
 		matrix[i] = new unsigned int[size_y];*/
-	std::vector<std::vector<unsigned int>> matrix = *(character->get_attack(attack_number).get_attack_field_of_action());
 
 	// parcours de tout les personnages du jeu pour savoir si il sont impacté par l'attaque
-	for(unsigned int k = 0; k < etat.players.size(); k++){
+	// puisque l'on supprime des personnages et joueurs s'ils sont morts 
+	// est ce qu'on aurait pas un problème avec les indices que l'on utilise !?
+	// pas d'erreurs de segmentation normalement car la condition est tjs testé
+	// on loupe juste des passages dans la boucle.
+	// Solution: en cas de mort d'un perso (si stat ==0) alors on fait i--; idem pour la mort d'un joueur.
+	// reactualiser le current player dans le cas ou le joueur courant lance l'attaque et meurt.
+	for(int k = 0; 
+		k < (int)etat.players.size() && etat.get_number_of_player() > 1;
+		k++)
+	{	
+		std::cout << "Attack:get_player " << k << endl;
 		shared_ptr<Player> cons_player = etat.get_player(k);
-		for(unsigned int i = 0; i < cons_player->get_number_of_characters(); i++){
+		for(int i = 0; i < (int)cons_player->get_number_of_characters(); i++){
+			std::cout << "Attack:get_character " << i << endl;
 			shared_ptr<Characters> cons_char = cons_player->get_character(i);
 			unsigned int positionX = cons_char->position.getPositionX();
 			unsigned int positionY = cons_char->position.getPositionY();
-
-			// Pour facilité les tests
-			attack_position = character->position;
 
 			if(positionX <= (attack_position.getPositionX() + size_x/2) &&
 			   positionX >= (attack_position.getPositionX() - size_x/2) &&
 			   positionY <= (attack_position.getPositionY() + size_y/2) &&
 			   positionY >= (attack_position.getPositionY() - size_y/2)){
+				
 				// diminution du nombre de point de vie du personnage si l'attaque l'a atteinte
+				cout << "engine::Attack modif stat of: " << cons_player->name << ": " << cons_char->get_id() << endl;
 				Statistics& statsa = cons_char->stats;
 				Statistics statsn(statsa.get_life_point() - matrix[positionX - attack_position.getPositionX() + size_x/2]	[positionY - attack_position.getPositionY() + size_y/2],statsa.get_attack_point(),statsa.get_move_point());
 				statsa.set_statistics(statsn);
-				//if(statsa.get_life_point() == 0)
-				//{
-				//	 suppression du joueur si sa vie atteint 0
-				//	cons_player->delete_character(i);
-				//	 le joueur est supprimer du jeu par contre il reste affiché
-				//}
+				
+				if(statsa.get_life_point() == 0)
+				{
+					i--; // decrease i since we've just reduced the number of characters
+					if (cons_player->get_number_of_characters() == 0)
+					{
+						k--; // decrease k since we've just reduced the number of players
+						std::cout << "Attack: player is dead " << endl;
+					}
+					std::cout << "Attack:references to this character= " << cons_char.use_count() << endl;
+				}
+				cout << "engine::Attack modif stat end\n";
 			}
 		}
 	}
@@ -110,6 +134,6 @@ void Attack::execute(state::GameState& etat){
 		delete[] matrix[i];
 	delete[] matrix;*/
 	
-	cout << "executing attack" << endl;
+	cout << "Attack::execute end" << endl;
 	return;
 }
