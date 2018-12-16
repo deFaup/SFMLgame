@@ -137,7 +137,12 @@ void enginet()
 	shared_ptr<Scene> scene = make_shared<Scene>(renderWindow, etat);
 	cout << "main: scene created\n" << endl;
 
-	state::Observable::registerObserver(scene);
+	/* Linking the observer to each observable */
+	//in Characters::stats & position + Player + Map + GameState
+	etat.registerObserver(scene);
+	etat.map.registerObserver(scene);
+	
+	//state::Observable::registerObserver(scene);
 	cout << "main: observers listed\n" << endl;
 
 	engine.check_stateID(); //create the team when id is "not started", id="team selected"

@@ -15,7 +15,7 @@ GameState::GameState()
 //	
 GameState::~GameState()
 {
-	cout << "GameState deleteted" << endl;
+	cout << "GameState deleted" << endl;
 }
 
 /* Create a mask in the map object */
@@ -38,6 +38,9 @@ void GameState::new_player(const std::string name)
 	if(get_number_of_player() < MAX_NB_PLAYER)
 	{
 		shared_ptr<Player> ptr = make_shared<Player>(name);
+		for(auto obs: this->observers)
+			ptr->registerObserver(obs);
+
 		players.push_back(ptr);
 		current_player = *(players.begin());
 	}

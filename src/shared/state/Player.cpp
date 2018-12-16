@@ -31,6 +31,11 @@ shared_ptr<Characters> Player::new_character(const CharactersID id)
 	if (get_number_of_characters() < characters_range)
 	{
 		ptr = make_shared<Characters>(this, id);
+		for (auto obs : this->observers)
+		{
+			ptr->stats.registerObserver(obs);
+			ptr->position.registerObserver(obs);
+		}
 		characters.push_back(ptr);
 		current_character = *(characters.begin());
 	}

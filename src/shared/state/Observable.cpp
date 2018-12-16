@@ -6,9 +6,6 @@
 using namespace std;
 using namespace state;
 
-// init static member
-std::vector<std::shared_ptr<Observer>> Observable::observers;
-
 void Observable::registerObserver(shared_ptr<Observer> observer)
 {
 	observers.push_back(observer);
