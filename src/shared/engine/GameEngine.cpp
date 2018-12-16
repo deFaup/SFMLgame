@@ -19,8 +19,11 @@ GameEngine::GameEngine(state::GameState& etat) : etat(etat), updating(false)
 	// init the game
 	//check_stateID();
 }
+/* Configure the game map and 2 players */
+//mode : 0 - 2 real players
+//mode : !0 - you vs ia
 
-void GameEngine::check_stateID()
+void GameEngine::init_game(int mode)
 {
 	/* Create players, characters and a map. Will be rewritten when menu is implemented */
 	if (etat.ID == not_started)
@@ -31,29 +34,31 @@ void GameEngine::check_stateID()
 		etat.new_character(0, vegeta);
 		etat.new_character(0, vegeta);
 		etat.new_character(0, vegeta);
-/*
-		etat.new_player("Joueur 2");
-		etat.new_character(1, goku);
-		etat.new_character(1, goku);
-		etat.new_character(1, goku);
-*/
-		etat.new_player("IA");
-		etat.new_character(1, miyo);
-		etat.new_character(1, miyo);
-		etat.new_character(1, miyo);
-		/*for (int i = 0; i < 3; i++)
-		{
-			etat.new_player("Joueur " + to_string(i));
-			etat.new_character(i, vegeta);
-			etat.new_character(i, goku);
-		}*/
 
+		if (mode == 0)
+		{
+			etat.new_player("Joueur 2");
+			etat.new_character(1, goku);
+			etat.new_character(1, goku);
+			etat.new_character(1, goku);
+		}
+		else
+		{
+			etat.new_player("IA");
+			etat.new_character(1, miyo);
+			etat.new_character(1, miyo);
+			etat.new_character(1, miyo);
+		}
+		
 		auto& etat_id = etat.ID;
 		etat_id = team_selected;
 	}
+}
 
+void GameEngine::check_stateID()
+{
 	/* place all characters in line at the top of the map */
-	else if (etat.ID == team_selected)
+	if (etat.ID == team_selected)
 	{
 		unsigned int i = 10;
 
@@ -73,26 +78,11 @@ void GameEngine::check_stateID()
 		Valid position using space */
 	else if (etat.ID == team_placement)
 	{
-		/*static int counter = 0;
-		if (counter < etat.get_characters().size()+1)
-		{
-			place_characters_with_mouse();
-			if (commande.isRightClicked == 1)
-				counter++;
-			//executeCommandes();
-		}*/
-		//else
-		//{
 		render::sfEventsID arrow = arrow_down;
 		Move move_commande(arrow);
 		move_commande.execute(etat);
 
 		executeCommandes();
-
-//		auto& etat_id = etat.ID;
-//		etat_id = started;
-
-		//}
 	}
 
 	else if (etat.ID == started) {

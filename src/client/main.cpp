@@ -95,7 +95,7 @@ void testGameState() {
 }
 */
 
-void enginet()
+void enginet(int ai_type)
 {// problème à résoudre: une fois que l'on a touché le sol si l'on va tout à gauche de l'écran puis que l'on repart à droite ALORS seg fault
 	sf::RenderWindow renderWindow(sf::VideoMode(1102,869), "menu test");
 
@@ -131,8 +131,10 @@ void enginet()
 	GameEngine engine(etat); std::thread thread_engine;
 	Controller controller(renderWindow, engine, etat);
 
-	HyAI ia(engine);
-	cout << "main: IA created" << endl;
+	HyAI *ai_heuristic(0); RandomAI *ai_random(0); // Classe AI et système d'héritage à faire
+	if (ai_type == 1) ai_random = new RandomAI(engine);
+	else if (ai_type == 2) ai_heuristic = new HyAI(engine);
+	cout << "main: heuristic IA created" << endl;
 
 	shared_ptr<Scene> scene = make_shared<Scene>(renderWindow, etat);
 	cout << "main: scene created\n" << endl;
@@ -141,11 +143,9 @@ void enginet()
 	//in Characters::stats & position + Player + Map + GameState
 	etat.registerObserver(scene);
 	etat.map.registerObserver(scene);
-	
-	//state::Observable::registerObserver(scene);
 	cout << "main: observers listed\n" << endl;
 
-	engine.check_stateID(); //create the team when id is "not started", id="team selected"
+	engine.init_game(ai_type); //create the team when id is "not started", id="team selected"
 	scene->background.new_background_layer();
 	scene->characters.new_character_layer();
 
@@ -157,11 +157,10 @@ void enginet()
 		// Process events
 		sf::Event event;
 		while (renderWindow.pollEvent(event))
-		{ 
 			controller.handle_sfEvents(event);
-		}
-
-		ia.play();
+		
+		if (ai_random) ai_random->play();
+		if (ai_heuristic) ai_heuristic->play();
 
 		renderWindow.clear();
 		while (engine.updating) {}
@@ -218,9 +217,7 @@ int main(int argc, char* argv[])
 	if (argc == 2)
 	{
 		if (strcmp(argv[1], "hello") == 0)
-		{
 			cout << "Bienvenue chez antoine et gregoire !" << endl;
-		}
 
 		if (strcmp(argv[1], "state") == 0)
 		{
@@ -238,24 +235,20 @@ int main(int argc, char* argv[])
 		}
 
 		if (strcmp(argv[1], "engine") == 0)
-		{
-			enginet();
-		}
+			enginet(0);
+	
 		if (strcmp(argv[1], "random_ai") == 0)
-		{
-			enginet();
-		}
+			enginet(1);
+
+		if (strcmp(argv[1], "heuristic_ai") == 0)
+			enginet(2);
+
 		if (strcmp(argv[1], "test") == 0)
 		{
 			#include "unit_test.hpp"
 			result_statistics();
 			result_position();
 		}
-		if (strcmp(argv[1], "heuristic_ai") == 0)
-		{
-			enginet();
-		}
-
 	}
 	return 0;
 }
