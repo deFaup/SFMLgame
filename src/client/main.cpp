@@ -96,7 +96,8 @@ void testGameState() {
 */
 
 void enginet(int ai_type)
-{// problème à résoudre: une fois que l'on a touché le sol si l'on va tout à gauche de l'écran puis que l'on repart à droite ALORS seg fault
+{// problème à résoudre: une fois que l'on a touché le sol si l'on va tout à gauche de l'écran 
+//	puis que l'on repart à droite ALORS seg fault
 	sf::RenderWindow renderWindow(sf::VideoMode(1102,869), "menu test");
 
 	sf::Texture pic; 
@@ -131,10 +132,11 @@ void enginet(int ai_type)
 	GameEngine engine(etat); std::thread thread_engine;
 	Controller controller(renderWindow, engine, etat);
 
-	HyAI *ai_heuristic(0); RandomAI *ai_random(0); // Classe AI et système d'héritage à faire
+	DeepAI *ai_deep(0); HyAI *ai_heuristic(0); RandomAI *ai_random(0); // Classe AI et système d'héritage à faire
 	if (ai_type == 1) ai_random = new RandomAI(engine);
 	else if (ai_type == 2) ai_heuristic = new HyAI(engine);
-	cout << "main: heuristic IA created" << endl;
+	else if (ai_type == 3) ai_deep = new DeepAI(engine);
+	cout << "main: IA created" << endl;
 
 	shared_ptr<Scene> scene = make_shared<Scene>(renderWindow, etat);
 	cout << "main: scene created\n" << endl;
@@ -161,6 +163,7 @@ void enginet(int ai_type)
 		
 		if (ai_random) ai_random->play();
 		if (ai_heuristic) ai_heuristic->play();
+		if (ai_deep) ai_deep->play();
 
 		renderWindow.clear();
 		while (engine.updating) {}
@@ -241,7 +244,10 @@ int main(int argc, char* argv[])
 			enginet(1);
 
 		if (strcmp(argv[1], "heuristic_ai") == 0)
-			enginet(2);
+			enginet(2);		
+		
+		if (strcmp(argv[1], "deep_ai") == 0)
+			enginet(3);
 
 		if (strcmp(argv[1], "test") == 0)
 		{

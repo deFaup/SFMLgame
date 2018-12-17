@@ -94,20 +94,17 @@ void HyAI::play()
 				}
 				isCharacterChoose = true;
 			}
-			else {
-				for (unsigned int i = 0; i < moteur.etat.characters.size(); i++) {
-					std::shared_ptr<state::Characters>& potential_target = moteur.etat.characters[i];
-					if (potential_target->get_Player() != moteur.etat.current_player.get()) 
-					{
-						int var = potential_target->position.getPositionX() - attacker->position.getPositionX();
-						var = (int)abs((double)var);
-						if (var <= (int)distancemin) {
-							target = potential_target;
-							distancemin = sqrt((potential_target->position.getPositionY() - attacker->position.getPositionY())*(potential_target->position.getPositionY() - attacker->position.getPositionY()) + (potential_target->position.getPositionX() - attacker->position.getPositionX())*(potential_target->position.getPositionX() - attacker->position.getPositionX()));
-						}
-					}
-				}
+			else
+			{
+				distancemin = sqrt(
+					(target->position.getPositionY() - attacker->position.getPositionY()) *
+					(target->position.getPositionY() - attacker->position.getPositionY())
+					+
+					(target->position.getPositionX() - attacker->position.getPositionX()) *
+					(target->position.getPositionX() - attacker->position.getPositionX())
+				);
 			}
+			
 			moteur.etat.current_player->current_character = attacker;
 			unsigned int attack_number = 0;
 			bool isReachable = false;

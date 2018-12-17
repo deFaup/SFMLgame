@@ -55,6 +55,15 @@ std::shared_ptr<Characters>& Player::get_character(unsigned int i)
 		return characters[i];
 }
 
+std::vector<std::shared_ptr<Characters>> Player::get_characters() 
+{
+	if (!characters.empty()) 
+		return characters;
+	else
+		throw std::invalid_argument("in Player.cpp in get_characters, this player has no characters");
+
+}
+
 /* for GameEngine: tells which character you are using */
 void Player::select_character(unsigned int character_index)
 {
