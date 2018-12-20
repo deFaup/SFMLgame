@@ -17,7 +17,8 @@ Characters::Characters(Player* player, CharactersID id): stats(this, id), positi
 {
 	std::vector<std::vector<unsigned int>> matrix;
 	for(unsigned int i = 0; i < 501; i++)
-		matrix.push_back(vector<unsigned int>(501,5));
+		matrix.push_back(std::vector<unsigned int>(501,5));
+
 	Attacks attack(501,501,100,1,matrix);
 	attacks.push_back(attack);	
 	cout << "Characters: " << id << " created" << endl;

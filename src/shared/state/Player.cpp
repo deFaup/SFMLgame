@@ -9,11 +9,6 @@ using namespace std;
 
 unsigned int Player::characters_range = MAX_NB_CHARACTER;
 
-Player::Player() : name("Un-named Player") 
-{
-	//cout << "Player: " << name << " created" << " char max= " << characters_range << endl;
-}
-
 Player::Player (string name) : name(name) 
 {
 	cout << "Player: " << name << " created" << endl;

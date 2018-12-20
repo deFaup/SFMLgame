@@ -12,7 +12,53 @@ GameState::GameState()
 	cout << "GameState created" << endl;
 	ID = not_started;
 }
-//	
+
+// copy constructor : observers are not copied
+GameState::GameState(GameState& gameState) : 
+	ID(gameState.ID.load(std::memory_order_relaxed)), map(gameState.map)
+{
+	cout << "begin copy constructor\n";
+	// unregister observers pour toutes les observables
+	//empty as by inheritance from Observable the vec is empty
+
+	for (unsigned int i = 0; i < gameState.get_number_of_player(); i++)
+	{
+		std::shared_ptr<Player> original_player = gameState.get_player(i);
+		new_player(original_player->name);
+		std::shared_ptr<Player> player_copy = get_player(i);
+		cout << "original player ptr " << original_player.get() << "\n";
+		cout << "copy player ptr " << player_copy.get() << "\n";
+
+		for (unsigned int j = 0; j < gameState.get_player(i)->get_number_of_characters(); j++)
+		{
+			std::shared_ptr<Characters> original_character = original_player->get_character(j);
+			new_character(i, original_character->get_id());
+			std::shared_ptr<Characters> character_copy = player_copy->get_character(j);
+
+			/* set ID */
+			character_copy->id = original_character->id;
+				
+				// set Position
+			character_copy->position.setPosition(original_character->position.getPositionX(), original_character->position.getPositionY());
+				
+			// set Statistics
+			character_copy->stats.set_statistics(original_character->stats);
+
+			// set Attack
+			for (unsigned int k = 0; k < original_character->get_number_of_attacks(); k++)
+				character_copy->addAttack(original_character->get_attack(k));
+		}
+
+		// set current character
+		player_copy->current_character = original_player->current_character;
+	} 
+	
+	// set current player
+	current_player = gameState.current_player;
+	// modifier les current player et character car on écrit le shared ptr du state et non du copié!
+	cout << "end copy constructor\n";
+}
+
 GameState::~GameState()
 {
 	cout << "GameState deleted" << endl;

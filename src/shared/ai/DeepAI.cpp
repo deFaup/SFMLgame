@@ -25,21 +25,22 @@ void DeepAI::play()
 		else if (moteur.etat.ID == state::StateID::started)
 		{
 			/* Create a deep copy of the current GameState */
-			GameState deep_gameState (moteur.etat);
-			
-			/* Create a GameEngine specific to the AI */
-			GameEngine deep_engine(deep_gameState);
+			GameState deep_gameState (moteur.etat); //OK
 
+			/* Create a GameEngine specific to the AI */
+			GameEngine deep_engine(deep_gameState); //OK
+			
 			// find the best character to make an action with min max
-			int index (min_max(deep_engine.etat, 1, deep_engine.etat.current_player));
+			int index (min_max(deep_engine, 1, deep_engine.etat.current_player));
+			std::cout << "min_max = " << index << "\n";
 
 			// use this character to attack
 			shared_ptr<state::Characters> attacker (moteur.etat.current_player->get_character(index));
-			attack(moteur, moteur.etat, attacker);
+			attack(moteur, attacker);
 
 			//attack(moteur.etat, moteur.etat.current_player->current_character);
-			//sfEvents events(enter);
-			//moteur.add_command(events);
+			sfEvents events(enter);
+			moteur.add_command(events);
 		}
 	}
 }
@@ -88,22 +89,25 @@ void DeepAI::place_character(GameEngine& moteur)
 	}
 }
 
-int DeepAI::min_max(state::GameState& gameState, int depth, shared_ptr<state::Player> ai_player)
+int DeepAI::min_max(engine::GameEngine& gameEngine, int depth, shared_ptr<state::Player> ai_player)
 {
+	auto& gameState = gameEngine.etat;
 	static bool min_or_max = 0; min_or_max = !min_or_max; //1, then 0 on the next call to min_max, then 1 etc
 	int weight(0);
 
 	// compute the cost with evaluate function
-	if (depth == 0)		
+	if (depth == 0) {
+		cout << "bottom tree\n";
 		return evaluation_function(ai_player);
-	
+	}
 	else
 	{
+		cout << "\nbegin min_max with " << min_or_max << "(O is min)" << "\n";
 		/// STEP 1 - Get all characters to try for min_max at current depth
 
 		vector<shared_ptr<state::Characters>> char_to_try(gameState.get_characters());
 
-		if (gameState.current_player->name != "IA")
+		if (gameState.current_player->name == "IA")
 			char_to_try = gameState.current_player->get_characters();
 
 		for (unsigned int i(0); i < char_to_try.size(); i++)
@@ -111,17 +115,31 @@ int DeepAI::min_max(state::GameState& gameState, int depth, shared_ptr<state::Pl
 			if ((char_to_try[i]->stats.get_life_point() <= 0) ||
 				(char_to_try[i]->get_Player()->name == "IA" && gameState.current_player->name != "IA"))
 			{
-				char_to_try[i].erase();
+				char_to_try.erase(char_to_try.cbegin()+i);
 				i--;
 			}
 		}
+		// on considère que tous les adversaires forment un adversaire
+		// il faut donc passer plusieurs fois le tour 
+		// LE ENTER doit être fait dans la boucle for ci-dessous
+		//if IA 1 enter; else nb_enter = nb_player - 1
 
 		/// STEP 2 - go through the characters and apply min_max
 		for (unsigned int i(0); i < char_to_try.size(); i++)
 		{
 			// char attack
-			attack(deep_engine, gameState, char_to_try[i]);
-			int val = min_max(gameState, depth - 1, ai_player);
+			cout << "tree level: " << depth << ". attack with character " << i << "\n";
+
+			// temp no rollback just gameState deep copy
+			// so etat in GameEngine must be a pointer
+//			state::GameState deep_gameState(gameEngine.etat);
+
+			attack(gameEngine, char_to_try[i]);
+			cout << "attack with character " << i << " done\n";
+			int val = min_max(gameEngine, depth - 1, ai_player);
+
+//			gameEngine.etat = deep_gameState;
+			cout << "leave = " << val << "\n";
 
 			if (min_or_max == 1) //MAX
 			{
@@ -142,21 +160,27 @@ int DeepAI::evaluation_function(shared_ptr<state::Player> ai_player)
 {
 	int sum = 0;
 	for (unsigned int i = 0; i < ai_player->get_number_of_characters(); i++)
+	{
+		std::cout << "evaluation_function: i= " << i << endl;
+		std::cout << "evaluation_function: sum= " << sum << endl;
+		std::cout << "evaluation_function: id character= "
+			<< ai_player->get_character(i)->get_id() << endl;
 		sum += ai_player->get_character(i)->stats.get_life_point();
-
+	}
 	return sum;
 }
 
-void DeepAI::attack(engine::GameEngine& gameEngine, state::GameState& gameState, std::shared_ptr<state::Characters> attacker)
+void DeepAI::attack(engine::GameEngine& gameEngine, std::shared_ptr<state::Characters> attacker)
 {// rajouter si attacker dead
 
+	auto& gameState = gameEngine.etat;
 	std::shared_ptr<state::Characters> target;
 	bool attack_finished = false;
 
 	// make an action with attacker, modify the game state
 	unsigned int distancemin;
 	bool isCharacterChoose = false;
-
+	cout << "begin while loop in DeepAI::attack\n";
 	while (!attack_finished)
 	{
 		// selection du joueur à prendre pour target
@@ -164,8 +188,8 @@ void DeepAI::attack(engine::GameEngine& gameEngine, state::GameState& gameState,
 		{
 			target = find_target(gameState, attacker, distancemin);
 			isCharacterChoose = true;
+			cout << "find_target OK\n";
 		}
-		
 		// if already selected then we update the distance between attacker and target
 		else
 		{
@@ -190,6 +214,7 @@ void DeepAI::attack(engine::GameEngine& gameEngine, state::GameState& gameState,
 				isReachable = true; //break;
 			}
 		}
+		cout << "find attack OK\n";
 
 		// if reachable and you have attack point then you can send attack until target is dead
 		if (isReachable) 
@@ -221,6 +246,9 @@ void DeepAI::attack(engine::GameEngine& gameEngine, state::GameState& gameState,
 				gameEngine.add_command(sfEvents(arrow_right));
 			}
 		}
+		cout << "send commands OK\n";
+		gameEngine.executeCommandes();
+		cout << "execute commands OK\n"; //qq fois passer le tour marche pas
 	}	
 }
 
@@ -257,7 +285,7 @@ std::shared_ptr<state::Characters> DeepAI::find_target(
 GameState * DeepAI::StateCopy(const GameState etat) const
 {
 	// creation de la copie
-	GameState * state_copy = (GameState *)malloc(sizeof(GameState));
+	GameState * state_copy = new GameState();
 	// copie des éléments de base du GameState
 	for (unsigned int i = 0; i < etat.get_number_of_player(); i++)
 	{
