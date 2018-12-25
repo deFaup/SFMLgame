@@ -30,8 +30,8 @@ void ChangePlayer::execute(state::GameState& etat)
 		etat.current_player->get_character(k)->reset_stats();
 	}
 	std::shared_ptr<Player> t_player = etat.get_player(i);
-	int index = 0;
-	cout << "current player name " << etat.current_player->name << "\n";
+	unsigned int index = 0;
+	cout << "\ncurrent player name " << etat.current_player->name << "\n";
 	cout << "current player ptr " << etat.current_player.get() << "\n";
 	bool found = false;
 	for (auto elem : etat.players)
@@ -64,7 +64,7 @@ void ChangePlayer::execute(state::GameState& etat)
 	//else{
 	//	etat.current_player = etat.get_player(i+1);
 	//}
-	cout << "executing current player change" << endl;
+	cout << "executing current player change\n" << endl;
 	return;
 }
 

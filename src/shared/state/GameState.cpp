@@ -20,6 +20,7 @@ GameState::GameState(GameState& gameState) :
 	cout << "begin copy constructor\n";
 	// unregister observers pour toutes les observables
 	//empty as by inheritance from Observable the vec is empty
+	current_player = 0;
 
 	for (unsigned int i = 0; i < gameState.get_number_of_player(); i++)
 	{
@@ -29,11 +30,16 @@ GameState::GameState(GameState& gameState) :
 		cout << "original player ptr " << original_player.get() << "\n";
 		cout << "copy player ptr " << player_copy.get() << "\n";
 
+		current_player = (gameState.current_player == original_player) ? player_copy:current_player;
+
 		for (unsigned int j = 0; j < gameState.get_player(i)->get_number_of_characters(); j++)
 		{
 			std::shared_ptr<Characters> original_character = original_player->get_character(j);
 			new_character(i, original_character->get_id());
 			std::shared_ptr<Characters> character_copy = player_copy->get_character(j);
+
+			player_copy->current_character = (original_player->current_character == original_character) ?
+					character_copy:player_copy->current_character;
 
 			/* set ID */
 			character_copy->id = original_character->id;
@@ -50,11 +56,11 @@ GameState::GameState(GameState& gameState) :
 		}
 
 		// set current character
-		player_copy->current_character = original_player->current_character;
+		//player_copy->current_character = original_player->current_character;
 	} 
 	
 	// set current player
-	current_player = gameState.current_player;
+	//current_player = gameState.current_player;
 	// modifier les current player et character car on écrit le shared ptr du state et non du copié!
 	cout << "end copy constructor\n";
 }

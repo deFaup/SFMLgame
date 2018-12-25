@@ -17,6 +17,11 @@ DeepAI::DeepAI(GameEngine& moteur) : moteur(moteur){}
 
 void DeepAI::play()
 {
+	static bool min_max_done = false; // false when it's not the turn of AI
+									  // during AI turn false when not done else true
+
+	static shared_ptr<state::Characters> attacker;
+
 	if (moteur.etat.current_player->name == "IA")
 	{
 		if (moteur.etat.ID == state::StateID::team_placement)
@@ -24,24 +29,50 @@ void DeepAI::play()
 
 		else if (moteur.etat.ID == state::StateID::started)
 		{
-			/* Create a deep copy of the current GameState */
-			GameState deep_gameState (moteur.etat); //OK
-
-			/* Create a GameEngine specific to the AI */
-			GameEngine deep_engine(deep_gameState); //OK
+			///* we are going to use a boolean until we put the AI in a separate thread
+			//it allows to send a command then go back to main.cpp and update the graphics */
 			
-			// find the best character to make an action with min max
-			int index (min_max(deep_engine, 1, deep_engine.etat.current_player));
-			std::cout << "min_max = " << index << "\n";
 
-			// use this character to attack
-			shared_ptr<state::Characters> attacker (moteur.etat.current_player->get_character(index));
-			attack(moteur, attacker);
+			//static int index(0);
+			if (!min_max_done)
+			{
+			//	/* Create a deep copy of the current GameState */
+			//	GameState deep_gameState(moteur.etat); //OK
 
-			//attack(moteur.etat, moteur.etat.current_player->current_character);
-			sfEvents events(enter);
-			moteur.add_command(events);
+			//	/* Create a GameEngine specific to the AI */
+			//	GameEngine deep_engine(deep_gameState); //OK
+
+			//	// find the best character to make an action with min max
+			//	index = min_max(deep_engine, 1, deep_engine.etat.current_player);
+			//	std::cout << "min_max = " << index << "\n";
+				attacker = moteur.etat.current_player->get_character(0);
+				min_max_done = true;
+			}
+			else
+			{
+				// use this character to attack
+				// the following test is to determine whether or not our attacker has died
+				if (moteur.etat.current_player->get_character(0) == attacker)
+				{
+					if (attack_RT(moteur, attacker))
+						std::cout << "Deep AI is done\n";
+				}
+				else
+				{
+					sfEvents events(enter);
+					moteur.add_command(events);
+					moteur.set_updating(true);
+					while (moteur.updating) {}
+					cout << "attacker is dead, next player\n";
+				}
+			}
 		}
+	}
+
+	else
+	{
+		min_max_done = false;
+		attacker = 0;
 	}
 }
 
@@ -176,20 +207,20 @@ void DeepAI::attack(engine::GameEngine& gameEngine, std::shared_ptr<state::Chara
 	auto& gameState = gameEngine.etat;
 	std::shared_ptr<state::Characters> target;
 	bool attack_finished = false;
-
-	// make an action with attacker, modify the game state
 	unsigned int distancemin;
 	bool isCharacterChoose = false;
 	cout << "begin while loop in DeepAI::attack\n";
-	while (!attack_finished)
+
+	while (!attack_finished && (attacker->stats.get_life_point() > 0) )
 	{
 		// selection du joueur à prendre pour target
-		if (!isCharacterChoose)
+		if (!isCharacterChoose )
 		{
 			target = find_target(gameState, attacker, distancemin);
 			isCharacterChoose = true;
 			cout << "find_target OK\n";
 		}
+		
 		// if already selected then we update the distance between attacker and target
 		else
 		{
@@ -231,6 +262,8 @@ void DeepAI::attack(engine::GameEngine& gameEngine, std::shared_ptr<state::Chara
 				// sequential execution of the command because deep IA has its own engine/ in the same thread
 				if (target->stats.get_life_point() == 0)
 					isCharacterChoose = false;
+				if (attacker->stats.get_life_point() == 0)
+					attack_finished = true;
 			}
 		}
 	
@@ -282,35 +315,89 @@ std::shared_ptr<state::Characters> DeepAI::find_target(
 	return target;
 }
 
-GameState * DeepAI::StateCopy(const GameState etat) const
+bool DeepAI::attack_RT(engine::GameEngine& gameEngine, std::shared_ptr<state::Characters> attacker)
 {
-	// creation de la copie
-	GameState * state_copy = new GameState();
-	// copie des éléments de base du GameState
-	for (unsigned int i = 0; i < etat.get_number_of_player(); i++)
+	// All problems fixed (when the attacker dies we move on to the next player
+	// When we need to change player (sfEnter) we set GameEngine::updating to true then wait for the engine to change it to false
+
+	// Ex problème: si le character ou le perso meurt, les var statiques ne sont pas réinit dans ce cas.
+
+	auto& gameState = gameEngine.etat;
+	std::shared_ptr<state::Characters> target;
+	bool attack_finished = false;
+	unsigned int distancemin;
+	bool isCharacterChoose = false;
+
+	// selection du joueur à prendre pour target
+	if (!isCharacterChoose)
 	{
-		// creation de la copie d'un joueur existant
-		state_copy->new_player(etat.get_player(i)->name);
-		std::shared_ptr<Player> original_player = etat.get_player(i);
-		std::shared_ptr<Player> player_copy = state_copy->get_player(i);
-		for (unsigned int j = 0; j < etat.get_player(i)->get_number_of_characters(); j++)
-		{
-			// creation de la copie d'un personnage existant
-			state_copy->new_character(i, etat.get_player(i)->get_character(j)->get_id());
-			std::shared_ptr<Characters> original_character = original_player->get_character(j);
-			std::shared_ptr<Characters> character_copy = player_copy->get_character(j);
-			character_copy->position.setPosition(character_copy->position.getPositionX(), character_copy->position.getPositionY());
-			Statistics stats(original_character->stats.get_life_point(), original_character->stats.get_attack_point(), original_character->stats.get_move_point());
-			character_copy->stats.set_statistics(stats);
-			for (unsigned int k = 0; k < original_character->get_number_of_attacks(); k++)
-			{
-				// ajout des attaques à la copie du personnage
-				character_copy->addAttack(original_character->get_attack(k));
-			}
+		target = find_target(gameState, attacker, distancemin);
+		isCharacterChoose = true;
+	}
+
+	// if already selected then we update the distance between attacker and target
+	else
+	{
+		distancemin = sqrt(
+			(target->position.getPositionY() - attacker->position.getPositionY()) *
+			(target->position.getPositionY() - attacker->position.getPositionY())
+			+
+			(target->position.getPositionX() - attacker->position.getPositionX()) *
+			(target->position.getPositionX() - attacker->position.getPositionX())
+		);
+	}
+
+	// future implementation: find the best attack among the possible attacks of the attacker
+	//unsigned int attack_number = 0;
+
+	// is target reachable on one turn ? with wich attack?
+	bool isReachable = false;
+	for (unsigned int i = 0; i < attacker->get_number_of_attacks(); i++)
+	{
+		if (attacker->get_attack(i).get_attack_scope() >= distancemin) {
+			//attack_number = i;
+			isReachable = true; //break;
 		}
 	}
-	// creation d'une copie de la map
-	state_copy->map.set_mask(etat.map.get_mask());
-	return(state_copy);
 
+	// if reachable and you have attack point then you can send attack until target is dead
+	if (isReachable)
+	{
+		if (attacker->stats.get_attack_point() == 0)
+		{
+			isCharacterChoose = false; attack_finished = true;
+		}
+		else {
+			sfEvents events(left_click);
+			events.mouse_position = target->position;
+			gameEngine.add_command(events);
+			//if (target->stats.get_life_point() == 0)
+			//	isCharacterChoose = false;
+		}
+	}
+
+	else {
+		if (attacker->stats.get_move_point() == 0) {
+			isCharacterChoose = false; attack_finished = true;
+		}
+		else if (target->position.getPositionX() <= attacker->position.getPositionX()) {
+			gameEngine.add_command(sfEvents(arrow_left));
+		}
+		else {
+			gameEngine.add_command(sfEvents(arrow_right));
+		}
+	}
+
+	if (attack_finished)
+	{
+		sfEvents events(enter);
+		gameEngine.add_command(events);
+		gameEngine.set_updating(true);
+		while (gameEngine.updating) {}
+		cout << "attack finished\n";
+	}
+
+	cout << "send commands OK\n";
+
+	return attack_finished;
 }

@@ -13,7 +13,7 @@ Characters::~Characters()
 }
 
 /* Create a character of id=id with a defined owner, stats depending on the ID and position to (0,0) */
-Characters::Characters(Player* player, CharactersID id): stats(this, id), position(this), owner(player), id(id)
+Characters::Characters(Player* player, CharactersID id): id(id), stats(this, id), position(this), owner(player)
 {
 	std::vector<std::vector<unsigned int>> matrix;
 	for(unsigned int i = 0; i < 501; i++)

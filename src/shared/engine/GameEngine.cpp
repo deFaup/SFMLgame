@@ -46,8 +46,8 @@ void GameEngine::init_game(int mode)
 		{
 			etat.new_player("IA");
 			etat.new_character(1, miyo);
-			//etat.new_character(1, vegeta);
-			//etat.new_character(1, goku);
+			etat.new_character(1, miyo);
+			etat.new_character(1, miyo);
 		}
 		
 		auto& etat_id = etat.ID;
@@ -156,6 +156,7 @@ void GameEngine::executeCommandes()
 {
 	while (!commandes.empty())
 	{
+		updating = true; // we execute each command one by one and others threads are paused
 		cout << "GameEngine::executeCommandes; commandes.size() = " << commandes.size() << endl;
 		cout << "commandes.ID = " << commandes.front().ID << endl;
 
@@ -200,7 +201,7 @@ void GameEngine::executeCommandes()
 				updating = true; // we forbid any call to scene.draw in main.cpp
 				if (attack_command.isLegit(etat) != -1)
 					attack_command.execute(etat);
-				updating = false;
+				//updating = false;
 			}
 		}
 	
@@ -210,6 +211,8 @@ void GameEngine::executeCommandes()
 	render::sfEventsID arrow = arrow_down;
 	Move move_commande(arrow);
 	move_commande.execute(etat);
+
+	updating = false;
 	return;
 }
 
@@ -224,3 +227,4 @@ void GameEngine::add_command(render::sfEvents commande){
 	commandes.push(commande);
 }
 
+void GameEngine::set_updating(bool true_false) { updating = true_false; }
