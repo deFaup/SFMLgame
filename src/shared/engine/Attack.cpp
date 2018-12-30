@@ -43,7 +43,7 @@ int Attack::isLegit(state::GameState& etat)
 
 void Attack::execute(state::GameState& etat)
 {
-	cout << "\nAttack::execute begin" << endl;
+	//std::cout << "\nAttack::execute begin" << std::endl;
 	// reduction du nombre de point d'attaque pour ce tour
 	unsigned int size_x, size_y;
 	std::vector<std::vector<unsigned int>> matrix;
@@ -51,21 +51,16 @@ void Attack::execute(state::GameState& etat)
 		shared_ptr<Characters> character = etat.current_player->get_current_character();
 		character->stats.increase_attack_point(0 - character->get_attack(attack_number).get_attack_cost() );
 
-		// Pour facilité les tests
+		// Pour faciliter les tests
 		attack_position = character->position; 
 
 		// recuperation de la matrice de champ d'action de l'attaque
 		size_x = character->get_attack(attack_number).get_nbcolumn();
 		size_y = character->get_attack(attack_number).get_nbline();
-		cout << size_x << ", " << size_y << endl;
+		//std::cout << size_x << ", " << size_y << std::endl;
 
 		matrix = *(character->get_attack(attack_number).get_attack_field_of_action());
 	}
-	
-	/*unsigned int **matrix = character->get_attack(attack_number).get_attack_field_of_action();
-	matrix = new unsigned int*[size_x];
-	for (unsigned int i = 0; i < size_x; i++)
-		matrix[i] = new unsigned int[size_y];*/
 
 	// parcours de tout les personnages du jeu pour savoir si il sont impacté par l'attaque
 	// puisque l'on supprime des personnages et joueurs s'ils sont morts 
@@ -74,36 +69,44 @@ void Attack::execute(state::GameState& etat)
 	// on loupe juste des passages dans la boucle.
 	// Solution: en cas de mort d'un perso (si stat ==0) alors on fait i--; idem pour la mort d'un joueur.
 	// reactualiser le current player dans le cas ou le joueur courant lance l'attaque et meurt.
-	for(int k = 0; 
-		k < (int)etat.players.size() && etat.get_number_of_player() > 1;
-		k++)
-	{	
-		shared_ptr<Player> cons_player = etat.get_player(k);
-		for(int i = 0; i < (int)cons_player->get_number_of_characters(); i++){
+	//for(int k = 0; 
+	//	k < (int)etat.players.size() && etat.get_number_of_player() > 1;
+	//	k++)
+	//{	
+	for (auto cons_player : etat.players)
+	{
+		//shared_ptr<Player> cons_player = etat.get_player(k);
+		//std::cout << cons_player->name << "\n";
 
-			shared_ptr<Characters> cons_char = cons_player->get_character(i);
+		//for(int i = 0; i < (int)cons_player->get_number_of_characters(); i++)
+		//int i(0);
+
+		for (auto cons_char : cons_player->get_characters())
+		{
+			//std::cout << "character n: " << i << "\n"; i++;
+			//shared_ptr<Characters> cons_char = cons_player->get_character(i);
 			unsigned int positionX = cons_char->position.getPositionX();
 			unsigned int positionY = cons_char->position.getPositionY();
 
 			if(positionX <= (attack_position.getPositionX() + size_x/2) &&
 			   positionX >= (attack_position.getPositionX() - size_x/2) &&
 			   positionY <= (attack_position.getPositionY() + size_y/2) &&
-			   positionY >= (attack_position.getPositionY() - size_y/2)){
-				
+			   positionY >= (attack_position.getPositionY() - size_y/2))
+			{	
 				// diminution du nombre de point de vie du personnage si l'attaque l'a atteinte
 
 				Statistics& statsa = cons_char->stats;
 				Statistics statsn(statsa.get_life_point() - matrix[positionX - attack_position.getPositionX() + size_x/2]	[positionY - attack_position.getPositionY() + size_y/2],statsa.get_attack_point(),statsa.get_move_point());
 				statsa.set_statistics(statsn);
 				
-				if(statsa.get_life_point() == 0)
-				{
-					i--; // decrease i since we've just reduced the number of characters
-					if (cons_player->get_number_of_characters() == 0)
-					{
-						k--; // decrease k since we've just reduced the number of players
-					}
-				}
+				//if(statsa.get_life_point() == 0)
+				//{
+				//	//i--; // decrease i since we've just reduced the number of characters
+				//	if (cons_player->get_number_of_characters() == 0)
+				//	{
+				//		//k--; // decrease k since we've just reduced the number of players
+				//	}
+				//}
 			}
 		}
 	}
@@ -125,11 +128,6 @@ void Attack::execute(state::GameState& etat)
 	}
 	etat.map.set_mask(mask);
 	
-	// destruction de la matrice stockant temporairement le champ d'action de l'attaque
-	/*for (unsigned int i = 0; i < size_x; i++)
-		delete[] matrix[i];
-	delete[] matrix;*/
-	
-	cout << "Attack::execute end" << endl;
+	//std::cout << "Attack::execute end" << std::endl;
 	return;
 }

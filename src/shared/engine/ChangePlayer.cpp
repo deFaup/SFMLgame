@@ -32,22 +32,22 @@ void ChangePlayer::execute(state::GameState& etat)
 	std::shared_ptr<Player> t_player = etat.get_player(i);
 	unsigned int index = 0;
 	cout << "\ncurrent player name " << etat.current_player->name << "\n";
-	cout << "current player ptr " << etat.current_player.get() << "\n";
+	//cout << "current player ptr " << etat.current_player.get() << "\n";
 	bool found = false;
 	for (auto elem : etat.players)
 	{
-		cout << index << endl;
+		//cout << index << endl;
 		index++;
 		
-		cout << "player " << index - 1 << " name: " << elem->name << "\n";
-		cout << "player " << index - 1 << " ptr: " << elem.get() << "\n";
+		//cout << "player " << index - 1 << " name: " << elem->name << "\n";
+		//cout << "player " << index - 1 << " ptr: " << elem.get() << "\n";
 
 		if (elem == etat.current_player && !found)
 		{
-			cout << "nbr of players: " << etat.players.size() << "\n";
-			cout << "nbr of players: " << etat.get_number_of_player() << "\n";
+			//cout << "nbr of players: " << etat.players.size() << "\n";
+			//cout << "nbr of players: " << etat.get_number_of_player() << "\n";
 			etat.current_player = etat.get_player((index == etat.players.size()) ? 0 : index);
-			cout << etat.current_player->name << "\n";
+			cout << "new player name " << etat.current_player->name << "\n";
 			found = true;
 		}
 	}
@@ -64,7 +64,7 @@ void ChangePlayer::execute(state::GameState& etat)
 	//else{
 	//	etat.current_player = etat.get_player(i+1);
 	//}
-	cout << "executing current player change\n" << endl;
+	cout << "change current player done\n" << endl;
 	return;
 }
 

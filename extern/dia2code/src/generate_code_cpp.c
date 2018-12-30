@@ -696,6 +696,7 @@ struct stdlib_includes {
    int sfmlGraphics;
    int jsoncpp;
    int atomic;
+   int deque;
 };
 
 void print_include_stdlib(struct stdlib_includes* si,char* name) {
@@ -759,7 +760,11 @@ void print_include_stdlib(struct stdlib_includes* si,char* name) {
        if (!si->atomic && strstr(name,"std::atomic")) {
            print ("#include <atomic>\n");
            si->atomic = 1;
-       }     
+       }
+       if (!si->deque && strstr(name,"std::deque")) {
+           print ("#include <deque>\n");
+           si->deque = 1;
+       }                 
        if (!si->memory 
        && (strstr(name,"std::queue")
        ||  strstr(name,"std::priority_queue"))) {

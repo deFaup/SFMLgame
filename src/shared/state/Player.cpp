@@ -50,7 +50,7 @@ std::shared_ptr<Characters>& Player::get_character(unsigned int i)
 		return characters[i];
 }
 
-std::vector<std::shared_ptr<Characters>> Player::get_characters() 
+std::deque<std::shared_ptr<Characters>> Player::get_characters()
 {
 	if (!characters.empty()) 
 		return characters;

@@ -80,9 +80,11 @@ void state::Statistics::set_statistics(Statistics given_stats)
 
 	if (life_point <= 0)
 	{
+		cout << "statistics: life = 0\n";
 		life_point = 0; // we can't kill the character from a function that only exist because the character exist
 		state::EventCharacters event(owner, Character_isDead);
 		notifyObservers(event);
+		cout << "statistics: notify end\n";
 	}
 }
 

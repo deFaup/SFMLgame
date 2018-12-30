@@ -132,7 +132,7 @@ const shared_ptr<Player>& GameState::get_player(unsigned int i) const
 }
 
 /* return a reference to the characters list */
-const vector<shared_ptr<Characters>> GameState::get_characters() const {  return characters;  }
+const std::deque<shared_ptr<Characters>> GameState::get_characters() const {  return characters;  }
 
 /* Limit the maximum number of characters the players can choose
 	The range is also limited by MAX_NB_PLAYER in define.hpp */

@@ -8,6 +8,7 @@
 
 #include <SFML/Window/Event.hpp>
 #include <iostream>
+#include "global_mutex.hpp"
 
 using namespace state;
 using namespace engine;
@@ -31,8 +32,8 @@ void GameEngine::init_game(int mode)
 		etat.new_map(3000, 2000);
 
 		etat.new_player("Joueur 1");
-		etat.new_character(0, miyo);
-		etat.new_character(0, goku);
+		//etat.new_character(0, miyo);
+		//etat.new_character(0, goku);
 		etat.new_character(0, vegeta);
 
 		if (mode == 0)
@@ -46,8 +47,8 @@ void GameEngine::init_game(int mode)
 		{
 			etat.new_player("IA");
 			etat.new_character(1, miyo);
-			etat.new_character(1, miyo);
-			etat.new_character(1, miyo);
+			//etat.new_character(1, miyo);
+			//etat.new_character(1, miyo);
 		}
 		
 		auto& etat_id = etat.ID;
@@ -157,13 +158,14 @@ void GameEngine::executeCommandes()
 	while (!commandes.empty())
 	{
 		updating = true; // we execute each command one by one and others threads are paused
-		cout << "GameEngine::executeCommandes; commandes.size() = " << commandes.size() << endl;
-		cout << "commandes.ID = " << commandes.front().ID << endl;
+		//cout << "GameEngine::executeCommandes; commandes.size() = " << commandes.size() << endl;
+		//cout << "commandes.ID = " << commandes.front().ID << endl;
 
 		if (commandes.front().ID == enter)
 		{
 			ChangePlayer useless_var;
 			useless_var.execute(etat);
+			global::next_player_cv.notify_all();
 		}
 		
 		else if ((commandes.front().ID == arrow_left) || (commandes.front().ID == arrow_right))
@@ -213,6 +215,8 @@ void GameEngine::executeCommandes()
 	move_commande.execute(etat);
 
 	updating = false;
+	//cout << "GameEngine:exec end\n";
+
 	return;
 }
 

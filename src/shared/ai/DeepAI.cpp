@@ -6,6 +6,7 @@
 #include <ctime>
 #include "engine/Move.h"
 #include "state/GameState.h"
+#include "global_mutex.hpp"
 
 using namespace std;
 using namespace state;
@@ -32,38 +33,35 @@ void DeepAI::play()
 			///* we are going to use a boolean until we put the AI in a separate thread
 			//it allows to send a command then go back to main.cpp and update the graphics */
 			
-
-			//static int index(0);
+			static int index(0);
 			if (!min_max_done)
 			{
-			//	/* Create a deep copy of the current GameState */
-			//	GameState deep_gameState(moteur.etat); //OK
+				/* Create a deep copy of the current GameState */
+				GameState deep_gameState(moteur.etat); //OK
 
-			//	/* Create a GameEngine specific to the AI */
-			//	GameEngine deep_engine(deep_gameState); //OK
+				/* Create a GameEngine specific to the AI */
+				GameEngine deep_engine(deep_gameState); //OK
 
-			//	// find the best character to make an action with min max
-			//	index = min_max(deep_engine, 1, deep_engine.etat.current_player);
-			//	std::cout << "min_max = " << index << "\n";
-				attacker = moteur.etat.current_player->get_character(0);
+				// find the best character to make an action with min max
+				index = min_max(deep_engine, 2, deep_engine.etat.current_player);
+				std::cout << "min_max = " << index << "\n";
+				attacker = moteur.etat.current_player->get_character(index); //pb when index is last char and that he died; we are out of bounds
 				min_max_done = true;
 			}
 			else
 			{
-				// use this character to attack
 				// the following test is to determine whether or not our attacker has died
-				if (moteur.etat.current_player->get_character(0) == attacker)
+				if (moteur.etat.current_player->get_character(index) == attacker)
 				{
 					if (attack_RT(moteur, attacker))
 						std::cout << "Deep AI is done\n";
 				}
 				else
 				{
-					sfEvents events(enter);
-					moteur.add_command(events);
-					moteur.set_updating(true);
-					while (moteur.updating) {}
-					cout << "attacker is dead, next player\n";
+					next_player(moteur);
+					//sfEvents events(enter);	moteur.add_command(events);
+					//moteur.set_updating(true);	while (moteur.updating) {}
+					//cout << "attacker is dead, next player\n";
 				}
 			}
 		}
@@ -112,18 +110,28 @@ void DeepAI::place_character(GameEngine& moteur)
 		moteur.add_command(change_character);
 		i++;
 	}
+
 	if (i == ia_player->get_number_of_characters())
 	{
-		sfEvents next_player(enter);
-		moteur.add_command(next_player);
+		cout << "ia placement finished begin\n";
+		next_player(moteur);
+		
+		//moteur.set_updating(true);
+		//event with the line above it seems that the engine can execute the exec function and have no commands in its list so it sets engine to false
+		//while (moteur.updating) {}
+		cout << "ia placement finished end\n";
+
 		//moteur.add_command(sfEvents(space)); // now the game has started!
 	}
 }
 
+// the engine is in the SAME thread
 int DeepAI::min_max(engine::GameEngine& gameEngine, int depth, shared_ptr<state::Player> ai_player)
 {
 	auto& gameState = gameEngine.etat;
-	static bool min_or_max = 0; min_or_max = !min_or_max; //1, then 0 on the next call to min_max, then 1 etc
+	static bool min_or_max = 0; //1 when AI , 0 else
+	
+	min_or_max = !min_or_max; //1, then 0 on the next call to min_max, then 1 etc
 	int weight(0);
 
 	// compute the cost with evaluate function
@@ -136,7 +144,7 @@ int DeepAI::min_max(engine::GameEngine& gameEngine, int depth, shared_ptr<state:
 		cout << "\nbegin min_max with " << min_or_max << "(O is min)" << "\n";
 		/// STEP 1 - Get all characters to try for min_max at current depth
 
-		vector<shared_ptr<state::Characters>> char_to_try(gameState.get_characters());
+		std::deque<shared_ptr<state::Characters>> char_to_try(gameState.get_characters());
 
 		if (gameState.current_player->name == "IA")
 			char_to_try = gameState.current_player->get_characters();
@@ -159,18 +167,34 @@ int DeepAI::min_max(engine::GameEngine& gameEngine, int depth, shared_ptr<state:
 		for (unsigned int i(0); i < char_to_try.size(); i++)
 		{
 			// char attack
-			cout << "tree level: " << depth << ". attack with character " << i << "\n";
+			std::cout << "tree level: " << depth << ". attack with character " << i << "\n";
 
 			// temp no rollback just gameState deep copy
 			// so etat in GameEngine must be a pointer
 //			state::GameState deep_gameState(gameEngine.etat);
 
 			attack(gameEngine, char_to_try[i]);
-			cout << "attack with character " << i << " done\n";
+			std::cout << "attack with character " << i << " done\n";
+
+			if (gameState.current_player->name == "IA") //if player is IA we move to the next player
+			{
+				gameEngine.add_command(sfEvents(enter));
+				gameEngine.executeCommandes();
+			}
+			// same thread so we can't use next_player function
+
+			else //if player is not the IA we skip turns so as IA is the next player
+			{
+				for (unsigned int i = 0; i < gameState.get_number_of_player() - 1; i++)
+					gameEngine.add_command(sfEvents(enter));
+
+				gameEngine.executeCommandes();
+			}
+
+			std::cout << "skip player OK\n";
 			int val = min_max(gameEngine, depth - 1, ai_player);
 
-//			gameEngine.etat = deep_gameState;
-			cout << "leave = " << val << "\n";
+			std::cout << "leave = " << val << "\n";
 
 			if (min_or_max == 1) //MAX
 			{
@@ -182,12 +206,16 @@ int DeepAI::min_max(engine::GameEngine& gameEngine, int depth, shared_ptr<state:
 				static int depth_min = val;
 				weight = (val < depth_min) ? i : weight;
 			}
+
+			
+			//gameEngine.etat = deep_gameState;
+
 		}
 	}
 	return weight;
 }
 
-int DeepAI::evaluation_function(shared_ptr<state::Player> ai_player)
+int DeepAI:: evaluation_function(shared_ptr<state::Player> ai_player)
 {
 	int sum = 0;
 	for (unsigned int i = 0; i < ai_player->get_number_of_characters(); i++)
@@ -218,7 +246,7 @@ void DeepAI::attack(engine::GameEngine& gameEngine, std::shared_ptr<state::Chara
 		{
 			target = find_target(gameState, attacker, distancemin);
 			isCharacterChoose = true;
-			cout << "find_target OK\n";
+			//cout << "find_target OK\n";
 		}
 		
 		// if already selected then we update the distance between attacker and target
@@ -245,31 +273,24 @@ void DeepAI::attack(engine::GameEngine& gameEngine, std::shared_ptr<state::Chara
 				isReachable = true; //break;
 			}
 		}
-		cout << "find attack OK\n";
+		//cout << "find attack OK\n";
 
 		// if reachable and you have attack point then you can send attack until target is dead
 		if (isReachable) 
 		{
 			if (attacker->stats.get_attack_point() == 0) 
 			{
-				gameEngine.add_command(sfEvents(enter));
 				isCharacterChoose = false; attack_finished = true;
 			}
 			else {
 				sfEvents events(left_click);
 				events.mouse_position = target->position;
 				gameEngine.add_command(events);
-				// sequential execution of the command because deep IA has its own engine/ in the same thread
-				if (target->stats.get_life_point() == 0)
-					isCharacterChoose = false;
-				if (attacker->stats.get_life_point() == 0)
-					attack_finished = true;
 			}
 		}
 	
 		else {
 			if (attacker->stats.get_move_point() == 0) {
-				gameEngine.add_command(sfEvents(enter));
 				isCharacterChoose = false; attack_finished = true;
 			}
 			else if (target->position.getPositionX() <= attacker->position.getPositionX()) {
@@ -279,12 +300,18 @@ void DeepAI::attack(engine::GameEngine& gameEngine, std::shared_ptr<state::Chara
 				gameEngine.add_command(sfEvents(arrow_right));
 			}
 		}
-		cout << "send commands OK\n";
+		//cout << "send commands OK\n";
 		gameEngine.executeCommandes();
-		cout << "execute commands OK\n"; //qq fois passer le tour marche pas
+
+		if (target->stats.get_life_point() == 0)
+			isCharacterChoose = false;
+		if (attacker->stats.get_life_point() == 0)
+			attack_finished = true;
+		//cout << "execute commands OK\n"; //qq fois passer le tour marche pas
 	}	
 }
 
+// executed once with a while loop
 std::shared_ptr<state::Characters> DeepAI::find_target(
 	const state::GameState& gameState, const std::shared_ptr<state::Characters> attacker, unsigned int& distance)
 {
@@ -315,6 +342,7 @@ std::shared_ptr<state::Characters> DeepAI::find_target(
 	return target;
 }
 
+// attack real time (executed many times when it's the turn of the AI once min max is done, to see the update in the render)
 bool DeepAI::attack_RT(engine::GameEngine& gameEngine, std::shared_ptr<state::Characters> attacker)
 {
 	// All problems fixed (when the attacker dies we move on to the next player
@@ -392,12 +420,25 @@ bool DeepAI::attack_RT(engine::GameEngine& gameEngine, std::shared_ptr<state::Ch
 	{
 		sfEvents events(enter);
 		gameEngine.add_command(events);
-		gameEngine.set_updating(true);
-		while (gameEngine.updating) {}
+		std::unique_lock<std::mutex> unique_next_player(global::next_player);
+		global::next_player_cv.wait(unique_next_player);
+
+		//gameEngine.set_updating(true);
+		//while (gameEngine.updating) {}
 		cout << "attack finished\n";
 	}
 
-	cout << "send commands OK\n";
+	//cout << "send commands OK\n";
 
 	return attack_finished;
+}
+
+// when the engine is executed in another thread !!
+void DeepAI::next_player(engine::GameEngine& gameEngine)
+{
+	sfEvents next_player(enter);
+	gameEngine.add_command(next_player);
+
+	std::unique_lock<std::mutex> unique_next_player(global::next_player);
+	global::next_player_cv.wait(unique_next_player);
 }
