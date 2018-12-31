@@ -189,6 +189,7 @@ void GameState::delete_player(Player* player_to_delete)
 	}
 
 	else if (players.size() == 1) {
+		//un peu inutile car le joueur n'a plus de perso et il n'y a plus de perso dans gameSate
 		cout << "can't delete last player for now. sorry :(\n";
 		//throw std::runtime_error("GameState.cpp in delete_player, can not delete the last player");
 	}

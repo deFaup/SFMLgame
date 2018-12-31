@@ -43,7 +43,7 @@ void DeepAI::play()
 				GameEngine deep_engine(deep_gameState); //OK
 
 				// find the best character to make an action with min max
-				index = min_max(deep_engine, 2, deep_engine.etat.current_player);
+				index = min_max(deep_engine, 1, deep_engine.etat.current_player);
 				std::cout << "min_max = " << index << "\n";
 				attacker = moteur.etat.current_player->get_character(index); //pb when index is last char and that he died; we are out of bounds
 				min_max_done = true;
@@ -127,22 +127,30 @@ void DeepAI::place_character(GameEngine& moteur)
 
 // the engine is in the SAME thread
 int DeepAI::min_max(engine::GameEngine& gameEngine, int depth, shared_ptr<state::Player> ai_player)
-{
+{//RE-INIT TOUS LES static quand tout est terminé!!
+	static bool min_or_max = 0; //1 when AI , 0 else; set to 0 when we finish all the computation!!
+
+	// 1 - local copy of the state
+	//GameState this_layer_state(gameEngine.etat);
+
+	// state that you can modify
 	auto& gameState = gameEngine.etat;
-	static bool min_or_max = 0; //1 when AI , 0 else
 	
 	min_or_max = !min_or_max; //1, then 0 on the next call to min_max, then 1 etc
 	int weight(0);
 
-	// compute the cost with evaluate function
+	// when the bottom of the tree is reached we compute the cost with evaluate function
 	if (depth == 0) {
 		cout << "bottom tree\n";
 		return evaluation_function(ai_player);
 	}
+	
 	else
 	{
 		cout << "\nbegin min_max with " << min_or_max << "(O is min)" << "\n";
-		/// STEP 1 - Get all characters to try for min_max at current depth
+		// 2 - Find all son of the father node 
+		// father: this_layer_state; 
+		// sons: father state modified by each char_to_try (valid AI_characters or AI_ennemies)
 
 		std::deque<shared_ptr<state::Characters>> char_to_try(gameState.get_characters());
 
@@ -163,7 +171,7 @@ int DeepAI::min_max(engine::GameEngine& gameEngine, int depth, shared_ptr<state:
 		// LE ENTER doit être fait dans la boucle for ci-dessous
 		//if IA 1 enter; else nb_enter = nb_player - 1
 
-		/// STEP 2 - go through the characters and apply min_max
+		// 3 - Go through all sons and find their sons
 		for (unsigned int i(0); i < char_to_try.size(); i++)
 		{
 			// char attack
@@ -171,10 +179,21 @@ int DeepAI::min_max(engine::GameEngine& gameEngine, int depth, shared_ptr<state:
 
 			// temp no rollback just gameState deep copy
 			// so etat in GameEngine must be a pointer
-//			state::GameState deep_gameState(gameEngine.etat);
+			//state::GameState deep_gameState(gameEngine.etat);
 
 			attack(gameEngine, char_to_try[i]);
 			std::cout << "attack with character " << i << " done\n";
+
+			// check if after the attack the AI or the ennemy died
+			//for (unsigned int i(0); i < char_to_try.size(); i++)
+			//{
+			//	if ((char_to_try[i]->stats.get_life_point() <= 0))
+			//	{
+			//		char_to_try.erase(char_to_try.cbegin() + i);
+			//		i--;
+			//	}
+			//}
+
 
 			if (gameState.current_player->name == "IA") //if player is IA we move to the next player
 			{
@@ -206,12 +225,16 @@ int DeepAI::min_max(engine::GameEngine& gameEngine, int depth, shared_ptr<state:
 				static int depth_min = val;
 				weight = (val < depth_min) ? i : weight;
 			}
-
 			
-			//gameEngine.etat = deep_gameState;
+			// 4 - Restore the state to use for this layer
+			//gameEngine.etat = &this_layer_state;
 
 		}
 	}
+	
+	// all static variables re-initialized
+	min_or_max = 0;
+
 	return weight;
 }
 
@@ -245,8 +268,9 @@ void DeepAI::attack(engine::GameEngine& gameEngine, std::shared_ptr<state::Chara
 		if (!isCharacterChoose )
 		{
 			target = find_target(gameState, attacker, distancemin);
+			if (!target) break;
 			isCharacterChoose = true;
-			//cout << "find_target OK\n";
+			cout << "find_target OK\n";
 		}
 		
 		// if already selected then we update the distance between attacker and target
@@ -273,7 +297,7 @@ void DeepAI::attack(engine::GameEngine& gameEngine, std::shared_ptr<state::Chara
 				isReachable = true; //break;
 			}
 		}
-		//cout << "find attack OK\n";
+		cout << "find attack OK\n";
 
 		// if reachable and you have attack point then you can send attack until target is dead
 		if (isReachable) 
@@ -300,14 +324,14 @@ void DeepAI::attack(engine::GameEngine& gameEngine, std::shared_ptr<state::Chara
 				gameEngine.add_command(sfEvents(arrow_right));
 			}
 		}
-		//cout << "send commands OK\n";
+		cout << "send commands OK\n";
 		gameEngine.executeCommandes();
 
 		if (target->stats.get_life_point() == 0)
 			isCharacterChoose = false;
 		if (attacker->stats.get_life_point() == 0)
 			attack_finished = true;
-		//cout << "execute commands OK\n"; //qq fois passer le tour marche pas
+		cout << "execute commands OK\n"; //qq fois passer le tour marche pas
 	}	
 }
 
@@ -315,7 +339,7 @@ void DeepAI::attack(engine::GameEngine& gameEngine, std::shared_ptr<state::Chara
 std::shared_ptr<state::Characters> DeepAI::find_target(
 	const state::GameState& gameState, const std::shared_ptr<state::Characters> attacker, unsigned int& distance)
 {
-	std::shared_ptr<state::Characters> target;
+	std::shared_ptr<state::Characters> target(0);
 	distance = 10000;
 	for (unsigned int i = 0; i < gameState.characters.size(); i++)
 	{
@@ -428,7 +452,7 @@ bool DeepAI::attack_RT(engine::GameEngine& gameEngine, std::shared_ptr<state::Ch
 		cout << "attack finished\n";
 	}
 
-	//cout << "send commands OK\n";
+	cout << "send commands OK\n";
 
 	return attack_finished;
 }

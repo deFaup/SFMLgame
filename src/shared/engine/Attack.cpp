@@ -57,7 +57,7 @@ void Attack::execute(state::GameState& etat)
 		// recuperation de la matrice de champ d'action de l'attaque
 		size_x = character->get_attack(attack_number).get_nbcolumn();
 		size_y = character->get_attack(attack_number).get_nbline();
-		//std::cout << size_x << ", " << size_y << std::endl;
+		std::cout << size_x << ", " << size_y << std::endl;
 
 		matrix = *(character->get_attack(attack_number).get_attack_field_of_action());
 	}
@@ -73,17 +73,21 @@ void Attack::execute(state::GameState& etat)
 	//	k < (int)etat.players.size() && etat.get_number_of_player() > 1;
 	//	k++)
 	//{	
+	if (etat.get_number_of_player() <= 1) return;
+
 	for (auto cons_player : etat.players)
 	{
+		if (etat.get_number_of_player() <= 1) break;
+
 		//shared_ptr<Player> cons_player = etat.get_player(k);
-		//std::cout << cons_player->name << "\n";
+		std::cout << cons_player->name << "\n";
 
 		//for(int i = 0; i < (int)cons_player->get_number_of_characters(); i++)
-		//int i(0);
+		int i(0);
 
 		for (auto cons_char : cons_player->get_characters())
 		{
-			//std::cout << "character n: " << i << "\n"; i++;
+			std::cout << "character n: " << i << "\n"; i++;
 			//shared_ptr<Characters> cons_char = cons_player->get_character(i);
 			unsigned int positionX = cons_char->position.getPositionX();
 			unsigned int positionY = cons_char->position.getPositionY();

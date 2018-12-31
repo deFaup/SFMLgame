@@ -32,16 +32,16 @@ void GameEngine::init_game(int mode)
 		etat.new_map(3000, 2000);
 
 		etat.new_player("Joueur 1");
-		//etat.new_character(0, miyo);
-		//etat.new_character(0, goku);
-		etat.new_character(0, vegeta);
+		etat.new_character(0, miyo);
+		etat.new_character(0, goku);
+		//etat.new_character(0, vegeta);
 
 		if (mode == 0)
 		{
 			etat.new_player("Joueur 2");
 			etat.new_character(1, goku);
-			etat.new_character(1, goku);
-			etat.new_character(1, goku);
+			//etat.new_character(1, goku);
+			//etat.new_character(1, goku);
 		}
 		else
 		{
