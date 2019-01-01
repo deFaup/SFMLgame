@@ -129,7 +129,7 @@ void enginet(int ai_type)
 	*/
 
 	GameState etat;
-	GameEngine engine(etat); std::thread thread_engine;
+	GameEngine engine(&etat); std::thread thread_engine;
 	Controller controller(renderWindow, engine, etat);
 
 	DeepAI *ai_deep(0); HyAI *ai_heuristic(0); RandomAI *ai_random(0); // Classe AI et système d'héritage à faire

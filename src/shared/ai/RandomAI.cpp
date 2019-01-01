@@ -16,14 +16,14 @@ using namespace render;
 RandomAI::RandomAI(engine::GameEngine& moteur) : moteur(moteur){}
 
 void RandomAI::play(){
-	if(moteur.etat.current_player->name == "IA")
+	if(moteur.etat->current_player->name == "IA")
 	{
-		if (moteur.etat.ID == state::StateID::team_placement)
+		if (moteur.etat->ID == state::StateID::team_placement)
 		{
-			std::shared_ptr<state::Player> ia_player = moteur.etat.current_player;
+			std::shared_ptr<state::Player> ia_player = moteur.etat->current_player;
 
 			int width(0), height(0);
-			moteur.etat.map.get_dimensions(width, height);
+			moteur.etat->map.get_dimensions(width, height);
 			srand(time(NULL));
 
 			static bool aligned = false;
@@ -45,7 +45,7 @@ void RandomAI::play(){
 			{
 				render::sfEventsID arrow = arrow_down;
 				engine::Move move_commande(arrow);
-				move_commande.execute(moteur.etat);
+				move_commande.execute(*(moteur.etat));
 			}
 
 			if (previous_position.getPositionY() == ia_player->get_current_character()->position.getPositionY())
@@ -63,7 +63,7 @@ void RandomAI::play(){
 			}
 		}
 
-		else if (moteur.etat.ID == state::StateID::started)
+		else if (moteur.etat->ID == state::StateID::started)
 		{
 			srand(time(NULL));
 			int nb_aleatoire = rand() % 2;

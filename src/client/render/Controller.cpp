@@ -20,7 +20,7 @@ void Controller::handle_sfEvents(sf::Event& event)
 		engine.game_ended = true;
 	}
 	
-	if (engine.etat.ID == state::StateID::started)
+	if (engine.etat->ID == state::StateID::started)
 	{
 		if (gameState.current_player->name == "IA")
 		{

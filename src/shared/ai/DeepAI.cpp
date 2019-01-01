@@ -23,12 +23,12 @@ void DeepAI::play()
 
 	static shared_ptr<state::Characters> attacker;
 
-	if (moteur.etat.current_player->name == "IA")
+	if (moteur.etat->current_player->name == "IA")
 	{
-		if (moteur.etat.ID == state::StateID::team_placement)
+		if (moteur.etat->ID == state::StateID::team_placement)
 			place_character(moteur);
 
-		else if (moteur.etat.ID == state::StateID::started)
+		else if (moteur.etat->ID == state::StateID::started)
 		{
 			///* we are going to use a boolean until we put the AI in a separate thread
 			//it allows to send a command then go back to main.cpp and update the graphics */
@@ -37,23 +37,23 @@ void DeepAI::play()
 			if (!min_max_done)
 			{
 				/* Create a deep copy of the current GameState */
-				GameState deep_gameState(moteur.etat); //OK
+				GameState deep_gameState(*(moteur.etat)); //OK
 
 				/* Create a GameEngine specific to the AI */
-				GameEngine deep_engine(deep_gameState); //OK
+				GameEngine deep_engine(&deep_gameState); //OK
 
 				// find the best character to make an action with min max
-				int* best = min_max(deep_engine, 2, deep_engine.etat.current_player, 1);
+				int* best = min_max(deep_engine, 2, deep_engine.etat->current_player, 1);
 				
 				index = best[1];
 				std::cout << "min_max = " << index << "\n";
-				attacker = moteur.etat.current_player->get_character(index); //pb when index is last char and that he died; we are out of bounds
+				attacker = moteur.etat->current_player->get_character(index); //pb when index is last char and that he died; we are out of bounds
 				min_max_done = true;
 			}
 			else
 			{
 				// the following test is to determine whether or not our attacker has died
-				if (moteur.etat.current_player->get_character(index) == attacker)
+				if (moteur.etat->current_player->get_character(index) == attacker)
 				{
 					if (attack_RT(moteur, attacker))
 						std::cout << "Deep AI is done\n";
@@ -78,10 +78,10 @@ void DeepAI::play()
 
 void DeepAI::place_character(GameEngine& moteur)
 {
-	std::shared_ptr<state::Player> ia_player = moteur.etat.current_player;
+	std::shared_ptr<state::Player> ia_player = moteur.etat->current_player;
 
 	int width(0), height(0);
-	moteur.etat.map.get_dimensions(width, height);
+	moteur.etat->map.get_dimensions(width, height);
 	srand(time(NULL));
 
 	static bool aligned = false;
@@ -103,7 +103,7 @@ void DeepAI::place_character(GameEngine& moteur)
 	{
 		render::sfEventsID arrow = arrow_down;
 		engine::Move move_commande(arrow);
-		move_commande.execute(moteur.etat);
+		move_commande.execute(*(moteur.etat));
 	}
 
 	if (previous_position.getPositionY() == ia_player->get_current_character()->position.getPositionY())
@@ -133,10 +133,10 @@ int res[2] = { 0,0 };
 int* DeepAI::min_max(engine::GameEngine& gameEngine, int depth, shared_ptr<state::Player> ai_player, bool min_or_max)
 {
 	// 1 - local copy of the state
-	//GameState this_layer_state(gameEngine.etat);
+	//GameState this_layer_state(*(gameEngine.etat));
 
 	// state that you can modify
-	auto& gameState = gameEngine.etat;
+	state::GameState* gameState = gameEngine.etat;
 		
 	// sons'weight for one layer
 	std::vector<int> sons_weight;
@@ -158,15 +158,15 @@ int* DeepAI::min_max(engine::GameEngine& gameEngine, int depth, shared_ptr<state
 		// 2 - Find all sons of the father node 
 		// father: this_layer_state; 
 		// sons: father state modified by each char_to_try (valid AI_characters or AI_ennemies)
-		std::deque<shared_ptr<state::Characters>> char_to_try(gameState.get_characters());
+		std::deque<shared_ptr<state::Characters>> char_to_try(gameState->get_characters());
 
-		if (gameState.current_player->name == "IA")
-			char_to_try = gameState.current_player->get_characters();
+		if (gameState->current_player->name == "IA")
+			char_to_try = gameState->current_player->get_characters();
 
 		for (unsigned int i(0); i < char_to_try.size(); i++)
 		{	//delete dead characters and IA characters when current charcter is not IA
 			if ((char_to_try[i]->stats.get_life_point() <= 0) ||
-				(char_to_try[i]->get_Player()->name == "IA" && gameState.current_player->name != "IA"))
+				(char_to_try[i]->get_Player()->name == "IA" && gameState->current_player->name != "IA"))
 			{
 				char_to_try.erase(char_to_try.cbegin()+i);
 				i--;
@@ -199,7 +199,7 @@ int* DeepAI::min_max(engine::GameEngine& gameEngine, int depth, shared_ptr<state
 			// on fait return pour donner une valeur au parent directement sans parcourir tous les fils
 			std::cout << "attack with character " << i << " done\n";
 
-			if (gameState.current_player->name == "IA") //if player is IA we move to the next player
+			if (gameState->current_player->name == "IA") //if player is IA we move to the next player
 			{
 				gameEngine.add_command(sfEvents(enter));
 				gameEngine.executeCommandes();
@@ -208,7 +208,7 @@ int* DeepAI::min_max(engine::GameEngine& gameEngine, int depth, shared_ptr<state
 
 			else //if player is not the IA we skip turns so as IA is the next player
 			{
-				for (unsigned int i = 0; i < gameState.get_number_of_player() - 1; i++)
+				for (unsigned int i = 0; i < gameState->get_number_of_player() - 1; i++)
 					gameEngine.add_command(sfEvents(enter));
 
 				gameEngine.executeCommandes();
@@ -270,7 +270,7 @@ int DeepAI:: evaluation_function(shared_ptr<state::Player> ai_player)
 int DeepAI::attack(engine::GameEngine& gameEngine, std::shared_ptr<state::Characters> attacker)
 {// rajouter si attacker dead
 
-	auto& gameState = gameEngine.etat;
+	state::GameState* gameState = gameEngine.etat;
 	std::shared_ptr<state::Characters> target;
 	bool attack_finished = false;
 	unsigned int distancemin;
@@ -362,13 +362,13 @@ int DeepAI::attack(engine::GameEngine& gameEngine, std::shared_ptr<state::Charac
 
 // executed once with a while loop
 std::shared_ptr<state::Characters> DeepAI::find_target(
-	const state::GameState& gameState, const std::shared_ptr<state::Characters> attacker, unsigned int& distance)
+	const state::GameState* gameState, const std::shared_ptr<state::Characters> attacker, unsigned int& distance)
 {
 	std::shared_ptr<state::Characters> target(0);
 	distance = 10000;
-	for (unsigned int i = 0; i < gameState.characters.size(); i++)
+	for (unsigned int i = 0; i < gameState->characters.size(); i++)
 	{
-		const std::shared_ptr<state::Characters>& potential_target = gameState.characters[i];
+		const std::shared_ptr<state::Characters>& potential_target = gameState->characters[i];
 
 		//targets can be dead as we don't remove them from the state
 		if (potential_target->get_Player() != attacker->get_Player() &&
@@ -399,7 +399,7 @@ bool DeepAI::attack_RT(engine::GameEngine& gameEngine, std::shared_ptr<state::Ch
 
 	// Ex problème: si le character ou le perso meurt, les var statiques ne sont pas réinit dans ce cas.
 
-	auto& gameState = gameEngine.etat;
+	state::GameState* gameState = gameEngine.etat;
 	std::shared_ptr<state::Characters> target;
 	bool attack_finished = false;
 	unsigned int distancemin;

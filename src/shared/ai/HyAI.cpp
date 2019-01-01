@@ -17,14 +17,14 @@ HyAI::HyAI(GameEngine& moteur) : moteur(moteur){}
 
 void HyAI::play()
 {
-	if(moteur.etat.current_player->name == "IA")
+	if(moteur.etat->current_player->name == "IA")
 	{
-		if (moteur.etat.ID == state::StateID::team_placement)
+		if (moteur.etat->ID == state::StateID::team_placement)
 		{
-			std::shared_ptr<state::Player> ia_player = moteur.etat.current_player;
+			std::shared_ptr<state::Player> ia_player = moteur.etat->current_player;
 
 			int width(0), height(0);
-			moteur.etat.map.get_dimensions(width, height);			
+			moteur.etat->map.get_dimensions(width, height);
 			srand(time(NULL));
 			
 			static bool aligned = false;
@@ -46,7 +46,7 @@ void HyAI::play()
 			{
 				render::sfEventsID arrow = arrow_down;
 				engine::Move move_commande(arrow);
-				move_commande.execute(moteur.etat);
+				move_commande.execute(*(moteur.etat));
 			}
 
 			if (previous_position.getPositionY() == ia_player->get_current_character()->position.getPositionY())
@@ -63,7 +63,7 @@ void HyAI::play()
 			}
 		}
 
-		else if (moteur.etat.ID == state::StateID::started)
+		else if (moteur.etat->ID == state::StateID::started)
 		{
 			static std::shared_ptr<state::Characters> target;
 			static std::shared_ptr<state::Characters> attacker;
@@ -74,13 +74,13 @@ void HyAI::play()
 			if (!isCharacterChoose) 
 			{
 				distancemin = 10000;
-				for (unsigned int j = 0; j < moteur.etat.current_player->get_number_of_characters(); j++) 
+				for (unsigned int j = 0; j < moteur.etat->current_player->get_number_of_characters(); j++)
 				{
-					std::shared_ptr<state::Characters>& potential_attacker = moteur.etat.current_player->get_character(j);
-					for (unsigned int i = 0; i < moteur.etat.characters.size(); i++) 
+					std::shared_ptr<state::Characters>& potential_attacker = moteur.etat->current_player->get_character(j);
+					for (unsigned int i = 0; i < moteur.etat->characters.size(); i++)
 					{
-						std::shared_ptr<state::Characters>& potential_target = moteur.etat.characters[i];
-						if (potential_target->get_Player() != moteur.etat.current_player.get()) 
+						std::shared_ptr<state::Characters>& potential_target = moteur.etat->characters[i];
+						if (potential_target->get_Player() != moteur.etat->current_player.get())
 						{
 							int var = potential_target->position.getPositionX() - potential_attacker->position.getPositionX();
 							var = (int)abs((double)var);
@@ -105,7 +105,7 @@ void HyAI::play()
 				);
 			}
 			
-			moteur.etat.current_player->current_character = attacker;
+			moteur.etat->current_player->current_character = attacker;
 			unsigned int attack_number = 0;
 			bool isReachable = false;
 			// vérifie si la target est à portée d'attaque et si oui avec quelle attaque
@@ -154,7 +154,7 @@ void HyAI::play()
 
 	render::sfEventsID arrow = arrow_down;
 	engine::Move move_commande(arrow);
-	move_commande.execute(moteur.etat);
+	move_commande.execute(*(moteur.etat));
 }
 
 
