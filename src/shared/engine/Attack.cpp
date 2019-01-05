@@ -132,6 +132,6 @@ void Attack::execute(state::GameState& etat)
 	}
 	etat.map.set_mask(mask);
 	
-	//std::cout << "Attack::execute end" << std::endl;
+	std::cout << "Attack::execute end" << std::endl;
 	return;
 }

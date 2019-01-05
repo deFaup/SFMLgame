@@ -13,7 +13,7 @@ using namespace state;
 using namespace ai;
 using namespace engine;
 using namespace render;
-
+void update_char_to_try(const engine::GameEngine& gameEngine, std::deque<shared_ptr<state::Characters>>& char_to_try);
 DeepAI::DeepAI(GameEngine& moteur) : moteur(moteur){}
 
 void DeepAI::play()
@@ -43,7 +43,7 @@ void DeepAI::play()
 				GameEngine deep_engine(&deep_gameState); //OK
 
 				// find the best character to make an action with min max
-				int* best = min_max(deep_engine, 2, deep_engine.etat->current_player, 1);
+				int* best = min_max(deep_engine, 2, 1);
 				
 				index = best[1];
 				std::cout << "min_max = " << index << "\n";
@@ -130,59 +130,47 @@ void DeepAI::place_character(GameEngine& moteur)
 // the engine is in the SAME thread
 // return the min or max value and the index of the value
 int res[2] = { 0,0 };
-int* DeepAI::min_max(engine::GameEngine& gameEngine, int depth, shared_ptr<state::Player> ai_player, bool min_or_max)
+int* DeepAI::min_max(engine::GameEngine& gameEngine, int depth, bool min_or_max)
 {
-	// 1 - local copy of the state
-	//GameState this_layer_state(*(gameEngine.etat));
-
-	// state that you can modify
-	state::GameState* gameState = gameEngine.etat;
-		
-	// sons'weight for one layer
-	std::vector<int> sons_weight;
-
 	// return value : result, index
 	res[0] = 0; res[1] = 0;
 
 	// when the bottom of the tree is reached we compute the cost with evaluate function
 	if (depth == 0) {
-		res[0] = evaluation_function(ai_player);
+		res[0] = evaluation_function(gameEngine);
 		cout << "bottom tree = " << res[0] << "\n";
 		return res;
 	}
 	
 	else
 	{
+		// 1 - local copy of the state
+		state::GameState this_layer_state(*(gameEngine.etat));
+		std::cout << "copy layer state: " << depth << "\n";
+
+		// sons'weight for one layer
+		std::vector<int> sons_weight;
+
 		cout << "\nbegin min_max with " << min_or_max << "(O is min)" << "\n";
 
 		// 2 - Find all sons of the father node 
 		// father: this_layer_state; 
 		// sons: father state modified by each char_to_try (valid AI_characters or AI_ennemies)
-		std::deque<shared_ptr<state::Characters>> char_to_try(gameState->get_characters());
+		std::deque<shared_ptr<state::Characters>> char_to_try;// (gameState->get_characters());
+		update_char_to_try(gameEngine, char_to_try);
 
-		if (gameState->current_player->name == "IA")
-			char_to_try = gameState->current_player->get_characters();
-
-		for (unsigned int i(0); i < char_to_try.size(); i++)
-		{	//delete dead characters and IA characters when current charcter is not IA
-			if ((char_to_try[i]->stats.get_life_point() <= 0) ||
-				(char_to_try[i]->get_Player()->name == "IA" && gameState->current_player->name != "IA"))
-			{
-				char_to_try.erase(char_to_try.cbegin()+i);
-				i--;
-			}
-		}
+		int size = char_to_try.size();
 		
 		// 3 - Check if the player has lost
 		if (char_to_try.empty())
 		{
 			std::cout << "player lost\n";
-			res[0] = evaluation_function(ai_player);
+			res[0] = evaluation_function(gameEngine);
 			return res;
 		}
 
 		// 4 - Go through all living sons and find their sons
-		for (unsigned int i(0); i < char_to_try.size(); i++)
+		for (int i(0); i < size; i++)
 		{
 			// char attack
 			std::cout << "tree level: " << depth << ". attack with character " << i << "\n";
@@ -193,35 +181,37 @@ int* DeepAI::min_max(engine::GameEngine& gameEngine, int depth, shared_ptr<state
 
 			if (attack(gameEngine, char_to_try[i]) == -1)
 			{
-				res[0] = evaluation_function(ai_player); //res[1] = i;
+				res[0] = evaluation_function(gameEngine); //res[1] = i;
 				return res; // we can return res as we don't need to explore the other possibilities
 			}
 			// on fait return pour donner une valeur au parent directement sans parcourir tous les fils
 			std::cout << "attack with character " << i << " done\n";
 
-			if (gameState->current_player->name == "IA") //if player is IA we move to the next player
-			{
+			if (gameEngine.etat->current_player->name == "IA") //if player is IA we move to the next player
 				gameEngine.add_command(sfEvents(enter));
-				gameEngine.executeCommandes();
-			}
+
 			// same thread so we can't use next_player function
 
 			else //if player is not the IA we skip turns so as IA is the next player
 			{
-				for (unsigned int i = 0; i < gameState->get_number_of_player() - 1; i++)
+				for (unsigned int i = 0; i < gameEngine.etat->get_number_of_player() - 1; i++)
 					gameEngine.add_command(sfEvents(enter));
-
-				gameEngine.executeCommandes();
 			}
+
+			gameEngine.executeCommandes();
 			std::cout << "skip player OK\n";
 			
-			int* val = min_max(gameEngine, depth - 1, ai_player, !min_or_max);
+			int* val = min_max(gameEngine, depth - 1, !min_or_max);
 			sons_weight.push_back(val[0]);
 			std::cout << "weight = " << val[0] << "\n";
 			
 			// 4 - Restore the state to use for this layer
-			//gameEngine.etat = &this_layer_state;
+			std::cout << "restoring layer state: " << depth << "\n\n";
+			gameEngine.etat = &this_layer_state;
+			update_char_to_try(gameEngine, char_to_try);
 
+			gameEngine.add_command(sfEvents(arrow_up));
+			gameEngine.executeCommandes();
 		}
 
 		// 5 - find min or max value
@@ -253,17 +243,24 @@ int* DeepAI::min_max(engine::GameEngine& gameEngine, int depth, shared_ptr<state
 	}
 }
 
-int DeepAI:: evaluation_function(shared_ptr<state::Player> ai_player)
+int DeepAI:: evaluation_function(engine::GameEngine& gameEngine)
 {
 	int sum = 0;
-	for (unsigned int i = 0; i < ai_player->get_number_of_characters(); i++)
+
+	for (auto ai_player : gameEngine.etat->players)
 	{
-		std::cout << "evaluation_function: i= " << i << endl;
-		std::cout << "evaluation_function: sum= " << sum << endl;
-		std::cout << "evaluation_function: id character= "
-			<< ai_player->get_character(i)->get_id() << endl;
-		sum += ai_player->get_character(i)->stats.get_life_point();
+		if (ai_player->name == "IA")
+			for (unsigned int i = 0; i < ai_player->get_number_of_characters(); i++)
+			{
+				std::cout << "evaluation_function: i= " << i << endl;
+				std::cout << "evaluation_function: id character= "
+					<< ai_player->get_character(i)->get_id() << endl;
+				sum += ai_player->get_character(i)->stats.get_life_point();
+				std::cout << "evaluation_function: sum= " << sum << endl;
+			}
 	}
+
+	
 	return sum;
 }
 
@@ -281,18 +278,23 @@ int DeepAI::attack(engine::GameEngine& gameEngine, std::shared_ptr<state::Charac
 
 	while (!attack_finished && (attacker->stats.get_life_point() > 0) )
 	{
-		//cout << "attacker LP " << attacker->stats.get_life_point() << "\n";
+		//cout << "attacker name|LP/AP/MP: " << attacker->get_id();
+		//cout << " | " << attacker->stats.get_life_point();
+		//cout << " / " << attacker->stats.get_attack_point();
+		//cout << " / " << attacker->stats.get_move_point() << "\n";
+		//std::cout << "\nattacker ptr: " << attacker->get_Player() << "\n";
 
 		// selection du joueur à prendre pour target
 		// if no target then this player has won
 		if (!isCharacterChoose )
 		{
 			target = find_target(gameState, attacker, distancemin);
-			if (!target) {	erno = -1;  break;	}
+			if (!target) {	erno = -1; cout << "no target\n"; break;	}
 			isCharacterChoose = true;
-			cout << "find_target OK\n";
+			cout << "find_target OK";
+			std::cout << ": " << target->get_Player() <<  "\n";
 		}
-		
+
 		// if already selected then we update the distance between attacker and target
 		else
 		{
@@ -304,7 +306,10 @@ int DeepAI::attack(engine::GameEngine& gameEngine, std::shared_ptr<state::Charac
 				(target->position.getPositionX() - attacker->position.getPositionX())
 			);
 		}
-
+		//cout << "target   name|LP/AP/MP: " << target->get_id();
+		//cout << " | " << target->stats.get_life_point();
+		//cout << " / " << target->stats.get_attack_point();
+		//cout << " / " << target->stats.get_move_point() << "\n";
 		// future implementation: find the best attack among the possible attacks of the attacker
 		//unsigned int attack_number = 0;
 
@@ -374,6 +379,9 @@ std::shared_ptr<state::Characters> DeepAI::find_target(
 		if (potential_target->get_Player() != attacker->get_Player() &&
 			potential_target->stats.get_life_point() > 0)
 		{
+			//std::cout << "target: " << potential_target->get_Player();
+			////std::cout << "\nattacker: " << attacker->get_Player() << "\n";
+
 			int var = potential_target->position.getPositionX() - attacker->position.getPositionX();
 			var = (int)abs((double)var);
 			if (var <= (int)distance) {
@@ -490,4 +498,22 @@ void DeepAI::next_player(engine::GameEngine& gameEngine)
 
 	std::unique_lock<std::mutex> unique_next_player(global::next_player);
 	global::next_player_cv.wait(unique_next_player);
+}
+
+void DeepAI::update_char_to_try(const engine::GameEngine& gameEngine, std::deque<shared_ptr<state::Characters>>& char_to_try)
+{
+	if (gameEngine.etat->current_player->name == "IA")
+		char_to_try = gameEngine.etat->current_player->get_characters();
+	else
+		char_to_try = gameEngine.etat->get_characters();
+
+	for (unsigned int i(0); i < char_to_try.size(); i++)
+	{	//delete dead characters and IA characters when current charcter is not IA
+		if ((char_to_try[i]->stats.get_life_point() <= 0) ||
+			(char_to_try[i]->get_Player()->name == "IA" && gameEngine.etat->current_player->name != "IA"))
+		{
+			char_to_try.erase(char_to_try.cbegin() + i);
+			i--;
+		}
+	}
 }

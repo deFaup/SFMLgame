@@ -132,8 +132,8 @@ void Scene::stateChanged(state::Event& event)
 		EventCharacters* event_character = (EventCharacters*) &event;
 		Player* player = event_character->changed_character->get_Player();
 
-		std::cout << "Scene::stateChanged Player: " << player->name << " character: ";
-		std::cout << event_character->changed_character->get_id() << " is dead !" << std::endl;
+		//std::cout << "Scene::stateChanged Player: " << player->name << " character: ";
+		//std::cout << event_character->changed_character->get_id() << " is dead !" << std::endl;
 
 		unsigned int index(0);
 		/* find the shared ptr to the dead character in the player characters vector */
@@ -161,7 +161,7 @@ void Scene::stateChanged(state::Event& event)
 		characters.delete_character(event_character->changed_character);
 		//std::cout << "references to this character= " << temp.use_count() << endl; //3
 
-		std::cout << "Scene::stateChanged character: END\n";
+		//std::cout << "Scene::stateChanged character: END\n";
 
 	}//2 once we exit this namespace and 0 when we leave engine::Attack::execute (or only 1 in Attack)
 
@@ -169,7 +169,7 @@ void Scene::stateChanged(state::Event& event)
 	{
 		EventPlayer* event_player = (EventPlayer*) &event;
 		Player* player = event_player->changed_player;
-		std::cout << "Scene::stateChanged  Player: " << player->name << " is dead !" << std::endl;
+		//std::cout << "Scene::stateChanged  Player: " << player->name << " is dead !" << std::endl;
 
 		//unsigned int index(0);
 		//find the shared ptr to the dead character in the player characters vector
@@ -187,6 +187,6 @@ void Scene::stateChanged(state::Event& event)
 
 		// in this part we delete all shared ptr to the dead player
 		gameState.delete_player(player);
-		std::cout << "Scene::stateChanged Player: END\n";
+		//std::cout << "Scene::stateChanged Player: END\n";
 	}
 }

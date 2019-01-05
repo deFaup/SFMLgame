@@ -62,7 +62,7 @@ GameState::GameState(GameState& gameState) :
 	// set current player
 	//current_player = gameState.current_player;
 	// modifier les current player et character car on écrit le shared ptr du state et non du copié!
-	cout << "end copy constructor\n";
+	cout << "end copy constructor\n\n";
 }
 
 GameState::~GameState()

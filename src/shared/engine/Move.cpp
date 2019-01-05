@@ -63,14 +63,13 @@ void Move::execute(state::GameState& etat)
 	state::Position& pos = etat.current_player->get_current_character()->position;
 	std::vector<std::vector<int>> mask = etat.map.get_mask();
 	Statistics& stats = etat.current_player->get_current_character()->stats;
-	Statistics statsp(stats.get_life_point(),stats.get_attack_point(),stats.get_move_point()-1);
-
+	
 	switch (move_type)
 	{
 	case MoveLeft:
 		if(mask[pos.getPositionY()+270][pos.getPositionX()-speed] == 0){
 			pos.increaseX(-speed);
-			stats.set_statistics(statsp);
+			stats.increase_move_point(-1);
 		}
 		else{
 			unsigned int i = 0;
@@ -79,13 +78,13 @@ void Move::execute(state::GameState& etat)
 			}
 			pos.increaseX(-speed);
 			pos.increaseY(-i);
-			stats.set_statistics(statsp);
+			stats.increase_move_point(-1);
 		}
 		break;
 	case MoveRight:
 		if(mask[pos.getPositionY()+270][pos.getPositionX()+speed] == 0){
 			pos.increaseX(speed);
-			stats.set_statistics(statsp);
+			stats.increase_move_point(-1);
 		}
 		else{
 			unsigned int i = 0;
@@ -94,7 +93,7 @@ void Move::execute(state::GameState& etat)
 			}
 			pos.increaseX(speed);
 			pos.increaseY(-i);
-			stats.set_statistics(statsp);
+			stats.increase_move_point(-1);
 		}
 		break;
 	case MoveUp:
@@ -108,11 +107,6 @@ void Move::execute(state::GameState& etat)
 	default:
 		break;
 	}
-	// call to observers is automatic
-	// state::EventCharacters event(Character_positionChanged);
-	// etat.current_player->get_current_character()->notifyObservers(event);
-
-	//std::cout << "executing movement" << endl;
 }
 
 void Move::move_with_mouse(state::GameState& etat,state::Position pos)

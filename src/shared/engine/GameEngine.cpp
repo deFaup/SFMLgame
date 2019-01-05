@@ -46,8 +46,8 @@ void GameEngine::init_game(int mode)
 		else
 		{
 			etat->new_player("IA");
-			etat->new_character(1, miyo);
-			//etat->new_character(1, miyo);
+			etat->new_character(1, goku);
+			etat->new_character(1, vegeta);
 			//etat->new_character(1, miyo);
 		}
 		
@@ -197,6 +197,7 @@ void GameEngine::executeCommandes()
 		{
 			if (commandes.front().ID == left_click)
 			{
+				//cout << "command is attack\n";
 				Attack attack_command;
 				attack_command.attack_position = commandes.front().mouse_position;
 				attack_command.attack_number = 0;
@@ -210,9 +211,9 @@ void GameEngine::executeCommandes()
 		commandes.pop();
 	}
 
-	render::sfEventsID arrow = arrow_down;
-	Move move_commande(arrow);
-	move_commande.execute(*etat);
+	//render::sfEventsID arrow = arrow_down;
+	//Move move_commande(arrow);
+	//move_commande.execute(*etat);
 
 	updating = false;
 	//cout << "GameEngine:exec end\n";
