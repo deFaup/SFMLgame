@@ -37,11 +37,12 @@ void DeepAI::play()
 			if (!min_max_done)
 			{
 				/* Create a deep copy of the current GameState */
-				GameState deep_gameState(*(moteur.etat)); //OK
+				//GameState deep_gameState(*(moteur.etat)); //OK
 
 				/* Create a GameEngine specific to the AI */
-				GameEngine deep_engine(&deep_gameState); //OK
-
+				//GameEngine deep_engine(&deep_gameState); //OK
+				GameEngine deep_engine(moteur.etat); //OK
+				
 				// find the best character to make an action with min max
 				int* best = min_max(deep_engine, 2, 1);
 				
@@ -177,7 +178,13 @@ int* DeepAI::min_max(engine::GameEngine& gameEngine, int depth, bool min_or_max)
 
 			// temp no rollback just gameState deep copy
 			// so etat in GameEngine must be a pointer
-			//state::GameState deep_gameState(gameEngine.etat);
+
+			// x - copy of the state for this character, deleted at each incrementation
+			state::GameState loop_state(this_layer_state);
+			gameEngine.etat = &loop_state;
+			std::cout << "loop state: " << i << "\n";
+			
+			update_char_to_try(gameEngine, char_to_try);
 
 			if (attack(gameEngine, char_to_try[i]) == -1)
 			{
@@ -208,7 +215,6 @@ int* DeepAI::min_max(engine::GameEngine& gameEngine, int depth, bool min_or_max)
 			// 4 - Restore the state to use for this layer
 			std::cout << "restoring layer state: " << depth << "\n\n";
 			gameEngine.etat = &this_layer_state;
-			update_char_to_try(gameEngine, char_to_try);
 
 			gameEngine.add_command(sfEvents(arrow_up));
 			gameEngine.executeCommandes();
@@ -485,7 +491,7 @@ bool DeepAI::attack_RT(engine::GameEngine& gameEngine, std::shared_ptr<state::Ch
 		cout << "attack finished\n";
 	}
 
-	cout << "send commands OK\n";
+	//cout << "send commands OK\n";
 
 	return attack_finished;
 }

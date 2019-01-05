@@ -211,9 +211,9 @@ void GameEngine::executeCommandes()
 		commandes.pop();
 	}
 
-	//render::sfEventsID arrow = arrow_down;
-	//Move move_commande(arrow);
-	//move_commande.execute(*etat);
+	render::sfEventsID arrow = arrow_down;
+	Move move_commande(arrow);
+	move_commande.execute(*etat);
 
 	updating = false;
 	//cout << "GameEngine:exec end\n";
