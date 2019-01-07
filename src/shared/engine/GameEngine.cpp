@@ -15,6 +15,9 @@ using namespace engine;
 using namespace std;
 using namespace render;
 
+vector<sfEvents> executed;
+vector<vector<vector<int>>> previous_mask;
+
 GameEngine::GameEngine(state::GameState* etat) : etat(etat), updating(false)
 {
 	// init the game
@@ -32,9 +35,9 @@ void GameEngine::init_game(int mode)
 		etat->new_map(3000, 2000);
 
 		etat->new_player("Joueur 1");
-		etat->new_character(0, miyo);
-		//etat->new_character(0, goku);
-		//etat->new_character(0, vegeta);
+		etat->new_character(0, vegeta);
+		etat->new_character(0, vegeta);
+		etat->new_character(0, vegeta);
 
 		if (mode == 0)
 		{
@@ -46,9 +49,9 @@ void GameEngine::init_game(int mode)
 		else
 		{
 			etat->new_player("IA");
-			etat->new_character(1, goku);
-			etat->new_character(1, vegeta);
-			//etat->new_character(1, miyo);
+			etat->new_character(1, miyo);
+			etat->new_character(1, miyo);
+			etat->new_character(1, miyo);
 		}
 		
 		auto& etat_id = etat->ID;
@@ -166,6 +169,8 @@ void GameEngine::executeCommandes()
 			ChangePlayer useless_var;
 			useless_var.execute(*etat);
 			global::next_player_cv.notify_all();
+			if(etat->ID == started)
+				executed.push_back(commandes.front());
 		}
 		
 		else if ((commandes.front().ID == arrow_left) || (commandes.front().ID == arrow_right))
@@ -173,6 +178,8 @@ void GameEngine::executeCommandes()
 			Move move_command(commandes.front().ID);
 			if (move_command.isLegit(*etat) != -1) {
 				move_command.execute(*etat);
+				if(etat->ID == started)
+					executed.push_back(commandes.front());
 			}
 		}
 
@@ -180,6 +187,16 @@ void GameEngine::executeCommandes()
 		{
 			ChangeCharacter useless_var;
 			useless_var.execute(*etat);
+			if(etat->ID == started)
+				executed.push_back(commandes.front());
+		}
+
+		else if (commandes.front().ID == space)
+		{
+			while(!executed.empty())
+			{
+				rollback();
+			}
 		}
 
 		if (etat->ID == team_placement) //commands to place your characters then start the game
@@ -196,15 +213,19 @@ void GameEngine::executeCommandes()
 		else if (etat->ID == started)
 		{
 			if (commandes.front().ID == left_click)
-			{
+			{	
 				//cout << "command is attack\n";
 				Attack attack_command;
 				attack_command.attack_position = commandes.front().mouse_position;
 				attack_command.attack_number = 0;
 				updating = true; // we forbid any call to scene.draw in main.cpp
 				if (attack_command.isLegit(*etat) != -1)
+				{
+					previous_mask.push_back(etat->map.get_mask());
 					attack_command.execute(*etat);
 				//updating = false;
+					executed.push_back(commandes.front());
+				}
 			}
 		}
 	
@@ -230,6 +251,114 @@ void GameEngine::place_characters_with_mouse()
 
 void GameEngine::add_command(render::sfEvents commande){
 	commandes.push(commande);
+}
+
+void GameEngine::rollback(void){
+	//cout << "seg fault 1" << endl;
+	sfEvents last_command = executed[executed.size()-1];
+	if(last_command.ID == left_click)
+	{
+		unsigned int size_x, size_y;
+		size_x = etat->current_player->current_character->get_attack(0).get_nbcolumn();
+		size_y = etat->current_player->current_character->get_attack(0).get_nbline();
+
+		vector<vector<int>> matrix = previous_mask[previous_mask.size()-1];
+		etat->map.set_mask(matrix);
+
+		std::deque<std::shared_ptr<Characters>> characters = etat->get_characters();
+
+		Statistics& stats = etat->current_player->get_current_character()->stats;
+		stats.increase_attack_point(etat->current_player->current_character->get_attack(0).get_attack_cost());
+
+		for(unsigned int i = 0; i < etat->characters.size(); i++)
+		{
+			cout << "ici" << endl;
+			std::shared_ptr<Characters> temp_character = characters[i];
+			state::Position& pos = etat->current_player->get_current_character()->position;
+			std::vector<std::vector<int>> mask = etat->map.get_mask();
+			unsigned int t = 0;
+			while(mask[pos.getPositionY()+270-t][pos.getPositionX()] != 0){
+				t++;
+			}
+			pos.increaseY(-t);
+		}
+		for(unsigned int i = 0; i < etat->characters.size(); i++)
+		{
+			vector<vector<unsigned int>> matrix2 = *(etat->current_player->current_character->get_attack(0).get_attack_field_of_action());
+			cout << "ici aussi" << endl;
+			Position attack_position = etat->current_player->current_character->position;
+			std::shared_ptr<Characters> temp_character = characters[i];
+			unsigned int positionX = temp_character->position.getPositionX();
+			unsigned int positionY = temp_character->position.getPositionY();
+
+			if(positionX <= (attack_position.getPositionX() + size_x/2) &&
+			   positionX >= (attack_position.getPositionX() - size_x/2) &&
+			   positionY <= (attack_position.getPositionY() + size_y/2) &&
+			   positionY >= (attack_position.getPositionY() - size_y/2))
+			{	
+				// diminution du nombre de point de vie du personnage si l'attaque l'a atteinte
+				Statistics& statsa = temp_character->stats;
+				Statistics statsn(statsa.get_life_point() + matrix2[positionX - attack_position.getPositionX() + size_x/2]	[positionY - attack_position.getPositionY() + size_y/2],statsa.get_attack_point(),statsa.get_move_point());
+				statsa.set_statistics(statsn);
+			}
+		}
+		previous_mask.erase(previous_mask.begin() + previous_mask.size()-1);
+	}
+	else if((last_command.ID == arrow_up) || (last_command.ID == arrow_down))
+	{
+		ChangeCharacter useless_var;
+		useless_var.execute(*etat);
+		useless_var.execute(*etat);
+	}
+	else if(last_command.ID == arrow_right)
+	{
+		state::Position& pos = etat->current_player->get_current_character()->position;
+		std::vector<std::vector<int>> mask = etat->map.get_mask();
+		Statistics& stats = etat->current_player->get_current_character()->stats;
+		unsigned int speed = 8;
+
+		if(mask[pos.getPositionY()+270][pos.getPositionX()-speed] == 0){
+			pos.increaseX(-speed);
+			stats.increase_move_point(1);
+		}
+		else{
+			unsigned int i = 0;
+			while(mask[pos.getPositionY()+270-i][pos.getPositionX()-speed] != 0){
+				i++;
+			}
+			pos.increaseX(-speed);
+			pos.increaseY(-i);
+			stats.increase_move_point(1);
+		}
+	}
+	else if(last_command.ID == arrow_left)
+	{
+		state::Position& pos = etat->current_player->get_current_character()->position;
+		std::vector<std::vector<int>> mask = etat->map.get_mask();
+		Statistics& stats = etat->current_player->get_current_character()->stats;
+		unsigned int speed = 8;
+
+		if(mask[pos.getPositionY()+270][pos.getPositionX()+speed] == 0){
+			pos.increaseX(speed);
+			stats.increase_move_point(1);
+		}
+		else{
+			unsigned int i = 0;
+			while(mask[pos.getPositionY()+270-i][pos.getPositionX()+speed] != 0){
+				i++;
+			}
+			pos.increaseX(speed);
+			pos.increaseY(-i);
+			stats.increase_move_point(1);
+		}
+	}
+	else if (last_command.ID == enter)
+	{
+		ChangePlayer useless_var;
+		useless_var.execute(*etat);
+		global::next_player_cv.notify_all();
+	}
+	executed.erase(executed.begin() + executed.size()-1);
 }
 
 void GameEngine::set_updating(bool true_false) { updating = true_false; }
