@@ -83,12 +83,13 @@ void Move::execute(state::GameState& etat)
 		break;
 	case MoveRight:
 		if(mask[pos.getPositionY()+270][pos.getPositionX()+speed] == 0){
+			// 
 			pos.increaseX(speed);
 			stats.increase_move_point(-1);
 		}
 		else{
 			unsigned int i = 0;
-			while(mask[pos.getPositionY()+270-i][pos.getPositionX()-speed] != 0){
+			while(mask[pos.getPositionY()+270-i][pos.getPositionX()+speed] != 0){
 				i++;
 			}
 			pos.increaseX(speed);
