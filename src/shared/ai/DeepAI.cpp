@@ -1,20 +1,18 @@
 #include "define.hpp"
 #include "DeepAI.h"
-#include <cmath>
 #include <iostream>
-#include <cstdlib>
-#include <ctime>
-#include "engine/Move.h"
-#include "state/GameState.h"
-#include "global_mutex.hpp"
+#include <cmath>
+
+#include "engine.h"
 
 using namespace std;
 using namespace state;
 using namespace ai;
 using namespace engine;
 using namespace render;
-void update_char_to_try(const engine::GameEngine& gameEngine, std::deque<shared_ptr<state::Characters>>& char_to_try);
-DeepAI::DeepAI(GameEngine& moteur) : moteur(moteur){}
+
+DeepAI::DeepAI(GameEngine& moteur) : AI(moteur){}
+DeepAI::~DeepAI() {}
 
 void DeepAI::play()
 {
@@ -74,57 +72,6 @@ void DeepAI::play()
 	{
 		min_max_done = false;
 		attacker = 0;
-	}
-}
-
-void DeepAI::place_character(GameEngine& moteur)
-{
-	std::shared_ptr<state::Player> ia_player = moteur.etat->current_player;
-
-	int width(0), height(0);
-	moteur.etat->map.get_dimensions(width, height);
-	srand(time(NULL));
-
-	static bool aligned = false;
-	if (!aligned)
-	{
-		for (unsigned i = 0; i < ia_player->get_number_of_characters(); i++) // set them randomly accross the top of the map
-		{
-			int nb_aleatoire = (100 + rand()) % width - 100;
-			ia_player->get_character(i)->position.setPosition(nb_aleatoire, 0);
-		} aligned = true;
-	}
-	// In this part we are going to move down each character one by one
-
-	static state::Position previous_position; static unsigned int i = 0;
-	previous_position = ia_player->get_current_character()->position;
-
-	// Move down the current character of the AI
-	//for (int i = 0; i != 5; i++)
-	{
-		render::sfEventsID arrow = arrow_down;
-		engine::Move move_commande(arrow);
-		move_commande.execute(*(moteur.etat));
-	}
-
-	if (previous_position.getPositionY() == ia_player->get_current_character()->position.getPositionY())
-	{
-		sfEvents change_character(arrow_up);
-		moteur.add_command(change_character);
-		i++;
-	}
-
-	if (i == ia_player->get_number_of_characters())
-	{
-		cout << "ia placement finished begin\n";
-		next_player(moteur);
-		
-		//moteur.set_updating(true);
-		//event with the line above it seems that the engine can execute the exec function and have no commands in its list so it sets engine to false
-		//while (moteur.updating) {}
-		cout << "ia placement finished end\n";
-
-		//moteur.add_command(sfEvents(space)); // now the game has started!
 	}
 }
 
@@ -252,18 +199,23 @@ int* DeepAI::min_max(engine::GameEngine& gameEngine, int depth, bool min_or_max)
 int DeepAI:: evaluation_function(engine::GameEngine& gameEngine)
 {
 	int sum = 0;
+	int coeff = 0;
 
 	for (auto ai_player : gameEngine.etat->players)
 	{
 		if (ai_player->name == "IA")
-			for (unsigned int i = 0; i < ai_player->get_number_of_characters(); i++)
-			{
-				std::cout << "evaluation_function: i= " << i << endl;
-				std::cout << "evaluation_function: id character= "
-					<< ai_player->get_character(i)->get_id() << endl;
-				sum += ai_player->get_character(i)->stats.get_life_point();
-				std::cout << "evaluation_function: sum= " << sum << endl;
-			}
+			coeff = +1;
+		else
+			coeff = -1;
+
+		for (unsigned int i = 0; i < ai_player->get_number_of_characters(); i++)
+		{
+			//std::cout << "evaluation_function: i= " << i << endl;
+			//std::cout << "evaluation_function: id character= "
+				//<< ai_player->get_character(i)->get_id() << endl;
+			sum += coeff * (ai_player->get_character(i)->stats.get_life_point());
+			//std::cout << "evaluation_function: sum= " << sum << endl;
+		}
 	}
 
 	
@@ -481,10 +433,11 @@ bool DeepAI::attack_RT(engine::GameEngine& gameEngine, std::shared_ptr<state::Ch
 
 	if (attack_finished)
 	{
-		sfEvents events(enter);
-		gameEngine.add_command(events);
-		std::unique_lock<std::mutex> unique_next_player(global::next_player);
-		global::next_player_cv.wait(unique_next_player);
+		next_player(gameEngine);
+		//sfEvents events(enter);
+		//gameEngine.add_command(events);
+		//std::unique_lock<std::mutex> unique_next_player(global::next_player);
+		//global::next_player_cv.wait(unique_next_player);
 
 		//gameEngine.set_updating(true);
 		//while (gameEngine.updating) {}
@@ -496,17 +449,8 @@ bool DeepAI::attack_RT(engine::GameEngine& gameEngine, std::shared_ptr<state::Ch
 	return attack_finished;
 }
 
-// when the engine is executed in another thread !!
-void DeepAI::next_player(engine::GameEngine& gameEngine)
-{
-	sfEvents next_player(enter);
-	gameEngine.add_command(next_player);
-
-	std::unique_lock<std::mutex> unique_next_player(global::next_player);
-	global::next_player_cv.wait(unique_next_player);
-}
-
-void DeepAI::update_char_to_try(const engine::GameEngine& gameEngine, std::deque<shared_ptr<state::Characters>>& char_to_try)
+void DeepAI::update_char_to_try(const engine::GameEngine& gameEngine, 
+	std::deque<shared_ptr<state::Characters>>& char_to_try)
 {
 	if (gameEngine.etat->current_player->name == "IA")
 		char_to_try = gameEngine.etat->current_player->get_characters();

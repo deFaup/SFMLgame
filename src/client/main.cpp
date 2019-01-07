@@ -132,10 +132,21 @@ void enginet(int ai_type)
 	GameEngine engine(&etat); std::thread thread_engine;
 	Controller controller(renderWindow, engine, etat);
 
-	DeepAI *ai_deep(0); HyAI *ai_heuristic(0); RandomAI *ai_random(0); // Classe AI et système d'héritage à faire
-	if (ai_type == 1) ai_random = new RandomAI(engine);
-	else if (ai_type == 2) ai_heuristic = new HyAI(engine);
-	else if (ai_type == 3) ai_deep = new DeepAI(engine);
+	shared_ptr<AI> ai_(0);	
+	switch (ai_type)
+	{
+	case 1:
+		ai_ = make_shared<RandomAI>(engine);
+		break;
+	case 2:
+		ai_ = make_shared<HyAI>(engine);
+		break;
+	case 3:
+		ai_ = make_shared<DeepAI>(engine);
+		break;
+	default:
+		break;
+	}
 	cout << "main: IA created" << endl;
 
 	shared_ptr<Scene> scene = make_shared<Scene>(renderWindow, etat);
@@ -161,9 +172,7 @@ void enginet(int ai_type)
 		while (renderWindow.pollEvent(event))
 			controller.handle_sfEvents(event);
 		
-		if (ai_random) ai_random->play();
-		if (ai_heuristic) ai_heuristic->play();
-		if (ai_deep) ai_deep->play();
+		if (ai_) ai_->play();
 
 		renderWindow.clear();
 		while (engine.updating) {}

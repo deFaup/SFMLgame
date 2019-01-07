@@ -1,9 +1,7 @@
 #include "define.hpp"
 #include "HyAI.h"
-#include <cmath>
 #include <iostream>
-#include <cstdlib>
-#include <ctime>
+#include <cmath>
 
 #include "engine/Move.h"
 #include "state/GameState.h"
@@ -13,55 +11,16 @@ using namespace ai;
 using namespace engine;
 using namespace render;
 
-HyAI::HyAI(GameEngine& moteur) : moteur(moteur){}
+HyAI::HyAI(GameEngine& moteur) : AI(moteur){}
+HyAI::~HyAI() {}
+
 
 void HyAI::play()
 {
 	if(moteur.etat->current_player->name == "IA")
 	{
 		if (moteur.etat->ID == state::StateID::team_placement)
-		{
-			std::shared_ptr<state::Player> ia_player = moteur.etat->current_player;
-
-			int width(0), height(0);
-			moteur.etat->map.get_dimensions(width, height);
-			srand(time(NULL));
-			
-			static bool aligned = false;
-			if (!aligned)
-			{
-				for (unsigned i = 0; i < ia_player->get_number_of_characters(); i++) // set them randomly accross the top of the map
-				{
-					int nb_aleatoire = (100 + rand()) % width - 100;
-					ia_player->get_character(i)->position.setPosition(nb_aleatoire, 0);
-				} aligned = true;
-			}
-	// In this part we are going to move down each character one by one
-
-			static state::Position previous_position; static unsigned int i = 0;
-			previous_position = ia_player->get_current_character()->position;
-
-			// Move down the current character of the AI
-			//for (int i = 0; i != 5; i++)
-			{
-				render::sfEventsID arrow = arrow_down;
-				engine::Move move_commande(arrow);
-				move_commande.execute(*(moteur.etat));
-			}
-
-			if (previous_position.getPositionY() == ia_player->get_current_character()->position.getPositionY())
-			{
-				sfEvents change_character(arrow_up);
-				moteur.add_command(change_character);
-				i++;
-			}
-			if (i == ia_player->get_number_of_characters())
-			{
-				sfEvents next_player(enter);
-				moteur.add_command(next_player);
-				//moteur.add_command(sfEvents(space)); // now the game has started!
-			}
-		}
+			place_character(moteur);
 
 		else if (moteur.etat->ID == state::StateID::started)
 		{
