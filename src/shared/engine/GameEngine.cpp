@@ -212,18 +212,27 @@ void GameEngine::executeCommandes()
 		
 		else if (etat->ID == started)
 		{
-			if (commandes.front().ID == left_click)
+			if (commandes.front().ID == num1 || commandes.front().ID == num2 || commandes.front().ID == num3 || commandes.front().ID == num4 || commandes.front().ID == num5)
 			{	
 				//cout << "command is attack\n";
 				Attack attack_command;
 				attack_command.attack_position = commandes.front().mouse_position;
-				attack_command.attack_number = 0;
+				if(commandes.front().ID == num1)
+					attack_command.attack_number = 0;
+				else if(commandes.front().ID == num2)
+					attack_command.attack_number = 1;
+				else if(commandes.front().ID == num3)
+					attack_command.attack_number = 2;
+				else if(commandes.front().ID == num4)
+					attack_command.attack_number = 3;
+				else if(commandes.front().ID == num5)
+					attack_command.attack_number = 4;
 				updating = true; // we forbid any call to scene.draw in main.cpp
 				if (attack_command.isLegit(*etat) != -1)
 				{
 					previous_mask.push_back(etat->map.get_mask());
 					attack_command.execute(*etat);
-				//updating = false;
+					//updating = false;
 					executed.push_back(commandes.front());
 				}
 			}
@@ -256,11 +265,23 @@ void GameEngine::add_command(render::sfEvents commande){
 void GameEngine::rollback(void){
 	//cout << "seg fault 1" << endl;
 	sfEvents last_command = executed[executed.size()-1];
-	if(last_command.ID == left_click)
+	if(last_command.ID == num1 || last_command.ID == num2 || last_command.ID == num3 || last_command.ID == num4 || last_command.ID == num5)
 	{
+		unsigned int attack_number;
+		if(last_command.ID == num1)
+			attack_number = 0;
+		if(last_command.ID == num2)
+			attack_number = 1;
+		if(last_command.ID == num3)
+			attack_number = 2;
+		if(last_command.ID == num4)
+			attack_number = 3;
+		if(last_command.ID == num5)
+			attack_number = 4;
+
 		unsigned int size_x, size_y;
-		size_x = etat->current_player->current_character->get_attack(0).get_nbcolumn();
-		size_y = etat->current_player->current_character->get_attack(0).get_nbline();
+		size_x = etat->current_player->current_character->get_attack(attack_number).get_nbcolumn();
+		size_y = etat->current_player->current_character->get_attack(attack_number).get_nbline();
 
 		vector<vector<int>> matrix = previous_mask[previous_mask.size()-1];
 		etat->map.set_mask(matrix);
@@ -268,11 +289,10 @@ void GameEngine::rollback(void){
 		std::deque<std::shared_ptr<Characters>> characters = etat->get_characters();
 
 		Statistics& stats = etat->current_player->get_current_character()->stats;
-		stats.increase_attack_point(etat->current_player->current_character->get_attack(0).get_attack_cost());
+		stats.increase_attack_point(etat->current_player->current_character->get_attack(attack_number).get_attack_cost());
 
 		for(unsigned int i = 0; i < etat->characters.size(); i++)
 		{
-			cout << "ici" << endl;
 			std::shared_ptr<Characters> temp_character = characters[i];
 			state::Position& pos = etat->current_player->get_current_character()->position;
 			std::vector<std::vector<int>> mask = etat->map.get_mask();
@@ -284,8 +304,7 @@ void GameEngine::rollback(void){
 		}
 		for(unsigned int i = 0; i < etat->characters.size(); i++)
 		{
-			vector<vector<unsigned int>> matrix2 = *(etat->current_player->current_character->get_attack(0).get_attack_field_of_action());
-			cout << "ici aussi" << endl;
+			vector<vector<unsigned int>> matrix2 = *(etat->current_player->current_character->get_attack(attack_number).get_attack_field_of_action());
 			Position attack_position = etat->current_player->current_character->position;
 			std::shared_ptr<Characters> temp_character = characters[i];
 			unsigned int positionX = temp_character->position.getPositionX();

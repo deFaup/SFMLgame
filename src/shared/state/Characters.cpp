@@ -19,9 +19,31 @@ Characters::Characters(Player* player, CharactersID id): id(id), stats(this, id)
 	for(unsigned int i = 0; i < 501; i++)
 		matrix.push_back(std::vector<unsigned int>(501,5));
 
-	Attacks attack(501,501,100,1,matrix);
-	attacks.push_back(attack);	
+	Attacks attack1(501,501,100,1,matrix);
+	attacks.push_back(attack1);
+	for(unsigned int i = 0; i < 501; i++)
+		matrix.push_back(std::vector<unsigned int>(501,25));
+
+	Attacks attack2(501,501,100,2,matrix);
+	attacks.push_back(attack2);
+	for(unsigned int i = 0; i < 501; i++)
+		matrix.push_back(std::vector<unsigned int>(501,2));
+
+	Attacks attack3(501,501,100,3,matrix);
+	attacks.push_back(attack3);
+	for(unsigned int i = 0; i < 501; i++)
+		matrix.push_back(std::vector<unsigned int>(501,18));
+
+	Attacks attack4(501,501,100,4,matrix);
+	attacks.push_back(attack4);
+	for(unsigned int i = 0; i < 501; i++)
+		matrix.push_back(std::vector<unsigned int>(501,9));
+
+	Attacks attack5(501,501,100,5,matrix);
+	attacks.push_back(attack5);
+
 	cout << "Characters: " << id << " created" << endl;
+
 	//Statistics my_stat(20, 21, 22);
 	//stats.set_statistics(my_stat);
 	//cout << "\tstats: life_point = " << stats().get_attack_point() << endl;

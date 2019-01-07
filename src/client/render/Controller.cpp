@@ -56,6 +56,21 @@ void Controller::handle_sfEvents(sf::Event& event)
 
 		else if (event.key.code == sf::Keyboard::RControl)
 			add_command(sfEvents(ctrl_r));
+
+		else if (event.key.code == sf::Keyboard::Num1 || event.key.code == sf::Keyboard::Numpad1)
+			add_command(sfEvents(num1));
+
+		else if (event.key.code == sf::Keyboard::Num2 || event.key.code == sf::Keyboard::Numpad2)
+			add_command(sfEvents(num2));
+
+		else if (event.key.code == sf::Keyboard::Num3 || event.key.code == sf::Keyboard::Numpad3)
+			add_command(sfEvents(num3));
+
+		else if (event.key.code == sf::Keyboard::Num4 || event.key.code == sf::Keyboard::Numpad4)
+			add_command(sfEvents(num4));
+
+		else if (event.key.code == sf::Keyboard::Num5 || event.key.code == sf::Keyboard::Numpad5)
+			add_command(sfEvents(num5));
 	}
 
 	else if (event.type == sf::Event::MouseButtonReleased)
