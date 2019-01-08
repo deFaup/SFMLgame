@@ -110,66 +110,19 @@ void GameEngine::workLoop()
 	while (!((etat->ID == state::StateID::end) || game_ended))
 	{
 		check_stateID();
+		gestion_gravite();
 		//pause
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	}
 }
-
-/*void GameEngine::executeCommande()
-{
-	if (commande.arrow_direction == arrow_up || commande.arrow_direction == arrow_down)
-	{
-		ChangeCharacter useless_var;
-		useless_var.execute(etat);
-	}
-	if (commande.EnterWasPressed == 1)
-	{
-		ChangePlayer tour_commande;
-		tour_commande.execute(etat);
-	}
-
-	// only execute left and right
-	if (commande.arrow_direction == arrow_left || commande.arrow_direction == arrow_right) {
-		Move move_command(commande.arrow_direction);
-		if (move_command.isLegit(etat) != -1) {
-			move_command.execute(etat);
-		}
-	}
-
-	// switch between characters of a player. then goes to next player
-	if (commande.isRightClicked == 1)
-	{
-		ChangeCharacter useless_var;
-		useless_var.execute(etat);
-		cout << "execute event click" << endl;
-	}
-		
-		Attack attack_command;
-		attack_command.attack_position = commande.mouse_position;
-		attack_command.attack_number = 1;
-		if(attack_command.isLegit(etat) != -1){
-			attack_command.execute(etat);
-		}
-		
-	if (etat.get_ID() == started){
-		for(int k = 0; k < etat.characters.size(); k++){
-			ChangeCharacter useless_var;
-			useless_var.execute(etat);	
-			ArrowDirection arrow = arrow_down;
-			Move move_commande(arrow);
-			move_commande.execute(etat);
-		}
-	}
-	return;
-}*/
 
 void GameEngine::executeCommandes()
 {
 	while (!commandes.empty())
 	{
 		updating = true; // we execute each command one by one and others threads are paused
-		//cout << "GameEngine::executeCommandes; commandes.size() = " << commandes.size() << endl;
-		//cout << "commandes.ID = " << commandes.front().ID << endl;
+		std::cout << "GameEngine::executeCommandes; commandes.size() = " << commandes.size() << endl;
+		std::cout << "commandes.ID = " << commandes.front().ID << endl;
 
 		if (commandes.front().ID == enter)
 		{
@@ -267,7 +220,7 @@ void GameEngine::executeCommandes()
 		commandes.pop();
 	}
 
-	gestion_gravite();
+	//gestion_gravite();
 	updating = false;
 	//cout << "GameEngine:exec end\n";
 
@@ -305,8 +258,10 @@ void GameEngine::place_characters_with_mouse()
 	move_command.move_with_mouse(etat, commandes[].mouse_position);*/
 }
 
-void GameEngine::add_command(render::sfEvents commande){
+void GameEngine::add_command(render::sfEvents commande)
+{
 	commandes.push(commande);
+
 }
 
 void GameEngine::rollback(void){
