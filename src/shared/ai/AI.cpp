@@ -30,12 +30,12 @@ void AI::place_character(engine::GameEngine& moteur)
 	{
 		for (unsigned i = 0; i < ia_player->get_number_of_characters(); i++) // set them randomly accross the top of the map
 		{
-			int nb_aleatoire = (100 + rand()) % width - 100;
+			int nb_aleatoire = rand() % width;
 			ia_player->get_character(i)->position.setPosition(nb_aleatoire, 0);
 		} aligned = true;
 	}
-	// In this part we are going to move down each character one by one
 
+	// In this part we are going to move down each character one by one
 	static state::Position previous_position; static unsigned int i = 0;
 	previous_position = ia_player->get_current_character()->position;
 

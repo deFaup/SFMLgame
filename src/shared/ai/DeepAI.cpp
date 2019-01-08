@@ -16,64 +16,58 @@ DeepAI::~DeepAI() {}
 
 void DeepAI::play()
 {
-	static bool min_max_done = false; // false when it's not the turn of AI
+	/*static*/ bool min_max_done = false; // false when it's not the turn of AI
 									  // during AI turn false when not done else true
 
-	static shared_ptr<state::Characters> attacker;
+	/*static*/ shared_ptr<state::Characters> attacker;
 
-	if (moteur.etat->current_player->name == "IA")
+	if (moteur.etat->ID == state::StateID::team_placement)
+		place_character(moteur);
+
+	else if (moteur.etat->ID == state::StateID::started)
 	{
-		if (moteur.etat->ID == state::StateID::team_placement)
-			place_character(moteur);
+		///* we are going to use a boolean until we put the AI in a separate thread
+		//it allows to send a command then go back to main.cpp and update the graphics */
 
-		else if (moteur.etat->ID == state::StateID::started)
+		static int index(0);
+		if (!min_max_done)
 		{
-			///* we are going to use a boolean until we put the AI in a separate thread
-			//it allows to send a command then go back to main.cpp and update the graphics */
-			
-			static int index(0);
-			if (!min_max_done)
-			{
-				/* Create a GameEngine specific to the AI */
-				GameEngine deep_engine(moteur.etat); //OK
-				
-				// find the best character to make an action with min max
-				int* best = min_max(deep_engine, 2, 1);
-				
-				index = best[1];
-				std::cout << "min_max = " << index << "\n";
-				attacker = moteur.etat->current_player->get_character(index); //pb when index is last char and that he died; we are out of bounds
-				min_max_done = true;
-			}
-			else
-			{
-				// version avec attack
-				// if the attacker dies it's not a problem. we wait attack to be done then call next_player
-				attack(moteur, attacker);
-				next_player(moteur);
+			/* Create a GameEngine specific to the AI */
+			GameEngine deep_engine(moteur.etat); //OK
 
-				//// the following test is to determine whether or not our attacker has died
-				//if (moteur.etat->current_player->get_character(index) == attacker)
-				//{
-				//	// version with attack_RT
-				//	//if (attack_RT(moteur, attacker))
-				//	//	std::cout << "Deep AI is done\n";
-				//}
-				//else
-				//{
-				//	next_player(moteur);
-				//	//sfEvents events(enter);	moteur.add_command(events);
-				//	//moteur.set_updating(true);	while (moteur.updating) {}
-				//	//cout << "attacker is dead, next player\n";
-				//}
-			}
+			// find the best character to make an action with min max
+			int* best = min_max(deep_engine, 2, 1);
+
+			index = best[1];
+			std::cout << "min_max = " << index << "\n";
+			attacker = moteur.etat->current_player->get_character(index); //pb when index is last char and that he died; we are out of bounds
+			min_max_done = true;
 		}
-	}
 
-	else
-	{
-		min_max_done = false;
-		attacker = 0;
+		/*else*/ if (min_max_done)
+		{
+			// version avec attack
+			// if the attacker dies it's not a problem. we wait attack to be done then call next_player
+			attack(moteur, attacker);
+			next_player(moteur);
+
+			min_max_done = false;
+			//attacker = 0;
+			//// the following test is to determine whether or not our attacker has died
+			//if (moteur.etat->current_player->get_character(index) == attacker)
+			//{
+			//	// version with attack_RT
+			//	//if (attack_RT(moteur, attacker))
+			//	//	std::cout << "Deep AI is done\n";
+			//}
+			//else
+			//{
+			//	next_player(moteur);
+			//	//sfEvents events(enter);	moteur.add_command(events);
+			//	//moteur.set_updating(true);	while (moteur.updating) {}
+			//	//cout << "attacker is dead, next player\n";
+			//}
+		}
 	}
 }
 

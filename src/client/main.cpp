@@ -174,9 +174,6 @@ void enginet(int ai_type)
 		sf::Event event;
 		while (renderWindow.pollEvent(event))
 			controller.handle_sfEvents(event);
-		
-		//if (ai_) ai_->play();
-		/*thread(&ai::DeepAI::play, &ai_);*/
 
 		renderWindow.clear();
 		while (engine.updating) {}
