@@ -8,6 +8,10 @@
 #include <ctime>
 #include <iostream>
 
+// threads, thread::sleep_for
+#include <thread>
+#include <chrono>
+
 using namespace ai;
 
 AI::AI(engine::GameEngine& moteur) : moteur(moteur) {}
@@ -72,4 +76,15 @@ void AI::next_player(engine::GameEngine& gameEngine)
 	// possible dead lock
 	std::unique_lock<std::mutex> unique_next_player(global::next_player);
 	global::next_player_cv.wait(unique_next_player);
+}
+
+void AI::workloop()
+{
+	while (!((moteur.etat->ID == state::StateID::end) || moteur.game_ended))
+	{
+		if (moteur.etat->current_player->name == "IA")
+			play();
+		else//pause
+			std::this_thread::sleep_for(std::chrono::milliseconds(200));
+	}
 }

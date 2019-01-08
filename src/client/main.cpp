@@ -132,7 +132,7 @@ void enginet(int ai_type)
 	GameEngine engine(&etat); std::thread thread_engine;
 	Controller controller(renderWindow, engine, etat);
 
-	shared_ptr<AI> ai_(0);	
+	shared_ptr<AI> ai_(0); std::thread thread_ai;
 	switch (ai_type)
 	{
 	case 1:
@@ -163,6 +163,8 @@ void enginet(int ai_type)
 	scene->characters.new_character_layer();
 
 	thread_engine = thread(&engine::GameEngine::workLoop, &engine);
+	thread_ai = thread(&ai::DeepAI::workloop, ai_);
+
 	while (renderWindow.isOpen())
 	{
 		renderWindow.display();
@@ -172,7 +174,8 @@ void enginet(int ai_type)
 		while (renderWindow.pollEvent(event))
 			controller.handle_sfEvents(event);
 		
-		if (ai_) ai_->play();
+		//if (ai_) ai_->play();
+		/*thread(&ai::DeepAI::play, &ai_);*/
 
 		renderWindow.clear();
 		while (engine.updating) {}
@@ -220,7 +223,9 @@ void enginet(int ai_type)
 	}
 	
 	thread_engine.join();
+	thread_ai.join();
 	cout << "engine thread closed\n";
+	cout << "ai thread closed\n";
 }
 
 int main(int argc, char* argv[])
