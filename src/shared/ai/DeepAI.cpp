@@ -34,11 +34,7 @@ void DeepAI::play()
 			static int index(0);
 			if (!min_max_done)
 			{
-				/* Create a deep copy of the current GameState */
-				//GameState deep_gameState(*(moteur.etat)); //OK
-
 				/* Create a GameEngine specific to the AI */
-				//GameEngine deep_engine(&deep_gameState); //OK
 				GameEngine deep_engine(moteur.etat); //OK
 				
 				// find the best character to make an action with min max
@@ -51,19 +47,25 @@ void DeepAI::play()
 			}
 			else
 			{
-				// the following test is to determine whether or not our attacker has died
-				if (moteur.etat->current_player->get_character(index) == attacker)
-				{
-					if (attack_RT(moteur, attacker))
-						std::cout << "Deep AI is done\n";
-				}
-				else
-				{
-					next_player(moteur);
-					//sfEvents events(enter);	moteur.add_command(events);
-					//moteur.set_updating(true);	while (moteur.updating) {}
-					//cout << "attacker is dead, next player\n";
-				}
+				// version avec attack
+				// if the attacker dies it's not a problem. we wait attack to be done then call next_player
+				attack(moteur, attacker);
+				next_player(moteur);
+
+				//// the following test is to determine whether or not our attacker has died
+				//if (moteur.etat->current_player->get_character(index) == attacker)
+				//{
+				//	// version with attack_RT
+				//	//if (attack_RT(moteur, attacker))
+				//	//	std::cout << "Deep AI is done\n";
+				//}
+				//else
+				//{
+				//	next_player(moteur);
+				//	//sfEvents events(enter);	moteur.add_command(events);
+				//	//moteur.set_updating(true);	while (moteur.updating) {}
+				//	//cout << "attacker is dead, next player\n";
+				//}
 			}
 		}
 	}
@@ -330,8 +332,8 @@ int DeepAI::attack(engine::GameEngine& gameEngine, std::shared_ptr<state::Charac
 }
 
 // executed once with a while loop
-std::shared_ptr<state::Characters> DeepAI::find_target(
-	const state::GameState* gameState, const std::shared_ptr<state::Characters> attacker, unsigned int& distance)
+std::shared_ptr<state::Characters> DeepAI::find_target(const state::GameState* gameState, 
+	const std::shared_ptr<state::Characters> attacker, unsigned int& distance)
 {
 	std::shared_ptr<state::Characters> target(0);
 	distance = 10000;
@@ -421,8 +423,6 @@ bool DeepAI::attack_RT(engine::GameEngine& gameEngine, std::shared_ptr<state::Ch
 			sfEvents events(attack_number);
 			events.mouse_position = target->position;
 			gameEngine.add_command(events);
-			//if (target->stats.get_life_point() == 0)
-			//	isCharacterChoose = false;
 		}
 	}
 
@@ -437,7 +437,8 @@ bool DeepAI::attack_RT(engine::GameEngine& gameEngine, std::shared_ptr<state::Ch
 			gameEngine.add_command(sfEvents(arrow_right));
 		}
 	}
-
+	
+	std::cout << "attack_finished: " << std::boolalpha << attack_finished << "\n";
 	if (attack_finished)
 	{
 		next_player(gameEngine);

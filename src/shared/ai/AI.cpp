@@ -73,9 +73,11 @@ void AI::next_player(engine::GameEngine& gameEngine)
 {
 	render::sfEvents next_player(render::sfEventsID::enter);
 	gameEngine.add_command(next_player);
-	// possible dead lock
-	std::unique_lock<std::mutex> unique_next_player(global::next_player);
-	global::next_player_cv.wait(unique_next_player);
+	gameEngine.executeCommandes();
+
+	// possible dead lock but not with the way above
+	//std::unique_lock<std::mutex> unique_next_player(global::next_player);
+	//global::next_player_cv.wait(unique_next_player);
 }
 
 void AI::workloop()
@@ -83,8 +85,12 @@ void AI::workloop()
 	while (!((moteur.etat->ID == state::StateID::end) || moteur.game_ended))
 	{
 		if (moteur.etat->current_player->name == "IA")
+		{
+			std::unique_lock<std::mutex> unique_get_engine(global::get_engine);
 			play();
+		}
+		
 		else//pause
-			std::this_thread::sleep_for(std::chrono::milliseconds(200));
+			std::this_thread::sleep_for(std::chrono::milliseconds(500));
 	}
 }

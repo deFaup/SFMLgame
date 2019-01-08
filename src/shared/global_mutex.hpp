@@ -8,6 +8,9 @@ namespace global
 {
 	extern std::mutex next_player;
 	extern std::condition_variable next_player_cv;
+
+	extern std::mutex get_engine;
+
 }
 
 #endif

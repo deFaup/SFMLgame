@@ -13,13 +13,6 @@ int Attack::isLegit(state::GameState& etat)
 {
 	shared_ptr<Characters> character = etat.current_player->get_current_character();
 	Statistics& stats = character->stats;
-	
-	//std::vector<std::vector<unsigned int>> matrix;
-	//for(unsigned int i = 0; i < 501; i++)
-	//	matrix.push_back(vector<unsigned int>(501,5));
-
-	//Attacks attack(501,501,1,1,matrix);
-	//character->addAttack(attack);
 
 	if(character->get_attack(attack_number).get_attack_cost() > stats.get_attack_point()){
 		return(-1);

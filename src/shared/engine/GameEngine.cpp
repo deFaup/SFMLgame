@@ -109,10 +109,20 @@ void GameEngine::workLoop()
 {
 	while (!((etat->ID == state::StateID::end) || game_ended))
 	{
-		check_stateID();
-		gestion_gravite();
+		//if (global::get_engine.try_lock())
+		//{
+			global::get_engine.lock();
+			check_stateID();
+			global::get_engine.unlock();
+		//}
+		//else
+		//{
+		//	std::cout << "GameEngine thread paused, AI has the mutex; player is: \n";
+		//	std::cout << etat->current_player->name << "\n";
+
+		//}
 		//pause
-		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+		std::this_thread::sleep_for(std::chrono::milliseconds(30));
 	}
 }
 
@@ -121,8 +131,8 @@ void GameEngine::executeCommandes()
 	while (!commandes.empty())
 	{
 		updating = true; // we execute each command one by one and others threads are paused
-		std::cout << "GameEngine::executeCommandes; commandes.size() = " << commandes.size() << endl;
-		std::cout << "commandes.ID = " << commandes.front().ID << endl;
+		//std::cout << "GameEngine::executeCommandes; commandes.size() = " << commandes.size() << endl;
+		//std::cout << "commandes.ID = " << commandes.front().ID << endl;
 
 		if (commandes.front().ID == enter)
 		{
@@ -220,7 +230,7 @@ void GameEngine::executeCommandes()
 		commandes.pop();
 	}
 
-	//gestion_gravite();
+	gestion_gravite();
 	updating = false;
 	//cout << "GameEngine:exec end\n";
 
