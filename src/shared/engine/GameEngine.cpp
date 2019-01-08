@@ -17,6 +17,8 @@ using namespace render;
 
 vector<sfEvents> executed;
 vector<vector<vector<int>>> previous_mask;
+bool rollbackActive = false;
+int speedp[10] = {0};
 
 GameEngine::GameEngine(state::GameState* etat) : etat(etat), updating(false)
 {
@@ -169,8 +171,8 @@ void GameEngine::executeCommandes()
 			ChangePlayer useless_var;
 			useless_var.execute(*etat);
 			global::next_player_cv.notify_all();
-			//if(etat->ID == started)
-			//	executed.push_back(commandes.front());
+			if(etat->ID == started && rollbackActive)
+				executed.push_back(commandes.front());
 		}
 		
 		else if ((commandes.front().ID == arrow_left) || (commandes.front().ID == arrow_right))
@@ -178,8 +180,8 @@ void GameEngine::executeCommandes()
 			Move move_command(commandes.front().ID);
 			if (move_command.isLegit(*etat) != -1) {
 				move_command.execute(*etat);
-				//if(etat->ID == started)
-				//	executed.push_back(commandes.front());
+				if(etat->ID == started && rollbackActive)
+					executed.push_back(commandes.front());
 			}
 		}
 
@@ -187,16 +189,31 @@ void GameEngine::executeCommandes()
 		{
 			ChangeCharacter useless_var;
 			useless_var.execute(*etat);
-			//if(etat->ID == started)
-			//	executed.push_back(commandes.front());
+			if(etat->ID == started && rollbackActive)
+				executed.push_back(commandes.front());
 		}
 
 		else if (commandes.front().ID == space)
 		{
-			while(!executed.empty())
+			/*if(rollbackActive)
 			{
-				rollback();
+				while(!executed.empty())
+				{
+					rollback();
+				}
+				rollbackActive = false;
 			}
+			else
+			{
+				rollbackActive = true;*/
+				for(unsigned int i = 0; i < etat->characters.size(); i++)
+				{
+					if(etat->characters[i] == etat->current_player->current_character)
+					{
+						speedp[i] = -40;
+					}
+				}
+			//}
 		}
 
 		if (etat->ID == team_placement) //commands to place your characters then start the game
@@ -230,27 +247,50 @@ void GameEngine::executeCommandes()
 				updating = true; // we forbid any call to scene.draw in main.cpp
 				if (attack_command.isLegit(*etat) != -1)
 				{
-					//previous_mask.push_back(etat->map.get_mask());
+					if(rollbackActive)
+					{
+						previous_mask.push_back(etat->map.get_mask());
+						executed.push_back(commandes.front());
+					}
 					attack_command.execute(*etat);
-					//updating = false;
-					//executed.push_back(commandes.front());
+					updating = false;
 				}
 			}
-
 			//executed.push_back(commandes.front());		
 		}
 		
 		commandes.pop();
 	}
 
-	render::sfEventsID arrow = arrow_down;
-	Move move_commande(arrow);
-	move_commande.execute(*etat);
-
+	gestion_gravite();
 	updating = false;
 	//cout << "GameEngine:exec end\n";
 
 	return;
+}
+
+void GameEngine::gestion_gravite(void)
+{
+	if(etat->ID == team_placement)
+		return;
+	for(unsigned int i = 0; i < etat->characters.size(); i++)
+	{
+		std::shared_ptr<Characters> temp_character = etat->characters[i];
+		state::Position& pos = temp_character->position;
+		std::vector<std::vector<int>> mask = etat->map.get_mask();
+		if(pos.getPositionY()+270+speedp[i] >= 1999){
+			Statistics& statsa = temp_character->stats;
+			Statistics statsn(0,statsa.get_attack_point(),statsa.get_move_point());
+			statsa.set_statistics(statsn);
+		}
+		else if(mask[pos.getPositionY()+270+speedp[i]][pos.getPositionX()] == 0){
+			speedp[i] = speedp[i]+1;
+			pos.increaseY(speedp[i]);
+		}
+		else{
+			speedp[i] = 0;
+		}
+	}
 }
 
 void GameEngine::place_characters_with_mouse()
@@ -265,7 +305,6 @@ void GameEngine::add_command(render::sfEvents commande){
 }
 
 void GameEngine::rollback(void){
-	//cout << "seg fault 1" << endl;
 	sfEvents last_command = executed[executed.size()-1];
 	if(last_command.ID == num1 || last_command.ID == num2 || last_command.ID == num3 || last_command.ID == num4 || last_command.ID == num5)
 	{
@@ -304,6 +343,7 @@ void GameEngine::rollback(void){
 			}
 			pos.increaseY(-t);
 		}
+
 		for(unsigned int i = 0; i < etat->characters.size(); i++)
 		{
 			vector<vector<unsigned int>> matrix2 = *(etat->current_player->current_character->get_attack(attack_number).get_attack_field_of_action());
@@ -383,3 +423,4 @@ void GameEngine::rollback(void){
 }
 
 void GameEngine::set_updating(bool true_false) { updating = true_false; }
+
