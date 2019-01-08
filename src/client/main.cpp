@@ -163,7 +163,8 @@ void enginet(int ai_type)
 	scene->characters.new_character_layer();
 
 	thread_engine = thread(&engine::GameEngine::workLoop, &engine);
-	thread_ai = thread(&ai::DeepAI::workloop, ai_);
+	if (ai_)
+		thread_ai = thread(&ai::DeepAI::workloop, ai_);
 
 	while (renderWindow.isOpen())
 	{
@@ -223,9 +224,12 @@ void enginet(int ai_type)
 	}
 	
 	thread_engine.join();
-	thread_ai.join();
 	cout << "engine thread closed\n";
-	cout << "ai thread closed\n";
+
+	if (ai_) {
+		thread_ai.join();
+		cout << "ai thread closed\n";
+	}
 }
 
 int main(int argc, char* argv[])
