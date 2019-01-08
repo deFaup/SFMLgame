@@ -14,12 +14,12 @@ int Attack::isLegit(state::GameState& etat)
 	shared_ptr<Characters> character = etat.current_player->get_current_character();
 	Statistics& stats = character->stats;
 	
-	std::vector<std::vector<unsigned int>> matrix;
-	for(unsigned int i = 0; i < 501; i++)
-		matrix.push_back(vector<unsigned int>(501,5));
+	//std::vector<std::vector<unsigned int>> matrix;
+	//for(unsigned int i = 0; i < 501; i++)
+	//	matrix.push_back(vector<unsigned int>(501,5));
 
-	Attacks attack(501,501,1,1,matrix);
-	character->addAttack(attack);
+	//Attacks attack(501,501,1,1,matrix);
+	//character->addAttack(attack);
 
 	if(character->get_attack(attack_number).get_attack_cost() > stats.get_attack_point()){
 		return(-1);
@@ -39,7 +39,8 @@ void Attack::execute(state::GameState& etat)
 		character->stats.increase_attack_point(0 - character->get_attack(attack_number).get_attack_cost() );
 
 		// Pour faciliter les tests
-		attack_position = character->position; 
+		attack_position = character->position;
+		attack_position.increaseY(270);
 
 		// recuperation de la matrice de champ d'action de l'attaque
 		size_x = character->get_attack(attack_number).get_nbcolumn();
@@ -114,10 +115,12 @@ void Attack::execute(state::GameState& etat)
 		for(unsigned int j = 0; j < size_y; j++){
 			if(matrix[i][j] != 0 &&
 			   attack_position.getPositionX() + i - size_x/2 >= 0 && 
-			   attack_position.getPositionX() + i - size_x/2 < mask.size() &&
+			   attack_position.getPositionX() + i - size_x/2 < mask[0].size() &&
 			   attack_position.getPositionY() + j - size_y/2 >= 0 &&
-			   attack_position.getPositionY() + j - size_y/2 < mask[0].size()){
-				mask[attack_position.getPositionX() + i - size_x/2][attack_position.getPositionY() + j - size_y/2] = 0;
+			   attack_position.getPositionY() + j - size_y/2 < mask.size()){
+				cout << attack_position.getPositionX() << ", " << attack_position.getPositionY() << endl;
+				cout << attack_position.getPositionX() + i - size_x/2 << ", " << attack_position.getPositionY() + j - size_y/2 << endl;
+				mask[attack_position.getPositionY() + j - size_y/2][attack_position.getPositionX() + i - size_x/2] = 0;
 				// me suis planté sur les indices pour l'instant ça fait n'importe quoi
 			}
 		}
