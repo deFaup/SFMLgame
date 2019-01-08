@@ -9,6 +9,9 @@
 #include <SFML/Window/Event.hpp>
 #include <iostream>
 #include "global_mutex.hpp"
+// threads, thread::sleep_for
+#include <thread>
+#include <chrono>
 
 using namespace state;
 using namespace engine;
@@ -105,6 +108,8 @@ void GameEngine::workLoop()
 	while (!((etat->ID == state::StateID::end) || game_ended))
 	{
 		check_stateID();
+		//pause
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 }
 
