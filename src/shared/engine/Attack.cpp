@@ -18,19 +18,6 @@ int Attack::isLegit(state::GameState& etat)
 	for(unsigned int i = 0; i < 501; i++)
 		matrix.push_back(vector<unsigned int>(501,5));
 
-	//matrix = new unsigned int*[501];
-	//for (int i = 0; i < 501; i++)
-	//	matrix[i] = new unsigned int[501];
-
-	/*for(unsigned int i = 0; i < 501; i++){
-		for(unsigned int j = 0; j < 501; j++){
-			//if(i <= 120 && i >= 360 && j <= 120 && j >= 360)
-				matrix[i][j] = 5;
-			//else
-			//	matrix[i][j] = 0;
-		}*/
-	//}
-
 	Attacks attack(501,501,1,1,matrix);
 	character->addAttack(attack);
 
@@ -87,6 +74,11 @@ void Attack::execute(state::GameState& etat)
 
 		for (auto cons_char : cons_player->get_characters())
 		{
+			// impossible for a character to hurt himself
+			// until we config the possibility to see the range of an action and launch it with mouse
+			if (cons_char == etat.current_player->get_current_character())
+				continue;
+
 			//std::cout << "character n: " << i << "\n"; i++;
 			//shared_ptr<Characters> cons_char = cons_player->get_character(i);
 			unsigned int positionX = cons_char->position.getPositionX();

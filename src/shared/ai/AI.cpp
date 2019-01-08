@@ -69,7 +69,7 @@ void AI::next_player(engine::GameEngine& gameEngine)
 {
 	render::sfEvents next_player(render::sfEventsID::enter);
 	gameEngine.add_command(next_player);
-
+	// possible dead lock
 	std::unique_lock<std::mutex> unique_next_player(global::next_player);
 	global::next_player_cv.wait(unique_next_player);
 }

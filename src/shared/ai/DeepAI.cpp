@@ -163,6 +163,7 @@ int* DeepAI::min_max(engine::GameEngine& gameEngine, int depth, bool min_or_max)
 			std::cout << "restoring layer state: " << depth << "\n\n";
 			gameEngine.etat = &this_layer_state;
 
+			// change current character for the player
 			gameEngine.add_command(sfEvents(arrow_up));
 			gameEngine.executeCommandes();
 		}
