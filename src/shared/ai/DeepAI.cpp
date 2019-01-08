@@ -268,16 +268,21 @@ int DeepAI::attack(engine::GameEngine& gameEngine, std::shared_ptr<state::Charac
 		//cout << " | " << target->stats.get_life_point();
 		//cout << " / " << target->stats.get_attack_point();
 		//cout << " / " << target->stats.get_move_point() << "\n";
-		// future implementation: find the best attack among the possible attacks of the attacker
-		//unsigned int attack_number = 0;
+		
+		// find the best attack among the possible attacks of the attacker
+		render::sfEventsID attack_number;
 
 		// is target reachable on one turn ? with wich attack?
 		bool isReachable = false;
 		for (unsigned int i = 0; i < attacker->get_number_of_attacks(); i++) 
 		{
 			if (attacker->get_attack(i).get_attack_scope() >= distancemin) {
-				//attack_number = i;
-				isReachable = true; //break;
+				isReachable = true;
+				attack_number = (i == 1) ? render::sfEventsID::num1 : attack_number;
+				//attack_number = (i == 2) ? render::sfEventsID::num2 : attack_number;
+				//attack_number = (i == 3) ? render::sfEventsID::num3 : attack_number;
+				//attack_number = (i == 4) ? render::sfEventsID::num4 : attack_number;
+				//attack_number = (i == 5) ? render::sfEventsID::num5 : attack_number;
 			}
 		}
 		//cout << "find attack OK\n";
@@ -290,7 +295,7 @@ int DeepAI::attack(engine::GameEngine& gameEngine, std::shared_ptr<state::Charac
 				isCharacterChoose = false; attack_finished = true;
 			}
 			else {
-				sfEvents events(left_click);
+				sfEvents events(attack_number);
 				events.mouse_position = target->position;
 				gameEngine.add_command(events);
 			}
@@ -360,10 +365,7 @@ std::shared_ptr<state::Characters> DeepAI::find_target(
 // attack real time (executed many times when it's the turn of the AI once min max is done, to see the update in the render)
 bool DeepAI::attack_RT(engine::GameEngine& gameEngine, std::shared_ptr<state::Characters> attacker)
 {
-	// All problems fixed (when the attacker dies we move on to the next player
-	// When we need to change player (sfEnter) we set GameEngine::updating to true then wait for the engine to change it to false
-
-	// Ex problème: si le character ou le perso meurt, les var statiques ne sont pas réinit dans ce cas.
+	// Ex old problème: si le character ou le perso meurt, les var statiques ne sont pas réinit dans ce cas.
 
 	state::GameState* gameState = gameEngine.etat;
 	std::shared_ptr<state::Characters> target;
@@ -390,16 +392,20 @@ bool DeepAI::attack_RT(engine::GameEngine& gameEngine, std::shared_ptr<state::Ch
 		);
 	}
 
-	// future implementation: find the best attack among the possible attacks of the attacker
-	//unsigned int attack_number = 0;
+	// find the best attack among the possible attacks of the attacker
+	render::sfEventsID attack_number = render::sfEventsID::num1;
 
 	// is target reachable on one turn ? with wich attack?
 	bool isReachable = false;
 	for (unsigned int i = 0; i < attacker->get_number_of_attacks(); i++)
 	{
 		if (attacker->get_attack(i).get_attack_scope() >= distancemin) {
-			//attack_number = i;
-			isReachable = true; //break;
+			isReachable = true;
+	//		attack_number = (i == 1) ? render::sfEventsID::num1 : attack_number;
+	//		attack_number = (i == 2) ? render::sfEventsID::num2 : attack_number;
+	//		attack_number = (i == 3) ? render::sfEventsID::num3 : attack_number;
+	//		attack_number = (i == 4) ? render::sfEventsID::num4 : attack_number;
+	//		attack_number = (i == 5) ? render::sfEventsID::num5 : attack_number;
 		}
 	}
 
@@ -411,7 +417,7 @@ bool DeepAI::attack_RT(engine::GameEngine& gameEngine, std::shared_ptr<state::Ch
 			isCharacterChoose = false; attack_finished = true;
 		}
 		else {
-			sfEvents events(left_click);
+			sfEvents events(attack_number);
 			events.mouse_position = target->position;
 			gameEngine.add_command(events);
 			//if (target->stats.get_life_point() == 0)
@@ -434,17 +440,11 @@ bool DeepAI::attack_RT(engine::GameEngine& gameEngine, std::shared_ptr<state::Ch
 	if (attack_finished)
 	{
 		next_player(gameEngine);
-		//sfEvents events(enter);
-		//gameEngine.add_command(events);
-		//std::unique_lock<std::mutex> unique_next_player(global::next_player);
-		//global::next_player_cv.wait(unique_next_player);
-
-		//gameEngine.set_updating(true);
-		//while (gameEngine.updating) {}
 		cout << "attack finished\n";
+		isCharacterChoose = false;
 	}
 
-	//cout << "send commands OK\n";
+	cout << "send commands OK\n";
 
 	return attack_finished;
 }

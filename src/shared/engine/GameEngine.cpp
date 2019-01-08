@@ -36,8 +36,8 @@ void GameEngine::init_game(int mode)
 
 		etat->new_player("Joueur 1");
 		etat->new_character(0, vegeta);
-		etat->new_character(0, vegeta);
-		etat->new_character(0, vegeta);
+		//etat->new_character(0, vegeta);
+		//etat->new_character(0, vegeta);
 
 		if (mode == 0)
 		{
@@ -51,7 +51,7 @@ void GameEngine::init_game(int mode)
 			etat->new_player("IA");
 			etat->new_character(1, miyo);
 			etat->new_character(1, miyo);
-			etat->new_character(1, miyo);
+			//etat->new_character(1, miyo);
 		}
 		
 		auto& etat_id = etat->ID;
@@ -169,8 +169,8 @@ void GameEngine::executeCommandes()
 			ChangePlayer useless_var;
 			useless_var.execute(*etat);
 			global::next_player_cv.notify_all();
-			if(etat->ID == started)
-				executed.push_back(commandes.front());
+			//if(etat->ID == started)
+			//	executed.push_back(commandes.front());
 		}
 		
 		else if ((commandes.front().ID == arrow_left) || (commandes.front().ID == arrow_right))
@@ -178,8 +178,8 @@ void GameEngine::executeCommandes()
 			Move move_command(commandes.front().ID);
 			if (move_command.isLegit(*etat) != -1) {
 				move_command.execute(*etat);
-				if(etat->ID == started)
-					executed.push_back(commandes.front());
+				//if(etat->ID == started)
+				//	executed.push_back(commandes.front());
 			}
 		}
 
@@ -187,8 +187,8 @@ void GameEngine::executeCommandes()
 		{
 			ChangeCharacter useless_var;
 			useless_var.execute(*etat);
-			if(etat->ID == started)
-				executed.push_back(commandes.front());
+			//if(etat->ID == started)
+			//	executed.push_back(commandes.front());
 		}
 
 		else if (commandes.front().ID == space)
@@ -230,14 +230,16 @@ void GameEngine::executeCommandes()
 				updating = true; // we forbid any call to scene.draw in main.cpp
 				if (attack_command.isLegit(*etat) != -1)
 				{
-					previous_mask.push_back(etat->map.get_mask());
+					//previous_mask.push_back(etat->map.get_mask());
 					attack_command.execute(*etat);
 					//updating = false;
-					executed.push_back(commandes.front());
+					//executed.push_back(commandes.front());
 				}
 			}
+
+			//executed.push_back(commandes.front());		
 		}
-	
+		
 		commandes.pop();
 	}
 
