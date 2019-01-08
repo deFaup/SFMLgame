@@ -118,8 +118,6 @@ void Attack::execute(state::GameState& etat)
 			   attack_position.getPositionX() + i - size_x/2 < mask[0].size() &&
 			   attack_position.getPositionY() + j - size_y/2 >= 0 &&
 			   attack_position.getPositionY() + j - size_y/2 < mask.size()){
-				cout << attack_position.getPositionX() << ", " << attack_position.getPositionY() << endl;
-				cout << attack_position.getPositionX() + i - size_x/2 << ", " << attack_position.getPositionY() + j - size_y/2 << endl;
 				mask[attack_position.getPositionY() + j - size_y/2][attack_position.getPositionX() + i - size_x/2] = 0;
 				// me suis planté sur les indices pour l'instant ça fait n'importe quoi
 			}
