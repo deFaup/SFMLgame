@@ -10,6 +10,9 @@ using namespace render;
 sf::View window_view;
 sf::Vector2f position_in_map[2]; //[1] is the position with mouse coordinates
 
+// layer info temp
+sf::String info; sf::Text text; sf::Font font;
+
 Scene::~Scene(){ std::cout << "Scene deleted" << std::endl; }
 
 /* Scene constructor share its reference to the GameState */
@@ -20,6 +23,7 @@ Scene::Scene(sf::RenderWindow& window, GameState& gameState)
 	init_window(window_view, renderWindow, position_in_map);
 }
 
+
 /* draw our surfaces with the draw method of SFML (called from draw method in Surface) */
 void Scene::draw()
 {
@@ -29,6 +33,28 @@ void Scene::draw()
 	background.setSurface(renderWindow); // first the background	
 	characters.setSurface(renderWindow); // on top of the background the characters
 
+	/* Layer info temp */
+	Statistics& stats = gameState.current_player->get_current_character()->stats;
+
+	info = "Current Player: " + gameState.current_player->name + "\n\n";
+	info += "Current Character Statistics:\nlife point : ";
+	info += std::to_string(stats.get_life_point());
+	info += "\nmove point : ";
+	info += std::to_string(stats.get_move_point());
+	info += "\nattack point : ";
+	info += std::to_string(stats.get_attack_point());
+
+	// choix de la chaîne de caractères à afficher
+	text.setString(info);
+
+	// choix de la couleur du texte
+	//text.setFillColor(sf::Color::Black);
+
+	// choix du style du texte
+	text.setStyle(sf::Text::Bold /*| sf::Text::Underlined*/);
+
+	// puis, dans la boucle de dessin, entre window.clear() et window.display()
+	renderWindow.draw(text);
 }
 
 /* config the view position for the beginning */
@@ -56,6 +82,14 @@ void Scene::init_window(sf::View& window_view, sf::RenderWindow& renderWindow, s
 */
 	renderWindow.setView(window_view);
 	renderWindow.setPosition(sf::Vector2i(0, 0));
+
+	/* Layer info temp */
+	// choix de la police à utiliser
+	font.loadFromFile("res/arial.ttf");
+	text.setFont(font); // font est un sf::Font
+
+	// choix de la taille des caractères
+	text.setCharacterSize(50); // exprimée en pixels, pas en points !
 }
 
 /* If we hit the border of the window then we move the view accordingly */
