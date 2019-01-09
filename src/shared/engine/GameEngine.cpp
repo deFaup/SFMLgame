@@ -163,6 +163,8 @@ void GameEngine::executeCommandes()
 
 		else if (commandes.front().ID == space)
 		{
+			if(etat->ID == started)
+			{
 			/*if(rollbackActive)
 			{
 				while(!executed.empty())
@@ -182,6 +184,7 @@ void GameEngine::executeCommandes()
 					}
 				}
 			//}
+			}
 		}
 
 		if (etat->ID == team_placement) //commands to place your characters then start the game
@@ -246,12 +249,12 @@ void GameEngine::gestion_gravite(void)
 		std::shared_ptr<Characters> temp_character = etat->characters[i];
 		state::Position& pos = temp_character->position;
 		std::vector<std::vector<int>> mask = etat->map.get_mask();
-		if(pos.getPositionY()+270+speedp[i] >= 1999){
+		if(pos.getPositionY()+speedp[i] >= 1999){
 			Statistics& statsa = temp_character->stats;
 			Statistics statsn(0,statsa.get_attack_point(),statsa.get_move_point());
 			statsa.set_statistics(statsn);
 		}
-		else if(mask[pos.getPositionY()+270+speedp[i]][pos.getPositionX()] == 0){
+		else if(mask[pos.getPositionY()+speedp[i]][pos.getPositionX()] == 0){
 			speedp[i] = speedp[i]+1;
 			pos.increaseY(speedp[i]);
 		}
@@ -308,7 +311,7 @@ void GameEngine::rollback(void){
 			state::Position& pos = etat->current_player->get_current_character()->position;
 			std::vector<std::vector<int>> mask = etat->map.get_mask();
 			unsigned int t = 0;
-			while(mask[pos.getPositionY()+270-t][pos.getPositionX()] != 0){
+			while(mask[pos.getPositionY()-t][pos.getPositionX()] != 0){
 				t++;
 			}
 			pos.increaseY(-t);
@@ -348,13 +351,13 @@ void GameEngine::rollback(void){
 		Statistics& stats = etat->current_player->get_current_character()->stats;
 		unsigned int speed = 8;
 
-		if(mask[pos.getPositionY()+270][pos.getPositionX()-speed] == 0){
+		if(mask[pos.getPositionY()][pos.getPositionX()-speed] == 0){
 			pos.increaseX(-speed);
 			stats.increase_move_point(1);
 		}
 		else{
 			unsigned int i = 0;
-			while(mask[pos.getPositionY()+270-i][pos.getPositionX()-speed] != 0){
+			while(mask[pos.getPositionY()-i][pos.getPositionX()-speed] != 0){
 				i++;
 			}
 			pos.increaseX(-speed);
@@ -369,13 +372,13 @@ void GameEngine::rollback(void){
 		Statistics& stats = etat->current_player->get_current_character()->stats;
 		unsigned int speed = 8;
 
-		if(mask[pos.getPositionY()+270][pos.getPositionX()+speed] == 0){
+		if(mask[pos.getPositionY()][pos.getPositionX()+speed] == 0){
 			pos.increaseX(speed);
 			stats.increase_move_point(1);
 		}
 		else{
 			unsigned int i = 0;
-			while(mask[pos.getPositionY()+270-i][pos.getPositionX()+speed] != 0){
+			while(mask[pos.getPositionY()-i][pos.getPositionX()+speed] != 0){
 				i++;
 			}
 			pos.increaseX(speed);
