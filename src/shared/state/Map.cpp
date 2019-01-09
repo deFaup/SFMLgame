@@ -58,7 +58,7 @@ void Map::set_dimensions(const int width, const int height){
 
 void Map::create_mask ()
 {//mask[line][column] or mask[height][width]
-
+//0 is sky, 1 ground, 2 frontier/grass
 	fill_mask_with_x(mask,1);
 
 	/* Intializes random number generator */
