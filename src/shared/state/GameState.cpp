@@ -17,9 +17,8 @@ GameState::GameState()
 GameState::GameState(GameState& gameState) : 
 	ID(gameState.ID.load(std::memory_order_relaxed)), map(gameState.map)
 {
+	//observers is empty as by inheritance from Observable the vec is empty
 	cout << "begin copy constructor\n";
-	// unregister observers pour toutes les observables
-	//empty as by inheritance from Observable the vec is empty
 	current_player = 0;
 	auto current_player_temp = current_player;
 
@@ -28,8 +27,9 @@ GameState::GameState(GameState& gameState) :
 		std::shared_ptr<Player> original_player = gameState.get_player(i);
 		new_player(original_player->name);
 		std::shared_ptr<Player> player_copy = get_player(i);
-		cout << "original player ptr " << original_player.get() << "\n";
-		cout << "copy player ptr " << player_copy.get() << "\n";
+
+		//cout << "original player ptr " << original_player.get() << "\n";
+		//cout << "copy player ptr " << player_copy.get() << "\n";
 
 		current_player_temp = (gameState.current_player == original_player) ? player_copy: current_player_temp;
 		std::shared_ptr<Characters> current_char_temp = 0;
@@ -43,9 +43,9 @@ GameState::GameState(GameState& gameState) :
 			current_char_temp = (original_player->current_character == original_character) ?
 				character_copy: current_char_temp;
 			
-			std::cout << "original char ptr " << original_character.get() << "\n";
-			std::cout << "copy char ptr " << character_copy.get() << "\n";
-			//std::cout << "current character: " << player_copy->current_character << "\n";
+			//std::cout << "original char ptr " << original_character.get() << "\n";
+			//std::cout << "copy char ptr " << character_copy.get() << "\n";
+
 			/* set ID */
 			character_copy->id = original_character->id;
 				
@@ -66,8 +66,8 @@ GameState::GameState(GameState& gameState) :
 	
 	// set current player
 	current_player = current_player_temp;
-	std::cout << "\n\ncurrent player charc: " << current_player->current_character->id << "\n";
-	std::cout << "current char ptr: " << current_player->current_character.get() << "\n";
+	//std::cout << "\n\ncurrent player charc: " << current_player->current_character->id << "\n";
+	//std::cout << "current char ptr: " << current_player->current_character.get() << "\n";
 
 	cout << "end copy constructor\n\n";
 }
@@ -87,8 +87,6 @@ void GameState::new_map(unsigned const int width, unsigned const int height)
 		map.set_dimensions(width, height);
 
     map.create_mask ();
-	// notify map's observer EventMap that the mask has changed
-	//notifyObservers(EventMap(Map_maskChanged));
 }
 
 /* create a new instance of Player */
@@ -116,7 +114,7 @@ void GameState::new_character(const unsigned int player_id, const CharactersID c
 	characters.push_back(ptr);
 }
 
-/* return the number of Player's instances */
+/* return the number of Players */
 unsigned int GameState::get_number_of_player() const{ return(players.size()); }
 
 /* return a reference (not const) to a player */

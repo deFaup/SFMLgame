@@ -1,17 +1,15 @@
 // Includes
+#include "global_mutex.hpp"
 #include "define.hpp"
-#include "GameEngine.h"
-#include "Move.h"
-#include "ChangeCharacter.h"
-#include "Attack.h"
-#include "ChangePlayer.h"
+#include "engine.h"
 
 #include <SFML/Window/Event.hpp>
 #include <iostream>
-#include "global_mutex.hpp"
+
 // threads, thread::sleep_for
 #include <thread>
 #include <chrono>
+
 // pour l'export sous format json
 #include <fstream>
 
@@ -24,15 +22,11 @@ vector<sfEvents> executed;
 vector<vector<vector<int>>> previous_mask;
 int speedp[10] = {0};
 
-GameEngine::GameEngine(state::GameState* etat) : etat(etat), updating(false)
-{
-	// init the game
-	//check_stateID();
-}
+GameEngine::GameEngine(state::GameState* etat) : etat(etat), updating(false){}
+
 /* Configure the game map and 2 players */
 //mode : 0 - 2 real players
 //mode : !0 - you vs ia
-
 void GameEngine::init_game(int mode)
 {
 	/* Create players, characters and a map. Will be rewritten when menu is implemented */
@@ -67,8 +61,10 @@ void GameEngine::init_game(int mode)
 
 void GameEngine::check_stateID()
 {
+	if (etat->ID == started)	executeCommandes();
+
 	/* place all characters in line at the top of the map */
-	if (etat->ID == team_selected)
+	else if (etat->ID == team_selected)
 	{
 		unsigned int i = 10;
 
@@ -80,24 +76,22 @@ void GameEngine::check_stateID()
 			i += 200 % width;
 		}
 
-		auto& etat_id = etat->ID;
-		etat_id = team_placement;
+		etat->ID = team_placement;
 	}
 
 	/* Let user move their character with the mouse
 		Valid position using space */
 	else if (etat->ID == team_placement)
 	{
-		render::sfEventsID arrow = arrow_down;
-		Move move_commande(arrow);
-		move_commande.execute(*etat);
-
+		Move move_commande(render::sfEventsID::arrow_down);
+		int four = 4;
+		while (four != 0)
+		{
+			four--;
+			move_commande.execute(*etat);
+			//std::this_thread::sleep_for(std::chrono::milliseconds(5));
+		}
 		executeCommandes();
-	}
-
-	else if (etat->ID == started) {
-		executeCommandes();
-		//cout << "check_stateID: started end\n" << endl;
 	}
 
 	else if (etat->ID == state::StateID::end)
@@ -110,20 +104,11 @@ void GameEngine::workLoop()
 {
 	while (!((etat->ID == state::StateID::end) || game_ended))
 	{
-		//if (global::get_engine.try_lock())
-		//{
-			global::get_engine.lock();
-			check_stateID();
-			global::get_engine.unlock();
-		//}
-		//else
-		//{
-		//	std::cout << "GameEngine thread paused, AI has the mutex; player is: \n";
-		//	std::cout << etat->current_player->name << "\n";
+		global::get_engine.lock();
+		check_stateID();
+		global::get_engine.unlock();
 
-		//}
-		//pause
-		std::this_thread::sleep_for(std::chrono::milliseconds(30));
+		std::this_thread::sleep_for(std::chrono::milliseconds(80));
 	}
 }
 
@@ -359,18 +344,17 @@ void GameEngine::rollback(void){
 		state::Position& pos = etat->current_player->get_current_character()->position;
 		std::vector<std::vector<int>> mask = etat->map.get_mask();
 		Statistics& stats = etat->current_player->get_current_character()->stats;
-		unsigned int speed = 8;
 
-		if(mask[pos.getPositionY()][pos.getPositionX()-speed] == 0){
-			pos.increaseX(-speed);
+		if(mask[pos.getPositionY()][pos.getPositionX()-SPEED] == 0){
+			pos.increaseX(-SPEED);
 			stats.increase_move_point(1);
 		}
 		else{
 			unsigned int i = 0;
-			while(mask[pos.getPositionY()-i][pos.getPositionX()-speed] != 0){
+			while(mask[pos.getPositionY()-i][pos.getPositionX()-SPEED] != 0){
 				i++;
 			}
-			pos.increaseX(-speed);
+			pos.increaseX(-SPEED);
 			pos.increaseY(-i);
 			stats.increase_move_point(1);
 		}
@@ -380,18 +364,17 @@ void GameEngine::rollback(void){
 		state::Position& pos = etat->current_player->get_current_character()->position;
 		std::vector<std::vector<int>> mask = etat->map.get_mask();
 		Statistics& stats = etat->current_player->get_current_character()->stats;
-		unsigned int speed = 8;
 
-		if(mask[pos.getPositionY()][pos.getPositionX()+speed] == 0){
-			pos.increaseX(speed);
+		if(mask[pos.getPositionY()][pos.getPositionX()+SPEED] == 0){
+			pos.increaseX(SPEED);
 			stats.increase_move_point(1);
 		}
 		else{
 			unsigned int i = 0;
-			while(mask[pos.getPositionY()-i][pos.getPositionX()+speed] != 0){
+			while(mask[pos.getPositionY()-i][pos.getPositionX()+SPEED] != 0){
 				i++;
 			}
-			pos.increaseX(speed);
+			pos.increaseX(SPEED);
 			pos.increaseY(-i);
 			stats.increase_move_point(1);
 		}

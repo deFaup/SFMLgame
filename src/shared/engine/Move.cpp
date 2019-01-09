@@ -8,9 +8,6 @@ using namespace std;
 using namespace state;
 using namespace render;
 
-// speed at xich we move sprtite/characters
-unsigned int speed = 8;
-
 // move method used when the game has started
 Move::Move(render::sfEventsID dir)
 {
@@ -43,13 +40,13 @@ int Move::isLegit(state::GameState& etat)
 	etat.map.get_dimensions(right_limit, down_limit);
 
 	state::Position pos = etat.current_player->get_current_character()->position;
-	if (pos.getPositionX() < speed && move_type == MoveLeft)
+	if (pos.getPositionX() < SPEED && move_type == MoveLeft)
 		return -1;
-	if (pos.getPositionX() > (right_limit - speed) && move_type == MoveRight)
+	if (pos.getPositionX() > ((unsigned)right_limit - SPEED) && move_type == MoveRight)
 		return -1;
-	if (pos.getPositionY() < speed && move_type == MoveUp)
+	if (pos.getPositionY() < SPEED && move_type == MoveUp)
 		return -1;
-	if (pos.getPositionY() > (down_limit - speed) && move_type == MoveDown)
+	if (pos.getPositionY() > ((unsigned)down_limit - SPEED) && move_type == MoveDown)
 		return -1;
 	Statistics stats = etat.current_player->get_current_character()->stats;
 	if (stats.get_move_point() == 0)
@@ -70,42 +67,42 @@ void Move::execute(state::GameState& etat)
 	switch (move_type)
 	{
 	case MoveLeft:
-		if(mask[pos.getPositionY()][pos.getPositionX()-speed] == 0){
-			pos.increaseX(-speed);
+		if(mask[pos.getPositionY()][pos.getPositionX()-SPEED] == 0){
+			pos.increaseX(-SPEED);
 			stats.increase_move_point(-1);
 		}
 		else{
 			unsigned int i = 0;
-			while(mask[pos.getPositionY()-i][pos.getPositionX()-speed] != 0){
+			while(mask[pos.getPositionY()-i][pos.getPositionX()-SPEED] != 0){
 				i++;
 			}
-			pos.increaseX(-speed);
+			pos.increaseX(-SPEED);
 			pos.increaseY(-i);
 			stats.increase_move_point(-1);
 		}
 		break;
 	case MoveRight:
-		if(mask[pos.getPositionY()][pos.getPositionX()+speed] == 0){
+		if(mask[pos.getPositionY()][pos.getPositionX()+SPEED] == 0){
 			// 
-			pos.increaseX(speed);
+			pos.increaseX(SPEED);
 			stats.increase_move_point(-1);
 		}
 		else{
 			unsigned int i = 0;
-			while(mask[pos.getPositionY()-i][pos.getPositionX()+speed] != 0){
+			while(mask[pos.getPositionY()-i][pos.getPositionX()+SPEED] != 0){
 				i++;
 			}
-			pos.increaseX(speed);
+			pos.increaseX(SPEED);
 			pos.increaseY(-i);
 			stats.increase_move_point(-1);
 		}
 		break;
 	/*case MoveUp:
-		pos.increaseY(-speed);
+		pos.increaseY(-SPEED);
 		break;*/
 	case MoveDown:
 		if(mask[pos.getPositionY()][pos.getPositionX()] == 0){
-			pos.increaseY(speed);
+			pos.increaseY(SPEED);
 		}
 		break;
 	default:
