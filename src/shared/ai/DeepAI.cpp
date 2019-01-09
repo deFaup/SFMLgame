@@ -14,56 +14,42 @@ using namespace render;
 DeepAI::DeepAI(GameEngine& moteur) : AI(moteur){}
 DeepAI::~DeepAI() {}
 
+int res[2] = { 0,0 };
+
 void DeepAI::play()
 {
-	/*static*/ bool min_max_done = false; // false when it's not the turn of AI
-									  // during AI turn false when not done else true
-
-	/*static*/ shared_ptr<state::Characters> attacker;
+	bool min_max_done = false;
+	shared_ptr<state::Characters> attacker;
 
 	if (moteur.etat->ID == state::StateID::team_placement)
 		place_character(moteur);
 
 	else if (moteur.etat->ID == state::StateID::started)
 	{
-		///* we are going to use a boolean until we put the AI in a separate thread
-		//it allows to send a command then go back to main.cpp and update the graphics */
+		/* Create a GameEngine specific to the AI */
+		GameEngine deep_engine(moteur.etat); //OK
 
-		static int index(0);
-		if (!min_max_done)
-		{
-			/* Create a GameEngine specific to the AI */
-			GameEngine deep_engine(moteur.etat); //OK
+		/* Call min_max to find the best character */ 
+		// parameters: depth=2, 1 is mandatory for AI
+		// result saved in res[weight,index]
+		/*int* best = */min_max(deep_engine, 2, 1);
 
-			// find the best character to make an action with min max 
-			// parameters: depth=2, 1 is mandatory for AI
-			int* best = min_max(deep_engine, 2, 1);
+		int index = res[1];	//best[1];
+		std::cout << "min_max = " << index << "\n";
+		//std::cout << "res[1] = " << res[1] << "\n";
 
-			index = best[1];
-			std::cout << "min_max = " << index << "\n";
+		// we need to set char n°index as the current char
+		attacker = moteur.etat->current_player->get_character(index);
+		moteur.etat->current_player->current_character = attacker;
 
-			// we need to set char n°index as the current char
-			attacker = moteur.etat->current_player->get_character(index); 
-			moteur.etat->current_player->current_character = attacker;
-			min_max_done = true;
-		}
-
-		/*else*/ if (min_max_done)
-		{
-			// version avec attack
-			// if the attacker dies it's not a problem. we wait attack to be done then call next_player
-			attack(moteur, attacker);
-			std::cout << "min_max done so next_player\n";
-			next_player(moteur);
-
-			min_max_done = false;
-		}
+		/* Attack the ennemy with the charcter found previsouly */
+		attack(moteur, attacker);
+		next_player(moteur);
 	}
 }
 
 // the engine is in the SAME thread
 // return the min or max value and the index of the value
-int res[2] = { 0,0 };
 int* DeepAI::min_max(engine::GameEngine& gameEngine, int depth, bool min_or_max)
 {
 	// return value : result, index
@@ -211,8 +197,8 @@ int DeepAI::attack(engine::GameEngine& gameEngine, std::shared_ptr<state::Charac
 
 	state::GameState* gameState = gameEngine.etat;
 	gameState->current_player->current_character = attacker;
-	std::cout << "character ptr: " << attacker.get() /*get_Player()*/ << "\n";
-	std::cout << "engine player-character ptr: ";
+	//std::cout << "character ptr: " << attacker.get() /*get_Player()*/ << "\n";
+	//std::cout << "engine player-character ptr: ";
 	std::cout << gameEngine.etat->current_player->current_character.get() << "\n";
 
 	std::shared_ptr<state::Characters> target;

@@ -36,8 +36,8 @@ void GameEngine::init_game(int mode)
 
 		etat->new_player("Joueur 1");
 		etat->new_character(0, vegeta);
-		//etat->new_character(0, vegeta);
-		//etat->new_character(0, vegeta);
+		etat->new_character(0, vegeta);
+		etat->new_character(0, vegeta);
 
 		if (mode == 0)
 		{
@@ -96,7 +96,7 @@ void GameEngine::check_stateID()
 
 	else if (etat->ID == state::StateID::end)
 	{
-		cout << " vous avez remportez le jeu !! Bravo\n";
+		cout << "Vous avez remportez le jeu !! Bravo\n";
 	}
 }
 
