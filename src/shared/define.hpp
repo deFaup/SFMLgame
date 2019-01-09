@@ -13,6 +13,8 @@
 #define MAX_ATTACK_COST		100
 #define MAX_ATTACK_DAMAGE	100
 
+//speed at wich we move sprtite / characters
+#define SPEED 8
 
 #endif	/* DEFINE_H_ */
 
