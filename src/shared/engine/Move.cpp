@@ -67,13 +67,13 @@ void Move::execute(state::GameState& etat)
 	switch (move_type)
 	{
 	case MoveLeft:
-		if(mask[pos.getPositionY()+270][pos.getPositionX()-speed] == 0){
+		if(mask[pos.getPositionY()][pos.getPositionX()-speed] == 0){
 			pos.increaseX(-speed);
 			stats.increase_move_point(-1);
 		}
 		else{
 			unsigned int i = 0;
-			while(mask[pos.getPositionY()+270-i][pos.getPositionX()-speed] != 0){
+			while(mask[pos.getPositionY()-i][pos.getPositionX()-speed] != 0){
 				i++;
 			}
 			pos.increaseX(-speed);
@@ -82,14 +82,14 @@ void Move::execute(state::GameState& etat)
 		}
 		break;
 	case MoveRight:
-		if(mask[pos.getPositionY()+270][pos.getPositionX()+speed] == 0){
+		if(mask[pos.getPositionY()][pos.getPositionX()+speed] == 0){
 			// 
 			pos.increaseX(speed);
 			stats.increase_move_point(-1);
 		}
 		else{
 			unsigned int i = 0;
-			while(mask[pos.getPositionY()+270-i][pos.getPositionX()+speed] != 0){
+			while(mask[pos.getPositionY()-i][pos.getPositionX()+speed] != 0){
 				i++;
 			}
 			pos.increaseX(speed);
@@ -97,11 +97,11 @@ void Move::execute(state::GameState& etat)
 			stats.increase_move_point(-1);
 		}
 		break;
-	case MoveUp:
+	/*case MoveUp:
 		pos.increaseY(-speed);
-		break;
+		break;*/
 	case MoveDown:
-		if(mask[pos.getPositionY()+270][pos.getPositionX()] == 0){
+		if(mask[pos.getPositionY()][pos.getPositionX()] == 0){
 			pos.increaseY(speed);
 		}
 		break;

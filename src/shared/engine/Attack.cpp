@@ -33,7 +33,7 @@ void Attack::execute(state::GameState& etat)
 
 		// Pour faciliter les tests
 		attack_position = character->position;
-		attack_position.increaseY(270);
+		//attack_position.increaseY(270);
 
 		// recuperation de la matrice de champ d'action de l'attaque
 		size_x = character->get_attack(attack_number).get_nbcolumn();

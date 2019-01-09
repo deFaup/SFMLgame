@@ -144,7 +144,33 @@ void Character::update_one_character(Characters* char_to_update)
 		break;
 	}
 	surface[i]->setSpriteTexture(tile);
-	surface[i]->setSpriteLocation(characters[i]->position);
+	Position pos(characters[i].get(),characters[i]->position.getPositionX(),characters[i]->position.getPositionY());
+
+	switch (id)
+	{
+	case goku:
+		//characters[i]->position.increaseY(250);
+		//surface[i]->setSpriteLocation(characters[i]->position);
+		//characters[i]->position.increaseY(-250);
+		pos.increaseY(-320);
+		break;
+	case vegeta:
+		//characters[i]->position.increaseY(270);
+		//surface[i]->setSpriteLocation(characters[i]->position);
+		//characters[i]->position.increaseY(-270);
+		pos.increaseY(-270);
+		break;
+	case miyo:
+		//characters[i]->position.increaseY(270);
+		//surface[i]->setSpriteLocation(characters[i]->position);
+		//characters[i]->position.increaseY(-270);
+		pos.increaseY(-270);
+		break;
+	default:
+		break;
+	}
+
+	surface[i]->setSpriteLocation(/*characters[i]->*/pos/*ition*/);
 }
 
 void Character::delete_character(Characters* character_to_delete)
