@@ -55,8 +55,8 @@ void GameEngine::init_game(int mode)
 		{
 			etat->new_player("IA");
 			etat->new_character(1, miyo);
-			etat->new_character(1, miyo);
-			etat->new_character(1, miyo);
+			etat->new_character(1, goku);
+			etat->new_character(1, vegeta);
 		}
 		
 		auto& etat_id = etat->ID;
@@ -274,7 +274,6 @@ void GameEngine::place_characters_with_mouse()
 void GameEngine::add_command(render::sfEvents commande)
 {
 	commandes.push(commande);
-
 }
 
 void GameEngine::rollback(void){

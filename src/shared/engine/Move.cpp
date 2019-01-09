@@ -61,6 +61,9 @@ int Move::isLegit(state::GameState& etat)
 void Move::execute(state::GameState& etat)
 {
 	state::Position& pos = etat.current_player->get_current_character()->position;
+	//std::cout << "current player name: " << etat.current_player->name << "\n";
+	//std::cout << "ptr: " << etat.current_player.get() << "\n";
+
 	std::vector<std::vector<int>> mask = etat.map.get_mask();
 	Statistics& stats = etat.current_player->get_current_character()->stats;
 	
@@ -108,6 +111,9 @@ void Move::execute(state::GameState& etat)
 	default:
 		break;
 	}
+	//std::cout << "current player char stats: LP/AP/MP: " << stats.get_life_point();
+	//cout << " / " << stats.get_attack_point();
+	//cout << " / " << stats.get_move_point() << "\n";
 }
 
 void Move::move_with_mouse(state::GameState& etat,state::Position pos)

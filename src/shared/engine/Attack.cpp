@@ -38,7 +38,7 @@ void Attack::execute(state::GameState& etat)
 		// recuperation de la matrice de champ d'action de l'attaque
 		size_x = character->get_attack(attack_number).get_nbcolumn();
 		size_y = character->get_attack(attack_number).get_nbline();
-		std::cout << size_x << ", " << size_y << std::endl;
+		//std::cout << size_x << ", " << size_y << std::endl;
 
 		matrix = *(character->get_attack(attack_number).get_attack_field_of_action());
 	}
@@ -103,20 +103,20 @@ void Attack::execute(state::GameState& etat)
 
 
 	// modification/destruction de la map sur les endroits impactés
-	std::vector<std::vector<int>> mask = etat.map.get_mask();
-	for(unsigned int i = 0; i < size_x; i++){
-		for(unsigned int j = 0; j < size_y; j++){
-			if(matrix[i][j] != 0 &&
-			   attack_position.getPositionX() + i - size_x/2 >= 0 && 
-			   attack_position.getPositionX() + i - size_x/2 < mask[0].size() &&
-			   attack_position.getPositionY() + j - size_y/2 >= 0 &&
-			   attack_position.getPositionY() + j - size_y/2 < mask.size()){
-				mask[attack_position.getPositionY() + j - size_y/2][attack_position.getPositionX() + i - size_x/2] = 0;
-				// me suis planté sur les indices pour l'instant ça fait n'importe quoi
-			}
-		}
-	}
-	etat.map.set_mask(mask);
+	//std::vector<std::vector<int>> mask = etat.map.get_mask();
+	//for(unsigned int i = 0; i < size_x; i++){
+	//	for(unsigned int j = 0; j < size_y; j++){
+	//		if(matrix[i][j] != 0 &&
+	//		   attack_position.getPositionX() + i - size_x/2 >= 0 && 
+	//		   attack_position.getPositionX() + i - size_x/2 < mask[0].size() &&
+	//		   attack_position.getPositionY() + j - size_y/2 >= 0 &&
+	//		   attack_position.getPositionY() + j - size_y/2 < mask.size()){
+	//			mask[attack_position.getPositionY() + j - size_y/2][attack_position.getPositionX() + i - size_x/2] = 0;
+	//			// me suis planté sur les indices pour l'instant ça fait n'importe quoi
+	//		}
+	//	}
+	//}
+	//etat.map.set_mask(mask);
 	
 	//std::cout << "Attack::execute end" << std::endl;
 	return;

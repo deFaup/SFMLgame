@@ -21,6 +21,7 @@ GameState::GameState(GameState& gameState) :
 	// unregister observers pour toutes les observables
 	//empty as by inheritance from Observable the vec is empty
 	current_player = 0;
+	auto current_player_temp = current_player;
 
 	for (unsigned int i = 0; i < gameState.get_number_of_player(); i++)
 	{
@@ -30,7 +31,8 @@ GameState::GameState(GameState& gameState) :
 		cout << "original player ptr " << original_player.get() << "\n";
 		cout << "copy player ptr " << player_copy.get() << "\n";
 
-		current_player = (gameState.current_player == original_player) ? player_copy:current_player;
+		current_player_temp = (gameState.current_player == original_player) ? player_copy: current_player_temp;
+		std::shared_ptr<Characters> current_char_temp = 0;
 
 		for (unsigned int j = 0; j < gameState.get_player(i)->get_number_of_characters(); j++)
 		{
@@ -38,13 +40,16 @@ GameState::GameState(GameState& gameState) :
 			new_character(i, original_character->get_id());
 			std::shared_ptr<Characters> character_copy = player_copy->get_character(j);
 
-			player_copy->current_character = (original_player->current_character == original_character) ?
-					character_copy:player_copy->current_character;
-
+			current_char_temp = (original_player->current_character == original_character) ?
+				character_copy: current_char_temp;
+			
+			std::cout << "original char ptr " << original_character.get() << "\n";
+			std::cout << "copy char ptr " << character_copy.get() << "\n";
+			//std::cout << "current character: " << player_copy->current_character << "\n";
 			/* set ID */
 			character_copy->id = original_character->id;
 				
-				// set Position
+			// set Position
 			character_copy->position.setPosition(original_character->position.getPositionX(), original_character->position.getPositionY());
 				
 			// set Statistics
@@ -56,12 +61,14 @@ GameState::GameState(GameState& gameState) :
 		}
 
 		// set current character
-		//player_copy->current_character = original_player->current_character;
+		player_copy->current_character = current_char_temp;
 	} 
 	
 	// set current player
-	//current_player = gameState.current_player;
-	// modifier les current player et character car on écrit le shared ptr du state et non du copié!
+	current_player = current_player_temp;
+	std::cout << "\n\ncurrent player charc: " << current_player->current_character->id << "\n";
+	std::cout << "current char ptr: " << current_player->current_character.get() << "\n";
+
 	cout << "end copy constructor\n\n";
 }
 
