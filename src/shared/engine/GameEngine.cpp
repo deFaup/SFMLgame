@@ -56,7 +56,7 @@ void GameEngine::init_game(int mode)
 			etat->new_player("IA");
 			etat->new_character(1, miyo);
 			etat->new_character(1, miyo);
-			//etat->new_character(1, miyo);
+			etat->new_character(1, miyo);
 		}
 		
 		auto& etat_id = etat->ID;
