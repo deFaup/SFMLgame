@@ -12,6 +12,8 @@
 // threads, thread::sleep_for
 #include <thread>
 #include <chrono>
+// pour l'export sous format json
+#include <fstream>
 
 using namespace state;
 using namespace engine;
@@ -20,7 +22,6 @@ using namespace render;
 
 vector<sfEvents> executed;
 vector<vector<vector<int>>> previous_mask;
-bool rollbackActive = false;
 int speedp[10] = {0};
 
 GameEngine::GameEngine(state::GameState* etat) : etat(etat), updating(false)
@@ -139,6 +140,8 @@ void GameEngine::executeCommandes()
 			ChangePlayer useless_var;
 			useless_var.execute(*etat);
 			global::next_player_cv.notify_all();
+			if(JSONActive)
+				export_json(commandes.front());
 			if(etat->ID == started && rollbackActive)
 				executed.push_back(commandes.front());
 		}
@@ -148,6 +151,8 @@ void GameEngine::executeCommandes()
 			Move move_command(commandes.front().ID);
 			if (move_command.isLegit(*etat) != -1) {
 				move_command.execute(*etat);
+				if(JSONActive)
+					export_json(commandes.front());
 				if(etat->ID == started && rollbackActive)
 					executed.push_back(commandes.front());
 			}
@@ -157,6 +162,8 @@ void GameEngine::executeCommandes()
 		{
 			ChangeCharacter useless_var;
 			useless_var.execute(*etat);
+			if(JSONActive)
+				export_json(commandes.front());
 			if(etat->ID == started && rollbackActive)
 				executed.push_back(commandes.front());
 		}
@@ -165,6 +172,8 @@ void GameEngine::executeCommandes()
 		{
 			if(etat->ID == started)
 			{
+				if(JSONActive)
+					export_json(commandes.front());
 			/*if(rollbackActive)
 			{
 				while(!executed.empty())
@@ -218,6 +227,8 @@ void GameEngine::executeCommandes()
 				updating = true; // we forbid any call to scene.draw in main.cpp
 				if (attack_command.isLegit(*etat) != -1)
 				{
+					if(JSONActive)
+						export_json(commandes.front());
 					if(rollbackActive)
 					{
 						previous_mask.push_back(etat->map.get_mask());
@@ -393,6 +404,13 @@ void GameEngine::rollback(void){
 		global::next_player_cv.notify_all();
 	}
 	executed.erase(executed.begin() + executed.size()-1);
+}
+
+void GameEngine::export_json(sfEvents to_export)
+{
+	ofstream fichier("res/test.json", ios::out | ios::app);
+	fichier << "{\n\t" << '"' << "command type" << '"' << " : " << to_export.ID << ",\n\t" << '"' << "mouse position X" << '"' << " : " << to_export.mouse_position.getPositionX() << ",\n\t" << '"' << "mouse position X" << '"' << " : " << to_export.mouse_position.getPositionY() << "\n}\n";
+	fichier.close();
 }
 
 void GameEngine::set_updating(bool true_false) { updating = true_false; }
