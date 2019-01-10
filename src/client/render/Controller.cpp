@@ -22,7 +22,11 @@ void Controller::handle_sfEvents(sf::Event& event)
 	
 	if (engine.etat->ID == state::StateID::started)
 	{
-		if (gameState.current_player->name == "IA")
+		if (gameState.current_player->name == AI_1 ||
+			gameState.current_player->name == AI_2 ||
+			gameState.current_player->name == AI_3 ||
+			gameState.current_player->name == AI_4 ||
+			gameState.current_player->name == AI_5)
 		{
 			return;
 		}

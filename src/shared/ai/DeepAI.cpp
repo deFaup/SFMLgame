@@ -103,7 +103,7 @@ int* DeepAI::min_max(engine::GameEngine& gameEngine, int depth, bool min_or_max)
 			}
 			std::cout << "attack with character " << i << " done\n";
 
-			if (gameEngine.etat->current_player->name == "IA") //if player is IA we move to the next player
+			if (gameEngine.etat->current_player->name == this->name) //if player is IA we move to the next player
 				gameEngine.add_command(sfEvents(enter));
 
 			else //if player is not the IA we skip turns so as IA is the next player
@@ -226,7 +226,7 @@ int* DeepAI::min_max(engine::GameEngine& gameEngine, int depth, bool min_or_max)
 //			// on fait return pour donner une valeur au parent directement sans parcourir tous les fils
 //			std::cout << "attack with character " << i << " done\n";
 //
-//			if (gameEngine.etat->current_player->name == "IA") //if player is IA we move to the next player
+//			if (gameEngine.etat->current_player->name == this->name) //if player is IA we move to the next player
 //				gameEngine.add_command(sfEvents(enter));
 //
 //			else //if player is not the IA we skip turns so as IA is the next player
@@ -284,7 +284,7 @@ int DeepAI:: evaluation_function(engine::GameEngine& gameEngine)
 
 	for (auto ai_player : gameEngine.etat->players)
 	{
-		if (ai_player->name == "IA")
+		if (ai_player->name == this->name)
 			coeff = +1;
 		else
 			coeff = -1;
@@ -454,7 +454,7 @@ std::shared_ptr<state::Characters> DeepAI::find_target(const state::GameState* g
 void DeepAI::update_char_to_try(const engine::GameEngine& gameEngine, 
 	std::deque<shared_ptr<state::Characters>>& char_to_try)
 {
-	if (gameEngine.etat->current_player->name == "IA")
+	if (gameEngine.etat->current_player->name == this->name)
 		char_to_try = gameEngine.etat->current_player->get_characters();
 	else
 		char_to_try = gameEngine.etat->get_characters();
@@ -462,7 +462,7 @@ void DeepAI::update_char_to_try(const engine::GameEngine& gameEngine,
 	for (unsigned int i(0); i < char_to_try.size(); i++)
 	{	//delete dead characters and IA characters when current charcter is not IA
 		if ((char_to_try[i]->stats.get_life_point() <= 0) ||
-			(char_to_try[i]->get_Player()->name == "IA" && gameEngine.etat->current_player->name != "IA"))
+			(char_to_try[i]->get_Player()->name == this->name && gameEngine.etat->current_player->name != this->name))
 		{
 			char_to_try.erase(char_to_try.cbegin() + i);
 			i--;

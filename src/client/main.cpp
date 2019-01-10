@@ -28,7 +28,7 @@ using namespace render;
 using namespace engine;
 using namespace ai;
 
-/* Test de la classe Characters */
+void init_game(state::GameState* etat, int& player_1_type, int& player_2_type);
 
 /* Test de la classe GameState */
 void testGameState() {
@@ -95,11 +95,11 @@ void testGameState() {
 }
 */
 
-void enginet(int ai_type)
-{// problème à résoudre: une fois que l'on a touché le sol si l'on va tout à gauche de l'écran 
-//	puis que l'on repart à droite ALORS seg fault
+void enginet(int player_1_type, int player_2_type)
+{
 	sf::RenderWindow renderWindow(sf::VideoMode(1102,869), "menu test");
 
+	/* Menu begin */
 	sf::Texture pic; 
 	pic.loadFromFile("res/menu.png");
 	sf::Sprite menu_sprite(pic);
@@ -120,51 +120,70 @@ void enginet(int ai_type)
 		renderWindow.display();
 		renderWindow.clear();
 	}
-
-	/* le thread render/main aura une méthode class whatever pour afficher un menu dans renderwindow.
-	Dans le menu on choisit le nombre de joueurs et de personnages + autres paramètres si besoin.
-	Ensuite tous ces paramètres sont transmis au gameEngine qui va ensuite modifier le state.
-	Seul le moteur peut modifier l'état pour que cela marche en mode réseau.
-	La méthode menu sera appelé par l'engine au premier call de check state ID
-	*/
+	/* Menu end */
 
 	GameState etat;
 	GameEngine engine(&etat); std::thread thread_engine;
 	Controller controller(renderWindow, engine, etat);
-
-	shared_ptr<AI> ai_(0); std::thread thread_ai;
-	switch (ai_type)
-	{
-	case 1:
-		ai_ = make_shared<RandomAI>(engine);
-		break;
-	case 2:
-		ai_ = make_shared<HyAI>(engine);
-		break;
-	case 3:
-		ai_ = make_shared<DeepAI>(engine);
-		break;
-	default:
-		break;
-	}
-	cout << "main: IA created" << endl;
-
 	shared_ptr<Scene> scene = make_shared<Scene>(renderWindow, etat);
-	cout << "main: scene created\n" << endl;
 
 	/* Linking the observer to each observable */
 	//in Characters::stats & position + Player + Map + GameState
 	etat.registerObserver(scene);
 	etat.map.registerObserver(scene);
 	cout << "main: observers listed\n" << endl;
+	
+	/* Init game */
+	init_game(&etat, player_1_type, player_2_type);
+	//engine.init_game(player_2_type);
+	
+	/* config AI */
+	shared_ptr<AI> ai_1(0); std::thread thread_ai_1;
+	shared_ptr<AI> ai_2(0); std::thread thread_ai_2;
+	switch (player_1_type)
+	{
+	case REAL://this player is not an AI
+		break;
+	case RANDOM_AI:
+		ai_1 = make_shared<RandomAI>(engine);
+		break;
+	case HEURISTIC_AI:
+		ai_1 = make_shared<HyAI>(engine);
+		break;
+	case DEEP_AI:
+		ai_1 = make_shared<DeepAI>(engine);
+		break;
+	default:
+		break;
+	}
+	switch (player_2_type)
+	{
+	case REAL://this player is not an AI
+		break;
+	case RANDOM_AI:
+		ai_2 = make_shared<RandomAI>(engine);
+		break;
+	case HEURISTIC_AI:
+		ai_2 = make_shared<HyAI>(engine);
+		break;
+	case DEEP_AI:
+		ai_2 = make_shared<DeepAI>(engine);
+		break;
+	default:
+		break;
+	}
+	if (ai_1) ai_1->name = AI_1;
+	if (ai_2) ai_2->name = AI_2;
+	cout << "main: IA created" << endl;
 
-	engine.init_game(ai_type); //create the team when id is "not started", id="team selected"
 	scene->background.new_background_layer();
 	scene->characters.new_character_layer();
 
 	thread_engine = thread(&engine::GameEngine::workLoop, &engine);
-	if (ai_)
-		thread_ai = thread(&ai::DeepAI::workloop, ai_);
+	if (ai_1)
+		thread_ai_1 = thread(&ai::DeepAI::workloop, ai_1);	
+	if (ai_2)
+		thread_ai_2 = thread(&ai::DeepAI::workloop, ai_2);
 
 	while (renderWindow.isOpen())
 	{
@@ -186,10 +205,9 @@ void enginet(int ai_type)
 	thread_engine.join();
 	cout << "engine thread closed\n";
 
-	if (ai_) {
-		thread_ai.join();
-		cout << "ai thread closed\n";
-	}
+	if (ai_1) thread_ai_1.join();
+	if (ai_2) thread_ai_2.join();
+	cout << "ai thread closed\n";
 }
 
 int main(int argc, char* argv[])
@@ -200,7 +218,7 @@ int main(int argc, char* argv[])
 		if (strcmp(argv[1], "hello") == 0)
 			cout << "Bienvenue chez antoine et gregoire !" << endl;
 
-		if (strcmp(argv[1], "state") == 0)
+		else if (strcmp(argv[1], "state") == 0)
 		{
 			//testStatistics();
 			//testCharacters();
@@ -208,34 +226,67 @@ int main(int argc, char* argv[])
 			testGameState();
 		}
 
-		if (strcmp(argv[1], "render") == 0)
+		else if (strcmp(argv[1], "render") == 0)
 		{
 			testSFML();
 			//rendering();
 			//render_state();
 		}
 
-		if (strcmp(argv[1], "engine") == 0)
-			enginet(0);
+		else if (strcmp(argv[1], "engine") == 0)	enginet(REAL, REAL);
 	
-		if (strcmp(argv[1], "random_ai") == 0)
-			enginet(1);
+		else if (strcmp(argv[1], "random_ai") == 0)	enginet(REAL, RANDOM_AI);
 
-		if (strcmp(argv[1], "heuristic_ai") == 0)
-			enginet(2);		
+		else if (strcmp(argv[1], "heuristic_ai") == 0)	enginet(REAL, HEURISTIC_AI);
 		
-		if (strcmp(argv[1], "deep_ai") == 0)
-			enginet(3);
+		else if (strcmp(argv[1], "deep_ai") == 0)	enginet(REAL, DEEP_AI);
+		else if (strcmp(argv[1], "rollback") == 0)	enginet(REAL, HEURISTIC_AI);
 
-		if (strcmp(argv[1], "test") == 0)
+		else if (strcmp(argv[1], "test") == 0)
 		{
 			#include "unit_test.hpp"
 			result_statistics();
 			result_position();
 		}
+
+		else if (strcmp(argv[1], "thread") == 0) enginet(HEURISTIC_AI, HEURISTIC_AI);
+
+		else if (strcmp(argv[1], "record") == 0) {}
+		else if (strcmp(argv[1], "play") == 0) {}
 	}
 	return 0;
 }
 
+/* Init the game with two players: player can be AI or real */
+void init_game(state::GameState* etat, int& player_1_type, int& player_2_type)
+{
+	/* Create players, characters and a map. Will be rewritten when menu is implemented */
+	if (etat->ID == not_started)
+	{
+		etat->new_map(3000, 2000);
+
+		if (player_1_type == REAL) etat->new_player("Joueur 1");
+		else etat->new_player(AI_1);
+		
+		if (player_2_type == REAL) etat->new_player("Joueur 2");
+		else etat->new_player(AI_2);
+
+		etat->new_character(0, vegeta);
+		etat->new_character(0, vegeta);
+		etat->new_character(0, vegeta);
+
+		etat->new_character(1, goku);
+		etat->new_character(1, goku);
+		etat->new_character(1, goku);
+		
+		etat->ID = team_selected;
+	}
+}
 
 
+/* le thread render/main aura une méthode class whatever pour afficher un menu dans renderwindow.
+Dans le menu on choisit le nombre de joueurs et de personnages + autres paramètres si besoin.
+Ensuite tous ces paramètres sont transmis au gameEngine qui va ensuite modifier le state.
+Seul le moteur peut modifier l'état pour que cela marche en mode réseau.
+La méthode menu sera appelé par l'engine au premier call de check state ID
+*/

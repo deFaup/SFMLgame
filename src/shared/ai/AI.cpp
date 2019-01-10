@@ -84,7 +84,7 @@ void AI::workloop()
 {
 	while (!((moteur.etat->ID == state::StateID::end) || moteur.game_ended))
 	{
-		if (moteur.etat->current_player->name == "IA")
+		if (moteur.etat->current_player->name == this->name)
 		{
 			std::unique_lock<std::mutex> unique_get_engine(global::get_engine);
 			play();

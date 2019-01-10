@@ -16,5 +16,21 @@
 //speed at wich we move sprtite / characters
 #define SPEED 8
 
+// AI name
+#define AI_1 "2409975411082179859"
+#define AI_2 "9330385949384014003"
+#define AI_3 "1601501520215445,689"
+#define AI_4 "802400488603333171"
+#define AI_5 "1275483555166853449"
+
+// define for the different test scenarios
+#define REAL 0
+#define RANDOM_AI 1
+#define HEURISTIC_AI 2
+#define DEEP_AI 3
+#define THREAD 4
+#define RECORD 5
+#define PLAY 6
+
 #endif	/* DEFINE_H_ */
 
