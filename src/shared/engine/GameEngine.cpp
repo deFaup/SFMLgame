@@ -18,8 +18,6 @@ using namespace engine;
 using namespace std;
 using namespace render;
 
-vector<sfEvents> executed;
-vector<vector<vector<int>>> previous_mask;
 int speedp[10] = {0};
 
 GameEngine::GameEngine(state::GameState* etat) : etat(etat), updating(false){}
@@ -382,8 +380,9 @@ void GameEngine::rollback(void){
 	else if (last_command.ID == enter)
 	{
 		ChangePlayer useless_var;
-		useless_var.execute(*etat);
-		global::next_player_cv.notify_all();
+		for (unsigned int i = 0; i < etat->get_number_of_player() - 1; i++)
+			useless_var.execute(*etat);
+		//global::next_player_cv.notify_all();
 	}
 	executed.erase(executed.begin() + executed.size()-1);
 }

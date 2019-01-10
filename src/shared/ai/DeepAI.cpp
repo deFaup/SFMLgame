@@ -18,7 +18,6 @@ int res[2] = { 0,0 };
 
 void DeepAI::play()
 {
-	bool min_max_done = false;
 	shared_ptr<state::Characters> attacker;
 
 	if (moteur.etat->ID == state::StateID::team_placement)
@@ -26,30 +25,29 @@ void DeepAI::play()
 
 	else if (moteur.etat->ID == state::StateID::started)
 	{
+		/* copy for rollback */
+		state::GameState state_copy(*(moteur.etat));
+		std::cout << "gameState copied\n";
+
 		/* Create a GameEngine specific to the AI */
-		GameEngine deep_engine(moteur.etat); //OK
+		GameEngine deep_engine(&state_copy);
+		//GameEngine deep_engine(moteur.etat);
 
 		/* Call min_max to find the best character */ 
 		// parameters: depth=2, 1 is mandatory for AI
 		// result saved in res[weight,index]
-		/*int* best = */min_max(deep_engine, 2, 1);
-
-		int index = res[1];	//best[1];
+		min_max(deep_engine, 2, 1);
+		int index = res[1];
 		std::cout << "min_max = " << index << "\n";
-		//std::cout << "res[1] = " << res[1] << "\n";
-
-		// we need to set char n°index as the current char
-		attacker = moteur.etat->current_player->get_character(index);
-		moteur.etat->current_player->current_character = attacker;
 
 		/* Attack the ennemy with the charcter found previsouly */
+		attacker = moteur.etat->current_player->get_character(index);
 		attack(moteur, attacker);
 		next_player(moteur);
 	}
 }
 
-// the engine is in the SAME thread
-// return the min or max value and the index of the value
+// min_max using rollback
 int* DeepAI::min_max(engine::GameEngine& gameEngine, int depth, bool min_or_max)
 {
 	// return value : result, index
@@ -61,17 +59,17 @@ int* DeepAI::min_max(engine::GameEngine& gameEngine, int depth, bool min_or_max)
 		cout << "bottom tree = " << res[0] << "\n";
 		return res;
 	}
-	
+
 	else
 	{
-		// 1 - local copy of the state
-		state::GameState this_layer_state(*(gameEngine.etat));
-		std::cout << "copy layer state: " << depth << "\n";
-
 		// sons'weight for one layer
 		std::vector<int> sons_weight;
 
 		cout << "\nbegin min_max with " << min_or_max << "(O is min)" << "\n";
+		
+		// 1 - local version of rollback attributes
+		std::vector<render::sfEvents> m_executed;
+		std::vector<std::vector<std::vector<int>>> m_previous_mask;
 
 		// 2 - Find all sons of the father node 
 		// father: this_layer_state; 
@@ -80,7 +78,7 @@ int* DeepAI::min_max(engine::GameEngine& gameEngine, int depth, bool min_or_max)
 		update_char_to_try(gameEngine, char_to_try);
 
 		int size = char_to_try.size();
-		
+
 		// 3 - Check if the player has lost
 		if (char_to_try.empty())
 		{
@@ -92,27 +90,17 @@ int* DeepAI::min_max(engine::GameEngine& gameEngine, int depth, bool min_or_max)
 		// 4 - Go through all living sons and find their sons
 		for (int i(0); i < size; i++)
 		{
-			// char attack
 			std::cout << "tree level: " << depth << ". attack with character " << i << "\n";
-
-			// temp no rollback just gameState deep copy
-			// so etat in GameEngine must be a pointer
-
-			// x - copy of the state for this character, deleted at each incrementation
-			state::GameState loop_state(this_layer_state);
-			gameEngine.etat = &loop_state;
-			std::cout << "loop state: " << i << "\n";
-//std::cout << "current player charc: " << gameEngine.etat->current_player->current_character->id << "\n";
-//std::cout << "current char ptr: " << gameEngine.etat->current_player->current_character.get() << "\n";
-
-			update_char_to_try(gameEngine, char_to_try);
-
+			
+			// activate rollback
+			gameEngine.rollbackActive = true;
+			
+			// attack
 			if (attack(gameEngine, char_to_try[i]) == -1)
 			{
-				res[0] = evaluation_function(gameEngine); //res[1] = i;
-				return res; // we can return res as we don't need to explore the other possibilities
+				res[0] = evaluation_function(gameEngine);
+				return res; 
 			}
-			// on fait return pour donner une valeur au parent directement sans parcourir tous les fils
 			std::cout << "attack with character " << i << " done\n";
 
 			if (gameEngine.etat->current_player->name == "IA") //if player is IA we move to the next player
@@ -126,14 +114,24 @@ int* DeepAI::min_max(engine::GameEngine& gameEngine, int depth, bool min_or_max)
 
 			gameEngine.executeCommandes();
 			std::cout << "skip player OK\n";
-			
+
+			// copy the commands that were sent, delete the originals, stop rollback recording
+			m_executed = gameEngine.executed;
+			m_previous_mask = gameEngine.previous_mask;
+			gameEngine.executed.erase(gameEngine.executed.begin(), gameEngine.executed.end());
+			gameEngine.previous_mask.erase(gameEngine.previous_mask.begin(), gameEngine.previous_mask.end());
+			gameEngine.rollbackActive = false;
+
+			// recursive call to go down a layer
 			int* val = min_max(gameEngine, depth - 1, !min_or_max);
 			sons_weight.push_back(val[0]);
 			std::cout << "weight = " << val[0] << "\n";
-			
-			// 4 - Restore the state to use for this layer
+
+			// Restore then Rollback the commands that were saved to restore the state
 			std::cout << "restoring layer state: " << depth << "\n\n";
-			gameEngine.etat = &this_layer_state;
+			gameEngine.executed = m_executed;
+			gameEngine.previous_mask = m_previous_mask;
+			gameEngine.rollback();
 
 		}
 
@@ -165,6 +163,119 @@ int* DeepAI::min_max(engine::GameEngine& gameEngine, int depth, bool min_or_max)
 		return res;
 	}
 }
+
+ //the engine is in the SAME thread
+ //return the min or max value and the index of the value
+//int* DeepAI::min_max(engine::GameEngine& gameEngine, int depth, bool min_or_max)
+//{
+//	// return value : result, index
+//	res[0] = 0; res[1] = 0;
+//
+//	// when the bottom of the tree is reached we compute the cost with evaluate function
+//	if (depth == 0) {
+//		res[0] = evaluation_function(gameEngine);
+//		cout << "bottom tree = " << res[0] << "\n";
+//		return res;
+//	}
+//	
+//	else
+//	{
+//		// 1 - local copy of the state
+//		state::GameState this_layer_state(*(gameEngine.etat));
+//		std::cout << "copy layer state: " << depth << "\n";
+//
+//		// sons'weight for one layer
+//		std::vector<int> sons_weight;
+//
+//		cout << "\nbegin min_max with " << min_or_max << "(O is min)" << "\n";
+//
+//		// 2 - Find all sons of the father node 
+//		// father: this_layer_state; 
+//		// sons: father state modified by each char_to_try (valid AI_characters or AI_ennemies)
+//		std::deque<shared_ptr<state::Characters>> char_to_try;// (gameState->get_characters());
+//		update_char_to_try(gameEngine, char_to_try);
+//
+//		int size = char_to_try.size();
+//		
+//		// 3 - Check if the player has lost
+//		if (char_to_try.empty())
+//		{
+//			std::cout << "player lost\n";
+//			res[0] = evaluation_function(gameEngine);
+//			return res;
+//		}
+//
+//		// 4 - Go through all living sons and find their sons
+//		for (int i(0); i < size; i++)
+//		{
+//			// char attack
+//			std::cout << "tree level: " << depth << ". attack with character " << i << "\n";
+//
+//			// x - copy of the state for this character, deleted at each incrementation
+//			state::GameState loop_state(this_layer_state);
+//			gameEngine.etat = &loop_state;
+//			std::cout << "loop state: " << i << "\n";
+//
+//			update_char_to_try(gameEngine, char_to_try);
+//
+//			if (attack(gameEngine, char_to_try[i]) == -1)
+//			{
+//				res[0] = evaluation_function(gameEngine); //res[1] = i;
+//				return res; // we can return res as we don't need to explore the other possibilities
+//			}
+//			// on fait return pour donner une valeur au parent directement sans parcourir tous les fils
+//			std::cout << "attack with character " << i << " done\n";
+//
+//			if (gameEngine.etat->current_player->name == "IA") //if player is IA we move to the next player
+//				gameEngine.add_command(sfEvents(enter));
+//
+//			else //if player is not the IA we skip turns so as IA is the next player
+//			{
+//				for (unsigned int i = 0; i < gameEngine.etat->get_number_of_player() - 1; i++)
+//					gameEngine.add_command(sfEvents(enter));
+//			}
+//
+//			gameEngine.executeCommandes();
+//			std::cout << "skip player OK\n";
+//			
+//			int* val = min_max(gameEngine, depth - 1, !min_or_max);
+//			sons_weight.push_back(val[0]);
+//			std::cout << "weight = " << val[0] << "\n";
+//			
+//			// 4 - Restore the state to use for this layer
+//			std::cout << "restoring layer state: " << depth << "\n\n";
+//			gameEngine.etat = &this_layer_state;
+//
+//		}
+//
+//		// 5 - find min or max value
+//		res[0] = sons_weight[0];
+//
+//		if (min_or_max == 1) //MAX
+//		{
+//			for (unsigned int i = 0; i < sons_weight.size(); i++)
+//			{
+//				if (sons_weight[i] > res[0])
+//				{
+//					res[0] = sons_weight[i];
+//					res[1] = i;
+//				}
+//			}
+//		}
+//		else
+//		{
+//			for (unsigned int i = 0; i < sons_weight.size(); i++)
+//			{
+//				if (sons_weight[i] < res[0])
+//				{
+//					res[0] = sons_weight[i];
+//					res[1] = i;
+//				}
+//			}
+//		}
+//		return res;
+//	}
+//}
 
 int DeepAI:: evaluation_function(engine::GameEngine& gameEngine)
 {
