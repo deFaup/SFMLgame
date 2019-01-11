@@ -22,10 +22,7 @@ void HyAI::play()
 
 	else if (moteur.etat->ID == state::StateID::started)
 	{
-		static std::shared_ptr<state::Characters> target;
-		static std::shared_ptr<state::Characters> attacker;
-		static unsigned int distancemin;
-		static bool isCharacterChoose = false;
+		isCharacterChoose = false;
 
 		// selection du joueur à prendre pour target
 		if (!isCharacterChoose)
@@ -111,6 +108,7 @@ void HyAI::play()
 			}
 		}
 	}
+	
 	moteur.executeCommandes();
 
 	render::sfEventsID arrow = arrow_down;

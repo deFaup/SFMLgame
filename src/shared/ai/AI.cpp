@@ -58,7 +58,7 @@ void AI::place_character(engine::GameEngine& moteur)
 	{
 		std::cout << "ia placement finished begin\n";
 		next_player(moteur);
-
+		i = 0;
 		//moteur.set_updating(true);
 		//event with the line above it seems that the engine can execute the exec function and have no commands in its list so it sets engine to false
 		//while (moteur.updating) {}
