@@ -356,7 +356,18 @@ void GameEngine::set_updating(bool true_false) { updating = true_false; }
 
 void GameEngine::export_json(sfEvents to_export)
 {
-	ofstream fichier("res/test.json", ios::out | ios::app);
-	fichier << "{\n\t" << '"' << "command type" << '"' << " : " << to_export.ID << ",\n\t" << '"' << "mouse position X" << '"' << " : " << to_export.mouse_position.getPositionX() << ",\n\t" << '"' << "mouse position X" << '"' << " : " << to_export.mouse_position.getPositionY() << "\n}\n";
-	fichier.close();
+	void GameEngine::export_json(sfEvents to_export)
+{
+	ofstream wfichier("res/test.json", ios::out | ios::app);
+	ifstream rfichier("res/test.json", ios::in);
+	string chainetest;
+	rfichier >> chainetest;
+	if(chainetest == ""){
+		wfichier << "[\n{\n\t" << '"' << "command type" << '"' << " : " << to_export.ID << ",\n\t" << '"' << "mouse position X" << '"' << " : " << to_export.mouse_position.getPositionX() << ",\n\t" << '"' << "mouse position Y" << '"' << " : " << to_export.mouse_position.getPositionY() << "\n}\n";
+		wfichier.close();
+		return;
+	}
+	wfichier << ",\n{\n\t" << '"' << "command type" << '"' << " : " << to_export.ID << ",\n\t" << '"' << "mouse position X" << '"' << " : " << to_export.mouse_position.getPositionX() << ",\n\t" << '"' << "mouse position Y" << '"' << " : " << to_export.mouse_position.getPositionY() << "\n}\n]";
+	wfichier.close();
+}
 }
