@@ -29,6 +29,9 @@
 #define HEURISTIC_AI 2
 #define DEEP_AI 3
 #define ROLLBACK 4
+#define THREAD 5
+#define RECORD 6
+#define PLAY 7
 
 #endif	/* DEFINE_H_ */
 

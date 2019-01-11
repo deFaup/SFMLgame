@@ -88,18 +88,20 @@ void GameEngine::executeCommandes()
 			ChangePlayer useless_var;
 			useless_var.execute(*etat);
 			global::next_player_cv.notify_all();
-
-			if(etat->ID == started && rollbackActive)
+			if (JSONActive)
+				export_json(commandes.front());
+			if (etat->ID == started && rollbackActive)
 				executed.push_back(commandes.front());
 		}
-		
+
 		else if ((commandes.front().ID == arrow_left) || (commandes.front().ID == arrow_right))
 		{
 			Move move_command(commandes.front().ID);
 			if (move_command.isLegit(*etat) != -1) {
 				move_command.execute(*etat);
-
-				if(etat->ID == started && rollbackActive)
+				if (JSONActive)
+					export_json(commandes.front());
+				if (etat->ID == started && rollbackActive)
 					executed.push_back(commandes.front());
 			}
 		}
@@ -108,35 +110,37 @@ void GameEngine::executeCommandes()
 		{
 			ChangeCharacter useless_var;
 			useless_var.execute(*etat);
-
-			if(etat->ID == started && rollbackActive)
+			if (JSONActive)
+				export_json(commandes.front());
+			if (etat->ID == started && rollbackActive)
 				executed.push_back(commandes.front());
 		}
 
 		else if (commandes.front().ID == space)
 		{
-			if(etat->ID == started)
+			if (etat->ID == started)
 			{
-
-			/*if(rollbackActive)
-			{
+				if (JSONActive)
+					export_json(commandes.front());
+				/*if(rollbackActive)
+				{
 				while(!executed.empty())
 				{
-					rollback();
+				rollback();
 				}
 				rollbackActive = false;
-			}
-			else
-			{
-				rollbackActive = true;*/
-				for(unsigned int i = 0; i < etat->characters.size(); i++)
+				}
+				else
 				{
-					if(etat->characters[i] == etat->current_player->current_character)
+				rollbackActive = true;*/
+				for (unsigned int i = 0; i < etat->characters.size(); i++)
+				{
+					if (etat->characters[i] == etat->current_player->current_character)
 					{
 						speedp[i] = -40;
 					}
 				}
-			//}
+				//}
 			}
 		}
 
@@ -148,30 +152,32 @@ void GameEngine::executeCommandes()
 			// when all players have pressed enter once then we can start the game.
 			// if one player presses enter several time it will keep the others from placing correctly
 
-			etat->ID = (players_placed == etat->get_number_of_player()) ?  started:team_placement;
+			etat->ID = (players_placed == etat->get_number_of_player()) ? started : team_placement;
 		}
-		
+
 		else if (etat->ID == started)
 		{
 			if (commandes.front().ID == num1 || commandes.front().ID == num2 || commandes.front().ID == num3 || commandes.front().ID == num4 || commandes.front().ID == num5)
-			{	
+			{
 				//cout << "command is attack\n";
 				Attack attack_command;
 				attack_command.attack_position = commandes.front().mouse_position;
-				if(commandes.front().ID == num1)
+				if (commandes.front().ID == num1)
 					attack_command.attack_number = 0;
-				else if(commandes.front().ID == num2)
+				else if (commandes.front().ID == num2)
 					attack_command.attack_number = 1;
-				else if(commandes.front().ID == num3)
+				else if (commandes.front().ID == num3)
 					attack_command.attack_number = 2;
-				else if(commandes.front().ID == num4)
+				else if (commandes.front().ID == num4)
 					attack_command.attack_number = 3;
-				else if(commandes.front().ID == num5)
+				else if (commandes.front().ID == num5)
 					attack_command.attack_number = 4;
 				updating = true; // we forbid any call to scene.draw in main.cpp
 				if (attack_command.isLegit(*etat) != -1)
 				{
-					if(rollbackActive)
+					if (JSONActive)
+						export_json(commandes.front());
+					if (rollbackActive)
 					{
 						previous_mask.push_back(etat->map.get_mask());
 						executed.push_back(commandes.front());
@@ -182,7 +188,7 @@ void GameEngine::executeCommandes()
 			}
 			//executed.push_back(commandes.front());		
 		}
-		
+
 		commandes.pop();
 	}
 
@@ -348,3 +354,9 @@ void GameEngine::rollback(void){
 
 void GameEngine::set_updating(bool true_false) { updating = true_false; }
 
+void GameEngine::export_json(sfEvents to_export)
+{
+	ofstream fichier("res/test.json", ios::out | ios::app);
+	fichier << "{\n\t" << '"' << "command type" << '"' << " : " << to_export.ID << ",\n\t" << '"' << "mouse position X" << '"' << " : " << to_export.mouse_position.getPositionX() << ",\n\t" << '"' << "mouse position X" << '"' << " : " << to_export.mouse_position.getPositionY() << "\n}\n";
+	fichier.close();
+}

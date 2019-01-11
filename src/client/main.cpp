@@ -247,6 +247,10 @@ int main(int argc, char* argv[])
 			result_position();
 		}
 
+		else if (strcmp(argv[1], "thread") == 0) enginet(HEURISTIC_AI, HEURISTIC_AI);
+
+		else if (strcmp(argv[1], "record") == 0) {}
+		else if (strcmp(argv[1], "play") == 0) {}
 	}
 	return 0;
 }
