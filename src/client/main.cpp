@@ -3,18 +3,7 @@
 #include <cstring>	//strcmp
 
 #include "define.hpp"
-
-// Les lignes suivantes ne servent qu'à vérifier que la compilation avec SFML fonctionne
-#include <SFML/Graphics.hpp>
-
-void testSFML() {
-	sf::Texture texture;
-	sf::Image image;
-}
-// Fin test SFML
-
-/*************************************************************/
-/*************************************************************/
+#include "global_mutex.hpp"
 
 #include "state.h"
 #include "render.h"
@@ -27,6 +16,18 @@ using namespace state;
 using namespace render;
 using namespace engine;
 using namespace ai;
+
+// Les lignes suivantes ne servent qu'à vérifier que la compilation avec SFML fonctionne
+#include <SFML/Graphics.hpp>
+
+void testSFML() {
+	sf::Texture texture;
+	sf::Image image;
+}
+// Fin test SFML
+
+/*************************************************************/
+/*************************************************************/
 
 void init_game(state::GameState* etat, int& player_1_type, int& player_2_type);
 
@@ -196,10 +197,7 @@ void enginet(int player_1_type, int player_2_type)
 
 		renderWindow.clear();
 		while (engine.updating) {}
-		scene->draw(); // wonder if we can get a segfault if engine.updating changes to true in between
-
-		//renderWindow.display();
-		
+		scene->draw(); // wonder if we can get a segfault if engine.updating changes to true in between		
 	}
 	
 	thread_engine.join();
@@ -240,7 +238,7 @@ int main(int argc, char* argv[])
 		else if (strcmp(argv[1], "heuristic_ai") == 0)	enginet(REAL, HEURISTIC_AI);
 		
 		else if (strcmp(argv[1], "deep_ai") == 0)	enginet(REAL, DEEP_AI);
-		else if (strcmp(argv[1], "rollback") == 0)	enginet(REAL, HEURISTIC_AI);
+		else if (strcmp(argv[1], "rollback") == 0)	enginet(HEURISTIC_AI, HEURISTIC_AI);
 
 		else if (strcmp(argv[1], "test") == 0)
 		{
@@ -249,10 +247,6 @@ int main(int argc, char* argv[])
 			result_position();
 		}
 
-		else if (strcmp(argv[1], "thread") == 0) enginet(HEURISTIC_AI, HEURISTIC_AI);
-
-		else if (strcmp(argv[1], "record") == 0) {}
-		else if (strcmp(argv[1], "play") == 0) {}
 	}
 	return 0;
 }
