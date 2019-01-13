@@ -4,6 +4,10 @@
 #include <mutex>
 #include <condition_variable>
 
+// pour l'export sous format json
+#include <fstream>
+#include <json/json.h>
+
 namespace global
 {
 	extern std::mutex next_player;
@@ -11,6 +15,8 @@ namespace global
 
 	extern std::mutex get_engine;
 
+	extern std::ofstream json_file;
+	extern Json::Value json_commandes;
 }
 
 #endif

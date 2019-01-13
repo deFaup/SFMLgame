@@ -42,14 +42,14 @@ void AI::place_character(engine::GameEngine& moteur)
 	// Move down the current character of the AI
 	//for (int i = 0; i != 5; i++)
 	{
-		render::sfEventsID arrow = render::sfEventsID::arrow_down;
+		state::sfEventsID arrow = state::sfEventsID::arrow_down;
 		engine::Move move_commande(arrow);
 		move_commande.execute(*(moteur.etat));
 	}
 
 	if (previous_position.getPositionY() == ia_player->get_current_character()->position.getPositionY())
 	{
-		render::sfEvents change_character(render::sfEventsID::arrow_up);
+		state::sfEvents change_character(state::sfEventsID::arrow_up);
 		moteur.add_command(change_character);
 		i++;
 	}
@@ -71,7 +71,7 @@ void AI::place_character(engine::GameEngine& moteur)
 // when the engine is executed in another thread !!
 void AI::next_player(engine::GameEngine& gameEngine) 
 {
-	render::sfEvents next_player(render::sfEventsID::enter);
+	state::sfEvents next_player(state::sfEventsID::enter);
 	gameEngine.add_command(next_player);
 	gameEngine.executeCommandes();
 

@@ -35,65 +35,65 @@ void Controller::handle_sfEvents(sf::Event& event)
 	if (event.type == sf::Event::KeyPressed)
 	{
 		if (event.key.code == sf::Keyboard::Left)
-			add_command(sfEvents(arrow_left));
+			add_command(state::sfEvents(state::sfEventsID::arrow_left));
 
 		else if (event.key.code == sf::Keyboard::Right)
-			add_command(sfEvents(arrow_right));
+			add_command(state::sfEvents(state::sfEventsID::arrow_right));
 
 		else if (event.key.code == sf::Keyboard::Up)
-			add_command(sfEvents(arrow_up));
+			add_command(state::sfEvents(state::sfEventsID::arrow_up));
 
 		else if (event.key.code == sf::Keyboard::Down)
-			add_command(sfEvents(arrow_down));
+			add_command(state::sfEvents(state::sfEventsID::arrow_down));
 	}
 
 	else if (event.type == sf::Event::KeyReleased)
 	{
 		if (event.key.code == sf::Keyboard::Space)
-			add_command(sfEvents(space));
+			add_command(state::sfEvents(state::sfEventsID::space));
 
 		else if (event.key.code == sf::Keyboard::Return)
-			add_command(sfEvents(enter));
+			add_command(state::sfEvents(state::sfEventsID::enter));
 
 		else if (event.key.code == sf::Keyboard::LControl)
-			add_command(sfEvents(ctrl_l));
+			add_command(state::sfEvents(state::sfEventsID::ctrl_l));
 
 		else if (event.key.code == sf::Keyboard::RControl)
-			add_command(sfEvents(ctrl_r));
+			add_command(state::sfEvents(state::sfEventsID::ctrl_r));
 
 		else if (event.key.code == sf::Keyboard::Num1 || event.key.code == sf::Keyboard::Numpad1)
-			add_command(sfEvents(num1));
+			add_command(state::sfEvents(state::sfEventsID::num1));
 
 		else if (event.key.code == sf::Keyboard::Num2 || event.key.code == sf::Keyboard::Numpad2)
-			add_command(sfEvents(num2));
+			add_command(state::sfEvents(state::sfEventsID::num2));
 
 		else if (event.key.code == sf::Keyboard::Num3 || event.key.code == sf::Keyboard::Numpad3)
-			add_command(sfEvents(num3));
+			add_command(state::sfEvents(state::sfEventsID::num3));
 
 		else if (event.key.code == sf::Keyboard::Num4 || event.key.code == sf::Keyboard::Numpad4)
-			add_command(sfEvents(num4));
+			add_command(state::sfEvents(state::sfEventsID::num4));
 
 		else if (event.key.code == sf::Keyboard::Num5 || event.key.code == sf::Keyboard::Numpad5)
-			add_command(sfEvents(num5));
+			add_command(state::sfEvents(state::sfEventsID::num5));
 	}
 
 	else if (event.type == sf::Event::MouseButtonReleased)
 	{
 		if (event.mouseButton.button == sf::Mouse::Left)
 		{
-			add_command(sfEvents(left_click));
+			add_command(state::sfEvents(state::sfEventsID::left_click));
 			//cout << "engine events mouse left released\n";
 		}
 		else if (event.mouseButton.button == sf::Mouse::Right)
 		{
-			add_command(sfEvents(right_click));
+			add_command(state::sfEvents(state::sfEventsID::right_click));
 			cout << "engine events mouse right released\n";
 		}
 	}
 
 }
 
-void Controller::add_command(sfEvents sf_event)
+void Controller::add_command(state::sfEvents sf_event)
 {
 	engine.add_command(sf_event);
 }

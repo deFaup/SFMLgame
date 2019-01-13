@@ -1,6 +1,7 @@
 #include "define.hpp"
 #include <iostream>
 #include "Map.h"
+
 #include <SFML/Window.hpp> //getDesktopMode
 
 #include <ctime>	// time

@@ -33,5 +33,6 @@
 #define RECORD 6
 #define PLAY 7
 
+#define JSON_FILENAME "replay.json"
 #endif	/* DEFINE_H_ */
 

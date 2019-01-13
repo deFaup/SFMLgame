@@ -8,7 +8,6 @@
 #include "engine/Move.h"
 #include "state/GameState.h"
 using namespace ai;
-using namespace render;
 
 RandomAI::RandomAI(engine::GameEngine& moteur) : AI(moteur){}
 RandomAI::~RandomAI() {}
@@ -26,23 +25,23 @@ void RandomAI::play()
 			int nb_aleatoire2 = rand() % 2;
 			int nb_aleatoire3 = rand() % 3;
 			for (int k = 0; k < nb_aleatoire3; k++) {
-				sfEvents events(arrow_up);
+				state::sfEvents events(state::sfEventsID::arrow_up);
 				moteur.add_command(events);
 			}
 			if (nb_aleatoire2 == 0) {
 				for (int k = 0; k < (rand() % 100); k++) {
-					sfEvents events(arrow_left);
+					state::sfEvents events(state::sfEventsID::arrow_left);
 					moteur.add_command(events);
 				}
 			}
 			else {
 				for (int k = 0; k < (rand() % 100); k++) {
-					sfEvents events(arrow_right);
+					state::sfEvents events(state::sfEventsID::arrow_right);
 					moteur.add_command(events);
 				}
 			}
 		}
-		sfEvents events(enter);
+		state::sfEvents events(state::sfEventsID::enter);
 		moteur.add_command(events);
 		moteur.executeCommandes();
 	}

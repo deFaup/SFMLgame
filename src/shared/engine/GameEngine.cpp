@@ -3,20 +3,16 @@
 #include "define.hpp"
 #include "engine.h"
 
-#include <SFML/Window/Event.hpp>
+//#include <SFML/Window/Event.hpp>
 #include <iostream>
 
 // threads, thread::sleep_for
 #include <thread>
 #include <chrono>
 
-// pour l'export sous format json
-#include <fstream>
-
 using namespace state;
 using namespace engine;
 using namespace std;
-using namespace render;
 
 int speedp[10] = {0};
 
@@ -46,7 +42,7 @@ void GameEngine::check_stateID()
 		Valid position using space */
 	else if (etat->ID == team_placement)
 	{
-		Move move_commande(render::sfEventsID::arrow_down);
+		Move move_commande(state::sfEventsID::arrow_down);
 		int four = 4;
 		while (four != 0)
 		{
@@ -80,8 +76,8 @@ void GameEngine::executeCommandes()
 	while (!commandes.empty())
 	{
 		updating = true; // we execute each command one by one and others threads are paused
-		std::cout << "GameEngine::executeCommandes; commandes.size() = " << commandes.size() << endl;
-		std::cout << "commandes.ID = " << commandes.front().ID << endl;
+		//std::cout << "GameEngine::executeCommandes; commandes.size() = " << commandes.size() << endl;
+		//std::cout << "commandes.ID = " << commandes.front().ID << endl;
 
 		if (commandes.front().ID == enter)
 		{
@@ -230,13 +226,13 @@ void GameEngine::place_characters_with_mouse()
 	move_command.move_with_mouse(etat, commandes[].mouse_position);*/
 }
 
-void GameEngine::add_command(render::sfEvents commande)
+void GameEngine::add_command(state::sfEvents commande)
 {
 	commandes.push(commande);
 }
 
 void GameEngine::rollback(void){
-	sfEvents last_command = executed[executed.size()-1];
+	state::sfEvents last_command = executed[executed.size()-1];
 	if(last_command.ID == num1 || last_command.ID == num2 || last_command.ID == num3 || last_command.ID == num4 || last_command.ID == num5)
 	{
 		unsigned int attack_number;
@@ -354,20 +350,15 @@ void GameEngine::rollback(void){
 
 void GameEngine::set_updating(bool true_false) { updating = true_false; }
 
-void GameEngine::export_json(sfEvents to_export)
+void GameEngine::export_json(state::sfEvents to_export)
 {
-	void GameEngine::export_json(sfEvents to_export)
-{
-	ofstream wfichier("res/test.json", ios::out | ios::app);
-	ifstream rfichier("res/test.json", ios::in);
-	string chainetest;
-	rfichier >> chainetest;
-	if(chainetest == ""){
-		wfichier << "[\n{\n\t" << '"' << "command type" << '"' << " : " << to_export.ID << ",\n\t" << '"' << "mouse position X" << '"' << " : " << to_export.mouse_position.getPositionX() << ",\n\t" << '"' << "mouse position Y" << '"' << " : " << to_export.mouse_position.getPositionY() << "\n}\n";
-		wfichier.close();
-		return;
-	}
-	wfichier << ",\n{\n\t" << '"' << "command type" << '"' << " : " << to_export.ID << ",\n\t" << '"' << "mouse position X" << '"' << " : " << to_export.mouse_position.getPositionX() << ",\n\t" << '"' << "mouse position Y" << '"' << " : " << to_export.mouse_position.getPositionY() << "\n}\n]";
-	wfichier.close();
-}
+	static int i = 0;
+
+	Json::Value JsonCmd;
+	JsonCmd["sfEventsID"] = to_export.ID;
+	JsonCmd["x"] = to_export.mouse_position.getPositionX();
+	JsonCmd["y"] = to_export.mouse_position.getPositionY();
+
+	global::json_commandes["commandes"][i] = JsonCmd;
+	i++;
 }

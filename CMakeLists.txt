@@ -27,22 +27,23 @@ exec_program(${DIA2CODE} ARGS -ns state  -d ../src/shared -t cpp ../src/state.di
 exec_program(${DIA2CODE} ARGS -ns render -d ../src/client -t cpp ../src/render.dia)
 exec_program(${DIA2CODE} ARGS -ns engine -d ../src/shared -t cpp ../src/engine.dia)
 exec_program(${DIA2CODE} ARGS -ns ai     -d ../src/shared -t cpp ../src/ai.dia)
-#exec_program(${DIA2CODE} ARGS -ns client -d ../src/client -t cpp ../src/module.dia)
-#exec_program(${DIA2CODE} ARGS -ns server -d ../src/server -t cpp ../src/module.dia)
+exec_program(${DIA2CODE} ARGS -ns client -d ../src/client -t cpp ../src/module.dia)
+exec_program(${DIA2CODE} ARGS -ns server -d ../src/server -t cpp ../src/module.dia)
 
 # Sources
 file(GLOB_RECURSE client_sources src/client/*.cpp)
-#file(GLOB_RECURSE server_sources src/server/*.cpp)
+file(GLOB_RECURSE test_sources src/test/*.cpp)
+file(GLOB_RECURSE server_sources src/server/*.cpp)
 file(GLOB_RECURSE shared_sources src/shared/*.cpp)
 
 #jsoncpp
-#include_directories ("${PROJECT_SOURCE_DIR}/extern/jsoncpp-1.8.0")
-#file(GLOB_RECURSE jsoncpp_sources extern/jsoncpp-1.8.0/*.cpp)
+include_directories ("${PROJECT_SOURCE_DIR}/extern/jsoncpp-1.8.0")
+file(GLOB_RECURSE jsoncpp_sources extern/jsoncpp-1.8.0/*.cpp)
 
 
 # Executables
-add_executable(client ${client_sources} ${shared_sources})
-#add_executable(server ${server_sources} ${shared_sources} ${jsoncpp_sources})
+add_executable(client ${client_sources} ${shared_sources} ${jsoncpp_sources} ${test_sources})
+add_executable(server ${server_sources} ${shared_sources} ${jsoncpp_sources} )
 
 # SFML
 if(WIN32)
@@ -62,6 +63,7 @@ find_package(SFML 2 COMPONENTS graphics window system network)
 if(SFML_FOUND)
   include_directories(${SFML_INCLUDE_DIR})
   target_link_libraries(client sfml-graphics sfml-window sfml-system sfml-network)
+  target_link_libraries(server sfml-window sfml-system sfml-network)
 endif()
 
 # libmicrohttpd

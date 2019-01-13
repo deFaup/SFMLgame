@@ -10,6 +10,7 @@
 #include "engine.h"
 #include "ai.h"
 #include <thread>
+#include "../test/unit_test.hpp"
 
 using namespace std;
 using namespace state;
@@ -242,7 +243,6 @@ int main(int argc, char* argv[])
 
 		else if (strcmp(argv[1], "test") == 0)
 		{
-			#include "unit_test.hpp"
 			result_statistics();
 			result_position();
 		}

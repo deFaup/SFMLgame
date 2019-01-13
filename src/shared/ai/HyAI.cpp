@@ -9,7 +9,6 @@
 using namespace std;
 using namespace ai;
 using namespace engine;
-using namespace render;
 
 HyAI::HyAI(GameEngine& moteur) : AI(moteur){}
 HyAI::~HyAI() {}
@@ -62,7 +61,7 @@ void HyAI::play()
 		moteur.etat->current_player->current_character = attacker;
 
 		// find the best attack among the possible attacks of the attacker
-		render::sfEventsID attack_number;
+		state::sfEventsID attack_number;
 
 		// is target reachable on one turn ? with wich attack?
 		bool isReachable = false;
@@ -70,39 +69,39 @@ void HyAI::play()
 		{
 			if (attacker->get_attack(i).get_attack_scope() >= distancemin) {
 				isReachable = true;
-				attack_number = (i == 1) ? render::sfEventsID::num1 : attack_number;
-				//attack_number = (i == 2) ? render::sfEventsID::num2 : attack_number;
-				//attack_number = (i == 3) ? render::sfEventsID::num3 : attack_number;
-				//attack_number = (i == 4) ? render::sfEventsID::num4 : attack_number;
-				//attack_number = (i == 5) ? render::sfEventsID::num5 : attack_number;
+				attack_number = (i == 1) ? state::sfEventsID::num1 : attack_number;
+				//attack_number = (i == 2) ? state::sfEventsID::num2 : attack_number;
+				//attack_number = (i == 3) ? state::sfEventsID::num3 : attack_number;
+				//attack_number = (i == 4) ? state::sfEventsID::num4 : attack_number;
+				//attack_number = (i == 5) ? state::sfEventsID::num5 : attack_number;
 			}
 		}
 
 		// en déduit la commande à lancer
 		if (isReachable) {
 			if (attacker->stats.get_attack_point() == 0) {
-				sfEvents events(enter);
+				state::sfEvents events(state::sfEventsID::enter);
 				moteur.add_command(events);
 				isCharacterChoose = false;
 			}
 			else {
-				sfEvents events(attack_number);
+				state::sfEvents events(attack_number);
 				events.mouse_position = target->position;
 				moteur.add_command(events);
 			}
 		}
 		else {
 			if (attacker->stats.get_move_point() == 0) {
-				sfEvents events(enter);
+				state::sfEvents events(state::sfEventsID::enter);
 				moteur.add_command(events);
 				isCharacterChoose = true;
 			}
 			else if (target->position.getPositionX() <= attacker->position.getPositionX()) {
-				sfEvents events(arrow_left);
+				state::sfEvents events(state::sfEventsID::arrow_left);
 				moteur.add_command(events);
 			}
 			else {
-				sfEvents events(arrow_right);
+				state::sfEvents events(state::sfEventsID::arrow_right);
 				moteur.add_command(events);
 
 			}
@@ -111,7 +110,7 @@ void HyAI::play()
 	
 	moteur.executeCommandes();
 
-	render::sfEventsID arrow = arrow_down;
+	state::sfEventsID arrow = state::sfEventsID::arrow_down;
 	engine::Move move_commande(arrow);
 	move_commande.execute(*(moteur.etat));
 }

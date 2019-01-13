@@ -36,7 +36,8 @@ else
 endif
 
 
-build: bin/client 
+build: bin/client
+build server: bin/server
 
 bin/client:
 ifdef SYSTEMROOT
@@ -46,7 +47,12 @@ else
 endif
 
 bin/server:
+ifdef SYSTEMROOT
+	@mingw32-make -s -j4 -C build server
+else
 	@make -s -j4 -C build server
+endif
+	
 
 test:
 	docker build -t plt-initial -f docker/plt-initial .

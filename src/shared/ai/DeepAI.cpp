@@ -9,7 +9,6 @@ using namespace std;
 using namespace state;
 using namespace ai;
 using namespace engine;
-using namespace render;
 
 DeepAI::DeepAI(GameEngine& moteur) : AI(moteur){}
 DeepAI::~DeepAI() {}
@@ -68,7 +67,7 @@ int* DeepAI::min_max(engine::GameEngine& gameEngine, int depth, bool min_or_max)
 		cout << "\nbegin min_max with " << min_or_max << "(O is min)" << "\n";
 		
 		// 1 - local version of rollback attributes
-		std::vector<render::sfEvents> m_executed;
+		std::vector<state::sfEvents> m_executed;
 		std::vector<std::vector<std::vector<int>>> m_previous_mask;
 
 		// 2 - Find all sons of the father node 
@@ -104,12 +103,12 @@ int* DeepAI::min_max(engine::GameEngine& gameEngine, int depth, bool min_or_max)
 			std::cout << "attack with character " << i << " done\n";
 
 			if (gameEngine.etat->current_player->name == this->name) //if player is IA we move to the next player
-				gameEngine.add_command(sfEvents(enter));
+				gameEngine.add_command(sfEvents(state::sfEventsID::enter));
 
 			else //if player is not the IA we skip turns so as IA is the next player
 			{
 				for (unsigned int i = 0; i < gameEngine.etat->get_number_of_player() - 1; i++)
-					gameEngine.add_command(sfEvents(enter));
+					gameEngine.add_command(sfEvents(state::sfEventsID::enter));
 			}
 
 			gameEngine.executeCommandes();
@@ -358,7 +357,7 @@ int DeepAI::attack(engine::GameEngine& gameEngine, std::shared_ptr<state::Charac
 		//cout << " / " << target->stats.get_move_point() << "\n";
 		
 		// find the best attack among the possible attacks of the attacker
-		render::sfEventsID attack_number;
+		state::sfEventsID attack_number;
 
 		// is target reachable on one turn ? with wich attack?
 		bool isReachable = false;
@@ -366,11 +365,11 @@ int DeepAI::attack(engine::GameEngine& gameEngine, std::shared_ptr<state::Charac
 		{
 			if (attacker->get_attack(i).get_attack_scope() >= distancemin) {
 				isReachable = true;
-				attack_number = (i == 1) ? render::sfEventsID::num1 : attack_number;
-				//attack_number = (i == 2) ? render::sfEventsID::num2 : attack_number;
-				//attack_number = (i == 3) ? render::sfEventsID::num3 : attack_number;
-				//attack_number = (i == 4) ? render::sfEventsID::num4 : attack_number;
-				//attack_number = (i == 5) ? render::sfEventsID::num5 : attack_number;
+				attack_number = (i == 1) ? state::sfEventsID::num1 : attack_number;
+				//attack_number = (i == 2) ? state::sfEventsID::num2 : attack_number;
+				//attack_number = (i == 3) ? state::sfEventsID::num3 : attack_number;
+				//attack_number = (i == 4) ? state::sfEventsID::num4 : attack_number;
+				//attack_number = (i == 5) ? state::sfEventsID::num5 : attack_number;
 				//std::cout << "target reachable OK\n";
 				break;
 			}
@@ -384,7 +383,7 @@ int DeepAI::attack(engine::GameEngine& gameEngine, std::shared_ptr<state::Charac
 				isCharacterChoose = false; attack_finished = true;
 			}
 			else {
-				sfEvents events(attack_number);
+				state::sfEvents events(attack_number);
 				events.mouse_position = target->position;
 				gameEngine.add_command(events);
 			}
@@ -395,10 +394,10 @@ int DeepAI::attack(engine::GameEngine& gameEngine, std::shared_ptr<state::Charac
 				isCharacterChoose = false; attack_finished = true;
 			}
 			else if (target->position.getPositionX() <= attacker->position.getPositionX()) {
-				gameEngine.add_command(sfEvents (arrow_left));
+				gameEngine.add_command(state::sfEvents (arrow_left));
 			}
 			else {
-				gameEngine.add_command(sfEvents(arrow_right));
+				gameEngine.add_command(state::sfEvents(arrow_right));
 			}
 		}
 		//cout << "send commands OK\n";

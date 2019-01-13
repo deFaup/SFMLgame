@@ -6,10 +6,9 @@
 using namespace engine;
 using namespace std;
 using namespace state;
-using namespace render;
 
 // move method used when the game has started
-Move::Move(render::sfEventsID dir)
+Move::Move(state::sfEventsID dir)
 {
 	switch (dir)
 	{
