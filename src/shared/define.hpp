@@ -30,8 +30,7 @@
 #define DEEP_AI 3
 #define ROLLBACK 4
 #define THREAD 5
-#define RECORD 6
-#define PLAY 7
+#define PLAY 6
 
 #define JSON_FILENAME "replay.json"
 #endif	/* DEFINE_H_ */

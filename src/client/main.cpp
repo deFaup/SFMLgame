@@ -209,6 +209,60 @@ void enginet(int player_1_type, int player_2_type)
 	cout << "ai thread closed\n";
 }
 
+void play_json(Json::Value* json_commandes, engine::GameEngine* gameEngine);
+
+void play()
+{
+	sf::RenderWindow renderWindow;
+
+	GameState etat;
+	GameEngine engine(&etat); std::thread thread_engine;
+	Controller controller(renderWindow, engine, etat);
+	shared_ptr<Scene> scene = make_shared<Scene>(renderWindow, etat);
+
+	/* Linking the observer to each observable */
+	//in Characters::stats & position + Player + Map + GameState
+	etat.registerObserver(scene);
+	etat.map.registerObserver(scene);
+	cout << "main: observers listed\n" << endl;
+
+	/* Init game */
+	int real = REAL;
+	init_game(&etat, real, real);
+	scene->background.new_background_layer();
+	scene->characters.new_character_layer();
+
+	//laucnh engine thread
+	thread_engine = thread(&engine::GameEngine::workLoop, &engine);
+
+	// get commands from JSON
+	std::ifstream json_in_file;
+	json_in_file.open(JSON_FILENAME);
+	json_in_file >> global::json_commandes;
+	json_in_file.close();
+
+	// launch play json thread
+	thread thread_json(play_json, &global::json_commandes, &engine);
+
+	while (renderWindow.isOpen())
+	{
+		renderWindow.display();
+
+		// Process events
+		sf::Event event;
+		while (renderWindow.pollEvent(event))
+			controller.handle_sfEvents(event);
+
+		renderWindow.clear();
+		while (engine.updating) {}
+		scene->draw(); // wonder if we can get a segfault if engine.updating changes to true in between		
+	}
+
+	thread_json.join();
+	thread_engine.join();
+	cout << "engine thread closed\n";
+}
+
 int main(int argc, char* argv[])
 {
 
@@ -248,9 +302,7 @@ int main(int argc, char* argv[])
 		}
 
 		else if (strcmp(argv[1], "thread") == 0) enginet(HEURISTIC_AI, HEURISTIC_AI);
-
-		else if (strcmp(argv[1], "record") == 0) {}
-		else if (strcmp(argv[1], "play") == 0) {}
+		else if (strcmp(argv[1], "play") == 0) play();
 	}
 	return 0;
 }
@@ -281,6 +333,30 @@ void init_game(state::GameState* etat, int& player_1_type, int& player_2_type)
 	}
 }
 
+void play_json(Json::Value* json_commandes, engine::GameEngine* gameEngine)
+{
+	// Iterate over the sequence elements.
+	//json_commandes->size()
+	Json::Value& json_cmd = *json_commandes;
+
+	for (unsigned int index = 0; index < json_cmd["commandes"].size(); ++index)
+	{
+		Json::Value cmd = json_cmd["commandes"][index];
+		
+		state::sfEvents ev;
+		ev.ID = static_cast<sfEventsID>(cmd["sfEventsID"].asInt());
+		ev.mouse_position.increaseX( cmd["x"].asInt() );
+		ev.mouse_position.increaseY( cmd["y"].asInt() );
+
+		gameEngine->add_command(ev);
+		if (ev.ID == static_cast<sfEventsID>(100) || ev.ID == static_cast<sfEventsID>(101))
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		else
+			std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+		//std::cout << "ID/x/y: " << ev.ID << " " << ev.mouse_position.x << " " << ev.mouse_position.y << "\n";
+	}
+}
 
 /* le thread render/main aura une méthode class whatever pour afficher un menu dans renderwindow.
 Dans le menu on choisit le nombre de joueurs et de personnages + autres paramètres si besoin.

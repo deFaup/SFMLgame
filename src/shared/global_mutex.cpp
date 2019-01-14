@@ -9,6 +9,5 @@ namespace global
 	std::mutex get_engine;
 	//std::condition_variable get_engine_cv;
 
-	std::ofstream json_file;
 	Json::Value json_commandes;
 }

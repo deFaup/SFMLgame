@@ -15,7 +15,6 @@ namespace global
 
 	extern std::mutex get_engine;
 
-	extern std::ofstream json_file;
 	extern Json::Value json_commandes;
 }
 

@@ -20,20 +20,19 @@ void init_game(state::GameState* etat, int& player_1_type, int& player_2_type);
 
 void enginet(int player_1_type, int player_2_type)
 {
-
 	GameState etat;
 	GameEngine engine(&etat); std::thread thread_engine;
 	shared_ptr<server::Server> m_server = make_shared<server::Server>(&etat);
 
 	/* Linking the observer to each observable */
-	//in Characters::stats & position + Player + Map + GameState
+	//in Characters::stats & position + Player + GameState
 	etat.registerObserver(m_server);
-	etat.map.registerObserver(m_server);
 	cout << "main: observers listed\n" << endl;
 	
 	/* Init game */
 	init_game(&etat, player_1_type, player_2_type);
-	global::json_file.open(JSON_FILENAME);
+	std::ofstream json_out_file;
+	json_out_file.open(JSON_FILENAME);
 	engine.JSONActive = true;
 	
 	/* config AI */
@@ -81,11 +80,6 @@ void enginet(int player_1_type, int player_2_type)
 	if (ai_2)
 		thread_ai_2 = thread(&ai::DeepAI::workloop, ai_2);
 
-	//while (etat.ID != state::StateID::end)
-	//{
-	//	// AI are working in separate thread
-	//}
-
 	thread_engine.join();
 	cout << "engine thread closed\n";
 
@@ -95,8 +89,8 @@ void enginet(int player_1_type, int player_2_type)
 
 	/* Game is over */
 	engine.JSONActive = false;
-	global::json_file << global::json_commandes;
-	global::json_file.close();
+	json_out_file << global::json_commandes;
+	json_out_file.close();
 }
 
 int main(int argc, char* argv[])
