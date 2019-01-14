@@ -28,11 +28,14 @@ void AI::place_character(engine::GameEngine& moteur)
 	static bool aligned = false;
 	if (!aligned)
 	{
-		for (unsigned i = 0; i < ia_player->get_number_of_characters(); i++) // set them randomly accross the top of the map
+		for (unsigned i = 0; i < ia_player->get_number_of_characters(); i++) 
+		// set characters randomly accross the top of the map
 		{
-			int nb_aleatoire = rand() % width;
-			ia_player->get_character(i)->position.setPosition(nb_aleatoire, 0);
-		} aligned = true;
+			int nb_aleatoire = rand() % (width-10);
+			for (int j = 0; j < nb_aleatoire; j++)
+				moteur.add_command(state::sfEventsID::arrow_right);
+		} 
+		aligned = true;
 	}
 
 	// In this part we are going to move down each character one by one
@@ -59,12 +62,7 @@ void AI::place_character(engine::GameEngine& moteur)
 		std::cout << "ia placement finished begin\n";
 		next_player(moteur);
 		i = 0;
-		//moteur.set_updating(true);
-		//event with the line above it seems that the engine can execute the exec function and have no commands in its list so it sets engine to false
-		//while (moteur.updating) {}
 		std::cout << "ia placement finished end\n";
-
-		//moteur.add_command(sfEvents(space)); // now the game has started!
 	}
 }
 
