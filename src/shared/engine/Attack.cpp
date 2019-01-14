@@ -75,13 +75,13 @@ void Attack::execute(state::GameState& etat)
 
 			//std::cout << "character n: " << i << "\n"; i++;
 			//shared_ptr<Characters> cons_char = cons_player->get_character(i);
-			unsigned int positionX = cons_char->position.getPositionX();
-			unsigned int positionY = cons_char->position.getPositionY();
+			int positionX = cons_char->position.getPositionX();
+			int positionY = cons_char->position.getPositionY();
 
-			if(positionX <= (attack_position.getPositionX() + size_x/2) &&
-			   positionX >= (attack_position.getPositionX() - size_x/2) &&
-			   positionY <= (attack_position.getPositionY() + size_y/2) &&
-			   positionY >= (attack_position.getPositionY() - size_y/2))
+			if(positionX <= (((int)attack_position.getPositionX()) + size_x/2) &&
+			   positionX >= (((int)attack_position.getPositionX()) - size_x/2) &&
+			   positionY <= (((int)attack_position.getPositionY()) + size_y/2) &&
+			   positionY >= (((int)attack_position.getPositionY()) - size_y/2))
 			{	
 				// diminution du nombre de point de vie du personnage si l'attaque l'a atteinte
 

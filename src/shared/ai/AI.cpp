@@ -46,6 +46,7 @@ void AI::place_character(engine::GameEngine& moteur)
 
 	if (previous_position.getPositionY() == ia_player->get_current_character()->position.getPositionY())
 	{
+		global::rng.seed(global::dist6(global::rng));
 		int nb_aleatoire = global::dist6(global::rng);
 		for (int i = 0; i < nb_aleatoire; i++)
 			moteur.add_command(state::sfEventsID::arrow_right);
