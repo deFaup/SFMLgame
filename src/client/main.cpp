@@ -233,7 +233,7 @@ void play()
 	scene->characters.new_character_layer();
 
 	//laucnh engine thread
-	thread_engine = thread(&engine::GameEngine::workLoop, &engine);
+	//thread_engine = thread(&engine::GameEngine::workLoop, &engine);
 
 	// get commands from JSON
 	std::ifstream json_in_file;
@@ -259,7 +259,7 @@ void play()
 	}
 
 	thread_json.join();
-	thread_engine.join();
+	//thread_engine.join();
 	cout << "engine thread closed\n";
 }
 
@@ -351,12 +351,7 @@ void play_json(Json::Value* json_commandes, engine::GameEngine* gameEngine)
 		ev.mouse_position.increaseY( cmd["y"].asInt() );
 
 		gameEngine->add_command(ev);
-		if (ev.ID == static_cast<sfEventsID>(100) || ev.ID == static_cast<sfEventsID>(101))
-			std::this_thread::sleep_for(std::chrono::milliseconds(10));
-		else
-			std::this_thread::sleep_for(std::chrono::milliseconds(500));
-
-		//std::cout << "ID/x/y: " << ev.ID << " " << ev.mouse_position.x << " " << ev.mouse_position.y << "\n";
+		gameEngine->check_stateID();
 	}
 }
 
