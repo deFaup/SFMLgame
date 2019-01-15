@@ -78,10 +78,10 @@ void Attack::execute(state::GameState& etat)
 			int positionX = cons_char->position.getPositionX();
 			int positionY = cons_char->position.getPositionY();
 
-			if(positionX <= (((int)attack_position.getPositionX()) + size_x/2) &&
-			   positionX >= (((int)attack_position.getPositionX()) - size_x/2) &&
-			   positionY <= (((int)attack_position.getPositionY()) + size_y/2) &&
-			   positionY >= (((int)attack_position.getPositionY()) - size_y/2))
+			if(positionX <= (((int)attack_position.getPositionX()) + (int)size_x/2) &&
+			   positionX >= (((int)attack_position.getPositionX()) - (int)size_x/2) &&
+			   positionY <= (((int)attack_position.getPositionY()) + (int)size_y/2) &&
+			   positionY >= (((int)attack_position.getPositionY()) - (int)size_y/2))
 			{	
 				// diminution du nombre de point de vie du personnage si l'attaque l'a atteinte
 
