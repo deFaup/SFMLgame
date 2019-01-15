@@ -1,4 +1,4 @@
-# defaupdelavoypierre
+# defaupdelavoypierre http://localhost:8080/version
 Scholar project - IS
 
 For windows 64bits you need to :

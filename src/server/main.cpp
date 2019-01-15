@@ -22,7 +22,7 @@ void enginet(int player_1_type, int player_2_type)
 {
 	GameState etat;
 	GameEngine engine(&etat); std::thread thread_engine;
-	shared_ptr<server::Server> m_server = make_shared<server::Server>(&etat);
+	shared_ptr<server::GameServer> m_server = make_shared<server::GameServer>(&etat,&engine);
 
 	/* Linking the observer to each observable */
 	//in Characters::stats & position + Player + GameState

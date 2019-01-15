@@ -1,7 +1,7 @@
 /* Includes */
 #include <iostream>
 #include "define.hpp"
-#include "Server.h"
+#include "GameServer.h"
 
 #include "state.h"
 #include "engine.h"
@@ -10,16 +10,16 @@
 using namespace std;
 using namespace state;
 using namespace server;
-Server::Server() {}
-Server::~Server(){ std::cout << "Server deleted" << std::endl; }
+GameServer::GameServer() {}
+GameServer::~GameServer(){ std::cout << "Server deleted" << std::endl; }
 
 /* Server constructor share its reference to the GameState */
-Server::Server(state::GameState* gameState) : gameState(gameState)
+GameServer::GameServer(state::GameState* etat, engine::GameEngine* moteur) : etat(etat),moteur(moteur)
 {
 	std::cout << "Server created" << std::endl;
 }
 
-void Server::stateChanged(state::Event& event)
+void GameServer::stateChanged(state::Event& event)
 {	
 	if (event.hasChanged(state::EventID::Character_isDead))
 	{
@@ -48,7 +48,7 @@ void Server::stateChanged(state::Event& event)
 		//std::cout << "references to this character= " << temp.use_count() << endl; //5
 
 		// delete in GameState (vector characters)
-		gameState->delete_character(event_character->changed_character);
+		etat->delete_character(event_character->changed_character);
 		//std::cout << "references to this character= " << temp.use_count() << endl; //4
 
 		//std::cout << "Server::stateChanged character: END\n";
@@ -76,7 +76,7 @@ void Server::stateChanged(state::Event& event)
 		//std::cout << "references to this character= " << temp.use_count() << endl; //2 or 3
 
 		// in this part we delete all shared ptr to the dead player
-		gameState->delete_player(player);
+		etat->delete_player(player);
 		//std::cout << "Server::stateChanged Player: END\n";
 	}
 }
