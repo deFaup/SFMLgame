@@ -1,11 +1,9 @@
 #include "define.hpp"
 #include "global_mutex.hpp"
 
-#include "AI.h"
+#include "ai.h"
 #include "engine.h"
 
-#include <cstdlib>
-#include <ctime>
 #include <iostream>
 
 // threads, thread::sleep_for
@@ -23,17 +21,16 @@ void AI::place_character(engine::GameEngine& moteur)
 
 	int width(0), height(0);
 	moteur.etat->map.get_dimensions(width, height);
-	srand(time(NULL));
 
-	static bool aligned = false;
-	if (!aligned)
-	{
-		for (unsigned i = 0; i < ia_player->get_number_of_characters(); i++) // set them randomly accross the top of the map
-		{
-			int nb_aleatoire = rand() % width;
-			ia_player->get_character(i)->position.setPosition(nb_aleatoire, 0);
-		} aligned = true;
-	}
+	//static bool aligned = false;
+	//if (!aligned)
+	//{
+	//	for (unsigned i = 0; i < ia_player->get_number_of_characters(); i++) // set them randomly accross the top of the map
+	//	{
+	//		int nb_aleatoire = rand() % width;
+	//		ia_player->get_character(i)->position.setPosition(nb_aleatoire, 0);
+	//	} aligned = true;
+	//}
 
 	// In this part we are going to move down each character one by one
 	static state::Position previous_position; static unsigned int i = 0;
@@ -49,8 +46,15 @@ void AI::place_character(engine::GameEngine& moteur)
 
 	if (previous_position.getPositionY() == ia_player->get_current_character()->position.getPositionY())
 	{
+		global::rng.seed(global::dist6(global::rng));
+		int nb_aleatoire = global::dist6(global::rng);
+		for (int i = 0; i < nb_aleatoire; i++)
+			moteur.add_command(state::sfEventsID::arrow_right);
+		//moteur.executeCommandes();
+
 		state::sfEvents change_character(state::sfEventsID::arrow_up);
 		moteur.add_command(change_character);
+		moteur.executeCommandes();
 		i++;
 	}
 
@@ -59,12 +63,7 @@ void AI::place_character(engine::GameEngine& moteur)
 		std::cout << "ia placement finished begin\n";
 		next_player(moteur);
 		i = 0;
-		//moteur.set_updating(true);
-		//event with the line above it seems that the engine can execute the exec function and have no commands in its list so it sets engine to false
-		//while (moteur.updating) {}
 		std::cout << "ia placement finished end\n";
-
-		//moteur.add_command(sfEvents(space)); // now the game has started!
 	}
 }
 

@@ -30,9 +30,9 @@ void GameEngine::check_stateID()
 		for (auto characters_in_game : etat->get_characters())
 		{
 			characters_in_game->position.setPosition(i, 0);
-			int width(0), height(0);
-			etat->map.get_dimensions(width, height);
-			i += 200 % width;
+			//int width(0), height(0);
+			//etat->map.get_dimensions(width, height);
+			//i += 200 % width;
 		}
 
 		etat->ID = team_placement;
