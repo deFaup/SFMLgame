@@ -67,10 +67,17 @@ if(SFML_FOUND)
 endif()
 
 # libmicrohttpd
+if(WIN32)
+#set(MHD_LIBRARY "${PROJECT_SOURCE_DIR}/extern/libmicrohttpd.a")
+# libmicrohttpd
+include_directories ("${PROJECT_SOURCE_DIR}/extern/libmicrohttpd/include")
+target_link_libraries(server "${PROJECT_SOURCE_DIR}/extern/libmicrohttpd/lib/libmicrohttpd.dll.a")
+
+else(WIN32)
 find_library(
 	MHD_LIBRARY
 	NAMES microhttpd microhttpd-10 libmicrohttpd libmicrohttpd-dll
 	DOC "microhttpd library"
 )
 target_link_libraries(server ${MHD_LIBRARY})
-
+endif(WIN32)
