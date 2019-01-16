@@ -28,11 +28,20 @@ HttpStatus TeamFormationService::post (const string& url, const Json::Value& in)
 	{
 		//url = "/TeamFormationService/player";
 		if (url.find("/player", pattern.size()) == pattern.size())
-			players->addPlayer(in);
+		{
+			if (players->addPlayer(in) != 0)
+			{
+				return HttpStatus::BAD_REQUEST;
+			}
+		}
 		
 		//url = "/TeamFormationService/character"
 		if (url.find("/character", pattern.size()) == pattern.size())
 			players->addCharacter(in);
+
+		//url = "/TeamFormationService/delete_player";
+		if (url.find("/delete_player", pattern.size()) == pattern.size())
+			players->deletePlayer(in);
 	}
 
 	return HttpStatus::OK;

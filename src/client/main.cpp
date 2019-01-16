@@ -33,6 +33,8 @@ void testSFML() {
 
 void init_game(state::GameState* etat, int& player_1_type, int& player_2_type);
 void play_json(Json::Value* json_commandes, engine::GameEngine* gameEngine);
+sf::Http::Response::Status send(sf::Http& client, sf::Http::Request::Method type, const std::string& uri, Json::Value& request_body);
+void connect_client(std::string name_client);
 
 void enginet(int player_1_type, int player_2_type)
 {
@@ -198,7 +200,7 @@ void play()
 	cout << "engine thread closed\n";
 }
 
-int main_render(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
 
 	if (argc == 2)
@@ -238,6 +240,11 @@ int main_render(int argc, char* argv[])
 
 		else if (strcmp(argv[1], "thread") == 0) enginet(HEURISTIC_AI, HEURISTIC_AI);
 		else if (strcmp(argv[1], "play") == 0) play();
+		else if (strcmp(argv[1], "network") == 0)
+		{
+			std::string player1("Joeur 1");
+			thread(connect_client, player1);
+		}
 	}
 	return 0;
 }
@@ -290,42 +297,7 @@ void play_json(Json::Value* json_commandes, engine::GameEngine* gameEngine)
 	}
 }
 
-/* le thread render/main aura une méthode class whatever pour afficher un menu dans renderwindow.
-Dans le menu on choisit le nombre de joueurs et de personnages + autres paramètres si besoin.
-Ensuite tous ces paramètres sont transmis au gameEngine qui va ensuite modifier le state.
-Seul le moteur peut modifier l'état pour que cela marche en mode réseau.
-La méthode menu sera appelé par l'engine au premier call de check state ID
-*/
-void send(sf::Http& client, sf::Http::Request::Method type, const std::string& uri, Json::Value& request_body);
-int main()
-{
-	/* Test for client server connexion */
-
-	// Create a new HTTP client
-	sf::Http http("http://localhost", 8080);
-	
-	// send requests
-	Json::Value request_body;
-
-	request_body["name"] = "Joueur 1"; request_body["character"] = 100;
-	send(http, sf::Http::Request::Post, "/TeamFormationService/player", request_body);
-	send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
-	send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
-	send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
-
-	request_body["name"] = "Joueur 2"; request_body["character"] = 200;
-	send(http, sf::Http::Request::Post, "/TeamFormationService/player", request_body);
-	send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
-	send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
-	send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
-
-	send(http, sf::Http::Request::Get, "/TeamFormationService", request_body);
-	send(http, sf::Http::Request::Get, "/version", request_body);
-
-
-}
-
-void send(sf::Http& client, sf::Http::Request::Method type, const std::string& uri, Json::Value& request_body)
+sf::Http::Response::Status send(sf::Http& client, sf::Http::Request::Method type, const std::string& uri, Json::Value& request_body)
 {
 	sf::Http::Request request;
 	request.setMethod(type);
@@ -347,4 +319,51 @@ void send(sf::Http& client, sf::Http::Request::Method type, const std::string& u
 	std::cout << "\nresopnse get field body: " << response.getField("Content-Type") << std::endl;
 	std::cout << "response body: " << response.getBody() << std::endl;
 	std::cout << "response status: " << response.getStatus() << std::endl;
+
+	return response.getStatus();
 }
+
+void connect_client(std::string name_client)
+{
+	// Create a new HTTP client
+	sf::Http http("http://localhost", 8080);
+
+	// send requests
+	Json::Value request_body;
+	
+	request_body["name"] = name_client; request_body["character"] = 100;
+	if (send(http, sf::Http::Request::Post, "/TeamFormationService/player", request_body) ==
+		sf::Http::Response::Status::Ok)
+	{
+		send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
+		send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
+		send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
+
+		// all went well: show player DB
+		send(http, sf::Http::Request::Get, "/TeamFormationService", request_body);
+
+		// delete player name from PlayerDB
+		cout << "Pressez <entrée> pour continuer (supprimer votre joueur du serveur)\n" << endl;
+		cout << "Press Enter to Continue";
+		cin.ignore();
+		send(http, sf::Http::Request::Post, "/TeamFormationService/delete_player", request_body);
+		request_body["name"] = "Joueur 1"; request_body["character"] = 100;
+
+		// show PlayerDB
+		send(http, sf::Http::Request::Get, "/TeamFormationService", request_body);
+	}
+	else
+	{
+		//request_body["name"] = name_client + "BEST_PFE";
+		//send(http, sf::Http::Request::Post, "/TeamFormationService/player", request_body);
+	}
+}
+
+/* le thread render/main aura une méthode class whatever pour afficher un menu dans renderwindow.
+Dans le menu on choisit le nombre de joueurs et de personnages + autres paramètres si besoin.
+Ensuite tous ces paramètres sont transmis au gameEngine qui va ensuite modifier le state.
+Seul le moteur peut modifier l'état pour que cela marche en mode réseau.
+La méthode menu sera appelé par l'engine au premier call de check state ID
+*/
+
+

@@ -68,7 +68,7 @@
         <dia:point val="-15.625,2.01899"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="-15.675,0.968991;66.025,34.669"/>
+        <dia:rectangle val="-15.675,0.96899;66.025,34.669"/>
       </dia:attribute>
       <dia:attribute name="meta">
         <dia:composite type="dict"/>
@@ -2780,13 +2780,13 @@
         <dia:point val="43.8266,13.9816"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="43.7766,13.9316;63.2416,20.8316"/>
+        <dia:rectangle val="43.7766,13.9316;64.3966,20.8316"/>
       </dia:attribute>
       <dia:attribute name="elem_corner">
         <dia:point val="43.8266,13.9816"/>
       </dia:attribute>
       <dia:attribute name="elem_width">
-        <dia:real val="19.365000000000002"/>
+        <dia:real val="20.52"/>
       </dia:attribute>
       <dia:attribute name="elem_height">
         <dia:real val="6.7999999999999998"/>
@@ -2918,7 +2918,7 @@
             <dia:string>##</dia:string>
           </dia:attribute>
           <dia:attribute name="type">
-            <dia:string>#void#</dia:string>
+            <dia:string>#int#</dia:string>
           </dia:attribute>
           <dia:attribute name="visibility">
             <dia:enum val="0"/>
@@ -3040,7 +3040,7 @@
                 <dia:string>#player#</dia:string>
               </dia:attribute>
               <dia:attribute name="type">
-                <dia:string>#Json::Value&amp;#</dia:string>
+                <dia:string>#const Json::Value&amp;#</dia:string>
               </dia:attribute>
               <dia:attribute name="value">
                 <dia:string>##</dia:string>
@@ -3088,7 +3088,7 @@
                 <dia:string>#character#</dia:string>
               </dia:attribute>
               <dia:attribute name="type">
-                <dia:string>#Json::Value&amp;#</dia:string>
+                <dia:string>#const Json::Value&amp;#</dia:string>
               </dia:attribute>
               <dia:attribute name="value">
                 <dia:string>##</dia:string>
@@ -3433,7 +3433,7 @@
         <dia:point val="43.8091,22.896"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="42.9591,20.664;53.5591,22.946"/>
+        <dia:rectangle val="42.9591,20.664;54.1366,22.946"/>
       </dia:attribute>
       <dia:attribute name="meta">
         <dia:composite type="dict"/>
@@ -3441,8 +3441,8 @@
       <dia:attribute name="orth_points">
         <dia:point val="43.8091,22.896"/>
         <dia:point val="43.8091,21.464"/>
-        <dia:point val="53.5091,21.464"/>
-        <dia:point val="53.5091,20.832"/>
+        <dia:point val="54.0866,21.464"/>
+        <dia:point val="54.0866,20.832"/>
       </dia:attribute>
       <dia:attribute name="orth_orient">
         <dia:enum val="1"/>
