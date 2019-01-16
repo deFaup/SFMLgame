@@ -128,25 +128,107 @@ main_handler (void *cls,
 }
 
 
+int server_listen(uint16_t port = 8080);
 void init_game(state::GameState* etat, int& player_1_type, int& player_2_type);
+void enginet(int player_1_type, int player_2_type);
+
+int main(int argc, char* argv[])
+{
+
+	if (argc == 2)
+	{
+		if (strcmp(argv[1], "record") == 0)
+			enginet(HEURISTIC_AI, HEURISTIC_AI);
+
+		else if (strcmp(argv[1], "listen") == 0)
+			return (server_listen());
+	}
+	else if (argc == 3 && (strcmp(argv[1], "listen") == 0))
+		return (server_listen(atoi(argv[2])));
+
+    return 0;
+}
+
+int server_listen(uint16_t port)
+{
+	try {
+		ServicesManager servicesManager;
+
+		std::unique_ptr<server::AbstractService> team_service = std::make_unique<TeamFormationService>();
+		servicesManager.registerService(std::move(team_service));
+
+		std::unique_ptr<server::AbstractService> game_service = std::make_unique<GameStartedService>();
+		servicesManager.registerService(std::move(game_service));
+
+		struct MHD_Daemon *d;
+
+		d = MHD_start_daemon(// MHD_USE_SELECT_INTERNALLY | MHD_USE_DEBUG | MHD_USE_POLL,
+			MHD_USE_SELECT_INTERNALLY | MHD_USE_DEBUG,
+			// MHD_USE_THREAD_PER_CONNECTION | MHD_USE_DEBUG | MHD_USE_POLL,
+			// MHD_USE_THREAD_PER_CONNECTION | MHD_USE_DEBUG,
+			port,
+			NULL, NULL,
+			&main_handler, (void*)&servicesManager,
+			MHD_OPTION_NOTIFY_COMPLETED, request_completed, NULL,
+			MHD_OPTION_END);
+		if (d == NULL)
+			return 1;
+		cout << "Pressez <entrée> pour arrêter le serveur" << endl;
+		(void)getc(stdin);
+		MHD_stop_daemon(d);
+	}
+	catch (exception& e) {
+		cerr << "Exception: " << e.what() << endl;
+	}
+
+	return 0;
+}
+
+/* Init the game with two players: player can be AI or real */
+void init_game(state::GameState* etat, int& player_1_type, int& player_2_type)
+{
+	global::rng.seed(std::random_device()());
+
+	/* Create players, characters and a map. Will be rewritten when menu is implemented */
+	if (etat->ID == not_started)
+	{
+		etat->new_map(3000, 2000);
+
+		if (player_1_type == REAL) etat->new_player("Joueur 1");
+		else etat->new_player(AI_1);
+
+		if (player_2_type == REAL) etat->new_player("Joueur 2");
+		else etat->new_player(AI_2);
+
+		etat->new_character(0, vegeta);
+		etat->new_character(0, vegeta);
+		etat->new_character(0, vegeta);
+
+		etat->new_character(1, goku);
+		etat->new_character(1, goku);
+		etat->new_character(1, goku);
+
+		etat->ID = team_selected;
+	}
+}
 
 void enginet(int player_1_type, int player_2_type)
 {
 	GameState etat;
 	GameEngine engine(&etat); std::thread thread_engine;
-	shared_ptr<server::GameServer> m_server = make_shared<server::GameServer>(&etat,&engine);
+	shared_ptr<server::GameServer> m_server = make_shared<server::GameServer>(&etat, &engine);
 
 	/* Linking the observer to each observable */
 	//in Characters::stats & position + Player + GameState
 	etat.registerObserver(m_server);
 	cout << "main: observers listed\n" << endl;
-	
+
 	/* Init game */
 	init_game(&etat, player_1_type, player_2_type);
 	std::ofstream json_out_file;
 	json_out_file.open(JSON_FILENAME);
 	engine.JSONActive = true;
-	
+
 	/* config AI */
 	shared_ptr<AI> ai_1(0); std::thread thread_ai_1;
 	shared_ptr<AI> ai_2(0); std::thread thread_ai_2;
@@ -188,7 +270,7 @@ void enginet(int player_1_type, int player_2_type)
 
 	thread_engine = thread(&engine::GameEngine::workLoop, &engine);
 	if (ai_1)
-		thread_ai_1 = thread(&ai::DeepAI::workloop, ai_1);	
+		thread_ai_1 = thread(&ai::DeepAI::workloop, ai_1);
 	if (ai_2)
 		thread_ai_2 = thread(&ai::DeepAI::workloop, ai_2);
 
@@ -204,78 +286,3 @@ void enginet(int player_1_type, int player_2_type)
 	json_out_file << global::json_commandes;
 	json_out_file.close();
 }
-
-int main(int argc, char* argv[])
-{
-
-	if (argc == 2)
-	{
-		if (strcmp(argv[1], "record") == 0)
-		{
-			enginet(HEURISTIC_AI, HEURISTIC_AI);
-			return 0;
-		}
-	}
-	try {
-		ServicesManager servicesManager;
-
-		std::unique_ptr<server::AbstractService> team_service = std::make_unique<TeamFormationService>();
-		servicesManager.registerService(std::move(team_service));
-  
-		std::unique_ptr<server::AbstractService> game_service = std::make_unique<GameStartedService>();
-		servicesManager.registerService(std::move(game_service));
-
-		struct MHD_Daemon *d;
-        if (argc != 2) {
-            printf("%s PORT\n", argv[0]);
-            return 1;
-        }
-        d = MHD_start_daemon(// MHD_USE_SELECT_INTERNALLY | MHD_USE_DEBUG | MHD_USE_POLL,
-                MHD_USE_SELECT_INTERNALLY | MHD_USE_DEBUG,
-                // MHD_USE_THREAD_PER_CONNECTION | MHD_USE_DEBUG | MHD_USE_POLL,
-                // MHD_USE_THREAD_PER_CONNECTION | MHD_USE_DEBUG,
-                atoi(argv[1]),
-                NULL, NULL, 
-                &main_handler, (void*) &servicesManager,
-                MHD_OPTION_NOTIFY_COMPLETED, request_completed, NULL,
-                MHD_OPTION_END);
-        if (d == NULL)
-            return 1;
-        cout << "Pressez <entrée> pour arrêter le serveur" << endl;
-        (void) getc(stdin);
-        MHD_stop_daemon(d);
-    }
-    catch(exception& e) {
-        cerr << "Exception: " << e.what() << endl;
-    }
-    return 0;
-}
-
-/* Init the game with two players: player can be AI or real */
-void init_game(state::GameState* etat, int& player_1_type, int& player_2_type)
-{
-	global::rng.seed(std::random_device()());
-
-	/* Create players, characters and a map. Will be rewritten when menu is implemented */
-	if (etat->ID == not_started)
-	{
-		etat->new_map(3000, 2000);
-
-		if (player_1_type == REAL) etat->new_player("Joueur 1");
-		else etat->new_player(AI_1);
-		
-		if (player_2_type == REAL) etat->new_player("Joueur 2");
-		else etat->new_player(AI_2);
-
-		etat->new_character(0, vegeta);
-		etat->new_character(0, vegeta);
-		etat->new_character(0, vegeta);
-
-		etat->new_character(1, goku);
-		etat->new_character(1, goku);
-		etat->new_character(1, goku);
-		
-		etat->ID = team_selected;
-	}
-}
-
