@@ -55,10 +55,8 @@ HttpStatus ServicesManager::queryService (string& out, const string& in, const s
 		Json::Value json_in;
 		if (!jsonReader.parse(in, json_in))
 			throw ServiceException(HttpStatus::BAD_REQUEST, "Données invalides: " + jsonReader.getFormattedErrorMessages());
-		std::cout << json_in << endl;
-		// le serveur plante à partir d'ici avec ou sans la ligne suivante
+
 		status = service->post(url, json_in);
-		//status = HttpStatus::OK;
 	}
 	else if (method == "PUT")
 	{
@@ -67,23 +65,13 @@ HttpStatus ServicesManager::queryService (string& out, const string& in, const s
 
 		status = service->put(json_out, json_in);
 	}
-	// autres méthodes?
 	else
 	{
-		throw ServiceException(HttpStatus::NOT_IMPLEMENTED, "bravo tu t'est");
+		throw ServiceException(HttpStatus::NOT_IMPLEMENTED, "HTML request unknown to Service Manager\n");
 		return(BAD_REQUEST);
 	}
 
 	return status;
-	//if(url == "/version" && method == "GET")
-	//{
-	//	Json::Value version;
-	//	version["major"] = 1;
-	//	version["minor"] = 0;
-	//	string fin = version.toStyledString();
-	//	out = fin;
-	//}
-
 }
 
 

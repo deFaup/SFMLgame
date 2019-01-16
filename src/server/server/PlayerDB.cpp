@@ -1,4 +1,5 @@
 #include "PlayerDB.h"
+#include <iostream>
 
 using namespace server;
 //using namespace std;
@@ -30,17 +31,18 @@ using namespace server;
 
 PlayerDB::PlayerDB() {}
 
-void PlayerDB::addPlayer(Json::Value& player)
+void PlayerDB::addPlayer(const Json::Value& player)
 {
 	/* player is json like this one*/
 	//{
 	//	"name" : "Joueur 2"
 	//}
-	JSONfile[player["name"].asString()] = JSONfile.size();
-	JSONfile["team"][JSONfile["team"].size()]["name"] = player["name"].asString();
+
+	JSONfile["players"] [player["name"].asString()] = JSONfile["players"].size();
+	JSONfile["team"] [JSONfile["team"].size()]["name"] = player["name"].asString();
 }
 
-void PlayerDB::addCharacter(Json::Value& character) 
+void PlayerDB::addCharacter(const Json::Value& character) 
 {
 	/* player is json like this one*/
 	//{
@@ -48,7 +50,7 @@ void PlayerDB::addCharacter(Json::Value& character)
 	//	"character" : "103"
 	//}
 
-	int index_player = JSONfile[character["name"].asString()].asInt();
+	int index_player = JSONfile["players"] [character["name"].asString()].asInt();
 	JSONfile["team"][index_player]["characters"][JSONfile["team"][index_player]["characters"].size()]
 		= character["character"].asInt();
 };

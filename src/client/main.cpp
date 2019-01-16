@@ -296,49 +296,55 @@ Ensuite tous ces paramètres sont transmis au gameEngine qui va ensuite modifier
 Seul le moteur peut modifier l'état pour que cela marche en mode réseau.
 La méthode menu sera appelé par l'engine au premier call de check state ID
 */
-void send(sf::Http& client, sf::Http::Request& request, sf::Http::Request::Method type, const std::string& uri);
+void send(sf::Http& client, sf::Http::Request::Method type, const std::string& uri, Json::Value& request_body);
 int main()
 {
 	/* Test for client server connexion */
 
 	// Create a new HTTP client
-	sf::Http http;
-
-	// setHost
-	http.setHost("http://localhost", 8080);
-
-	// Prepare a request
-	sf::Http::Request request;
+	sf::Http http("http://localhost", 8080);
 	
-	send(http, request, sf::Http::Request::Post, "/TeamFormationService/player");
-	//send(http, request, sf::Http::Request::Get, "/version");
+	// send requests
+	Json::Value request_body;
+
+	request_body["name"] = "Joueur 1"; request_body["character"] = 100;
+	send(http, sf::Http::Request::Post, "/TeamFormationService/player", request_body);
+	send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
+	send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
+	send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
+
+	request_body["name"] = "Joueur 2"; request_body["character"] = 200;
+	send(http, sf::Http::Request::Post, "/TeamFormationService/player", request_body);
+	send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
+	send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
+	send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
+
+	send(http, sf::Http::Request::Get, "/TeamFormationService", request_body);
+	send(http, sf::Http::Request::Get, "/version", request_body);
 
 
 }
 
-void send(sf::Http& client, sf::Http::Request& request, sf::Http::Request::Method type, const std::string& uri)
+void send(sf::Http& client, sf::Http::Request::Method type, const std::string& uri, Json::Value& request_body)
 {
+	sf::Http::Request request;
 	request.setMethod(type);
 	request.setUri(uri);
 	request.setHttpVersion(1, 1);
 	if (type == sf::Http::Request::Post)
 	{
-		Json::Value request_body;
-		request_body["name"] = "Arnaud";
 		std::string temp = request_body.toStyledString();
 		request.setBody(temp);
 	}
-	request.setField("Content-Type", "application/x-www-form-urlencoded");
-
+	else
+	{
+		//request.setField("Content-Type", "application/x-www-form-urlencoded");
+	}
 	// Send the request
 	sf::Http::Response response = client.sendRequest(request);
 
-	// Check the status code and display the result
-	sf::Http::Response::Status status = response.getStatus();
-
-	if (status == sf::Http::Response::Ok)
-	{
-		std::cout << response.getBody() << std::endl;
-	}
-	else { std::cout << "Error " << status << std::endl; }
+	// Check the status code and display the result	
+	std::cout << "\nresopnse get field body: " << response.getField("Content-Type") << std::endl;
+	std::cout << "response body: " << response.getBody() << std::endl;
+	std::cout << "response status: " << response.getStatus() << std::endl;
 }

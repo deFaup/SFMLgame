@@ -17,7 +17,6 @@ TeamFormationService::~TeamFormationService()
 // get Team Formation
 HttpStatus TeamFormationService::get (const string& url, Json::Value& out) const
 {
-	players->JSONfile["trol"] = "lol";
 	out = players->JSONfile;
 	return HttpStatus::OK;
 }
@@ -25,17 +24,16 @@ HttpStatus TeamFormationService::get (const string& url, Json::Value& out) const
 // Insert new player in PlayerDB
 HttpStatus TeamFormationService::post (const string& url, const Json::Value& in)
 {
-	std::cout << "post method" << url <<  "\n";
-
 	if (url[pattern.size()] == '/')
 	{
-		//url = /TeamFormationService/player
-		//if (url.find("/player", pattern.size()) != -1)
-			//players->addPlayer(in);
+		//url = "/TeamFormationService/player";
+		if (url.find("/player", pattern.size()) == pattern.size())
+			players->addPlayer(in);
 		
-		//url = /TeamFormationService/character
-		//if (url.find("/character", pattern.size()) != -1)
-			//players->addCharacter(in);
+		//url = "/TeamFormationService/character"
+		if (url.find("/character", pattern.size()) == pattern.size())
+			players->addCharacter(in);
 	}
+
 	return HttpStatus::OK;
 }
