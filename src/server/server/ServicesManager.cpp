@@ -51,8 +51,14 @@ HttpStatus ServicesManager::queryService (string& out, const string& in, const s
 	}
 	else if (method == "POST")
 	{
+		Json::Reader jsonReader;
 		Json::Value json_in;
+		if (!jsonReader.parse(in, json_in))
+			throw ServiceException(HttpStatus::BAD_REQUEST, "Données invalides: " + jsonReader.getFormattedErrorMessages());
+		std::cout << json_in << endl;
+		// le serveur plante à partir d'ici avec ou sans la ligne suivante
 		status = service->post(url, json_in);
+		status = HttpStatus::OK;
 	}
 	else if (method == "PUT")
 	{

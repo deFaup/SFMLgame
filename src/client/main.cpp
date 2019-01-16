@@ -309,7 +309,7 @@ int main()
 
 	// Prepare a request
 	sf::Http::Request request;
-	//Json::Value request_body;
+	
 	send(http, request, sf::Http::Request::Post, "/TeamFormationService/player");
 	send(http, request, sf::Http::Request::Get, "/version");
 
@@ -323,9 +323,13 @@ void send(sf::Http& client, sf::Http::Request& request, sf::Http::Request::Metho
 	request.setHttpVersion(1, 1);
 	if (type == sf::Http::Request::Post)
 	{
-		request.setField("Content-Type", "application/x-www-form-urlencoded");
-		request.setBody("Arnaud");
+		Json::Value request_body;
+		request_body["name"] = "Arnaud";
+		std::string temp = request_body.toStyledString();
+		request.setBody(temp);
 	}
+	request.setField("Content-Type", "application/x-www-form-urlencoded");
+
 	// Send the request
 	sf::Http::Response response = client.sendRequest(request);
 
