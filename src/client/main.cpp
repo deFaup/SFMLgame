@@ -311,7 +311,7 @@ int main()
 	sf::Http::Request request;
 	
 	send(http, request, sf::Http::Request::Post, "/TeamFormationService/player");
-	send(http, request, sf::Http::Request::Get, "/version");
+	//send(http, request, sf::Http::Request::Get, "/version");
 
 
 }

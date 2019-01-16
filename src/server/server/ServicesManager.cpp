@@ -58,7 +58,7 @@ HttpStatus ServicesManager::queryService (string& out, const string& in, const s
 		std::cout << json_in << endl;
 		// le serveur plante à partir d'ici avec ou sans la ligne suivante
 		status = service->post(url, json_in);
-		status = HttpStatus::OK;
+		//status = HttpStatus::OK;
 	}
 	else if (method == "PUT")
 	{
@@ -70,7 +70,7 @@ HttpStatus ServicesManager::queryService (string& out, const string& in, const s
 	// autres méthodes?
 	else
 	{
-		throw ServiceException(HttpStatus::NOT_IMPLEMENTED, "Non implanté mais t'est quand même arrivé là");
+		throw ServiceException(HttpStatus::NOT_IMPLEMENTED, "bravo tu t'est");
 		return(BAD_REQUEST);
 	}
 

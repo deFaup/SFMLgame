@@ -23,19 +23,19 @@ HttpStatus TeamFormationService::get (const string& url, Json::Value& out) const
 }
 
 // Insert new player in PlayerDB
-HttpStatus TeamFormationService::post (const string& url, Json::Value& in)
+HttpStatus TeamFormationService::post (const string& url, const Json::Value& in)
 {
 	std::cout << "post method" << url <<  "\n";
 
 	if (url[pattern.size()] == '/')
 	{
 		//url = /TeamFormationService/player
-		if (url.find("/player", pattern.size()) != -1)
-			players->addPlayer(in);
+		//if (url.find("/player", pattern.size()) != -1)
+			//players->addPlayer(in);
 		
 		//url = /TeamFormationService/character
-		if (url.find("/character", pattern.size()) != -1)
-			players->addCharacter(in);
+		//if (url.find("/character", pattern.size()) != -1)
+			//players->addCharacter(in);
 	}
 	return HttpStatus::OK;
 }
