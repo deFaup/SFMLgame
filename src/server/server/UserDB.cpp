@@ -6,12 +6,11 @@
  */
 
 #include "UserDB.hpp"
+#include <string>
 
 using namespace server;
 
-UserDB::UserDB(){
-    
-}
+UserDB::UserDB() {}
 
 /*const User* UserDB::getUser (int id) const {
     auto ite = users.find(id);

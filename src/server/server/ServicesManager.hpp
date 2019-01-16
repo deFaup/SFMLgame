@@ -18,6 +18,9 @@ using std::vector;
 using std::unique_ptr;
 
 #include "ServicesManager.h"
+#include "TeamFormationService.h"
+#include "GameStartedService.h"
+
 
 #endif
 

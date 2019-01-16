@@ -217,9 +217,15 @@ int main(int argc, char* argv[])
 		}
 	}
 	try {
-        ServicesManager servicesManager;
+		ServicesManager servicesManager;
 
-        struct MHD_Daemon *d;
+		std::unique_ptr<server::AbstractService> team_service = std::make_unique<TeamFormationService>();
+		servicesManager.registerService(std::move(team_service));
+  
+		std::unique_ptr<server::AbstractService> game_service = std::make_unique<GameStartedService>();
+		servicesManager.registerService(std::move(game_service));
+
+		struct MHD_Daemon *d;
         if (argc != 2) {
             printf("%s PORT\n", argv[0]);
             return 1;
