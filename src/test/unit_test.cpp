@@ -198,3 +198,68 @@ cout << "\nNous avons au total " << joueur.get_number_of_characters() << " perso
 
 cout << "\nFin du test de Player" << endl << endl;
 }*/
+
+/* Test de la classe GameState */
+void testGameState() {
+
+	cout << "\n\nTest de la classe GameState" << endl;
+	GameState etat;
+
+	cout << "\nCreation d'une carte de jeu 800x600." << endl;
+	etat.new_map(800, 600);
+
+	cout << "\n\nVerification du nombre de joueurs max: 5\n" << endl;
+
+	string name_player("");
+	for (int i = 0; i< 7; i++)
+	{
+		cout << "\tAjout d'un joueur au jeu" << endl;
+		name_player = "player " + to_string(i + 1);
+		etat.new_player(name_player);
+		cout << "\tNombre de joueur enregistre = " << etat.get_number_of_player() << endl;
+	}
+
+	cout << "\nNous avons donc " << etat.get_number_of_player() << " joueurs dans l'etat de jeu" << endl;
+	cout << "Ajoutons un personnages a player 1." << endl;
+	/* En utilisant new_character */
+	etat.get_player(0)->new_character(vegeta);
+
+	//cout << "\nAjoutons un personnages a player 2.\n" << endl;
+	/* En utilisant add_character */
+	//shared_ptr<Characters> player2_char1 = make_shared<Characters>(default_value);
+	//etat.get_player(1)->add_character(player2_char1);
+
+	cout << "\nFin du test de la classe GameState" << endl;
+
+}
+
+/*************************************************************/
+/*--------- Unit tests for the package render ---------------*/
+/*************************************************************/
+
+/*void render_state()
+{
+GameState etat;
+etat.new_map(3000, 2000);
+
+etat.new_player("Joueur 1");
+cout << "nombre de joueurs: " << etat.get_number_of_player() << endl;
+
+etat.new_character(0, goku);
+etat.get_player(0)->get_character(0)->position.setPosition(200, 200);
+cout << "nombre de personnages du joueur 0: " << etat.get_player(0)->get_number_of_characters() << endl;
+
+
+etat.new_player("Joueur 2");
+cout << "\nnombre de joueurs: " << etat.get_number_of_player() << endl;
+
+etat.new_character(1, vegeta);
+cout << "nombre de personnages du joueur 1: " << etat.get_player(1)->get_number_of_characters() << endl;
+etat.get_player(1)->get_character(0)->position.setPosition(400, 400);
+
+cout << "\nnombre de personnages: " << etat.characters.size() << endl;
+
+Scene scene(etat, etat.get_map());	//etat.get_map(); is not the problem scene is
+scene.draw();
+}
+*/

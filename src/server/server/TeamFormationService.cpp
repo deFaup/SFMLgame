@@ -6,25 +6,36 @@ using namespace std;
 
 TeamFormationService::TeamFormationService()
 {
-	server::AbstractService::pattern = "version";
+	players = std::make_unique<PlayerDB>();
+	server::AbstractService::pattern = "/TeamFormationService";
 }
 
 TeamFormationService::~TeamFormationService()
 {
 }
 
-HttpStatus TeamFormationService::get (Json::Value& out) const
+// get Team Formation
+HttpStatus TeamFormationService::get (const string& url, Json::Value& out) const
 {
-	std::cout << "test " << out << "\n";
-
-	out["major"] = 1;
-	out["minor"] = 0;
-	std::cout << "test "<< out << "\n";
+	players->JSONfile["trol"] = "lol";
+	out = players->JSONfile;
 	return HttpStatus::OK;
 }
 
-HttpStatus TeamFormationService::post (Json::Value& in)
+// Insert new player in PlayerDB
+HttpStatus TeamFormationService::post (const string& url, Json::Value& in)
 {
+	std::cout << "post method" << url <<  "\n";
 
+	if (url[pattern.size()] == '/')
+	{
+		//url = /TeamFormationService/player
+		if (url.find("/player", pattern.size()) != -1)
+			players->addPlayer(in);
+		
+		//url = /TeamFormationService/character
+		if (url.find("/character", pattern.size()) != -1)
+			players->addCharacter(in);
+	}
 	return HttpStatus::OK;
 }

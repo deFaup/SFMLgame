@@ -19,11 +19,15 @@ AbstractService* ServicesManager::findService(const string& url) const
 	for (auto& service : services) 
 	{
 		const string& pattern(service->getPattern());
-		if (url.find(pattern) != 0) // we found the pattern
+
+		if (url.find(pattern) == 0) //if we find the pattern at position 1 (as url is '/version')
+		{
+			if ((url.size() > pattern.size()) && url[pattern.size()] != '/') // but what if they have the same beginning
+				continue;
+			return service.get();
+		}
+		else
 			continue;
-		if (url.size() > pattern.size() && url[pattern.size()] != '/') // but what if they have the same beginning
-			continue;
-		return service.get();
 	}
 	return nullptr;
 }
@@ -37,19 +41,18 @@ HttpStatus ServicesManager::queryService (string& out, const string& in, const s
 
 	/* error cases */
 	// ?
+
 	HttpStatus status;
 	if (method == "GET")
 	{
-		std::cout << "get method\n";
 		Json::Value version;
-		status = service->get(version);
+		status = service->get(url, version);
 		out = version.toStyledString();
-		std::cout << out << "\n";
 	}
 	else if (method == "POST")
 	{
 		Json::Value json_in;
-		status = service->post(json_in);
+		status = service->post(url, json_in);
 	}
 	else if (method == "PUT")
 	{

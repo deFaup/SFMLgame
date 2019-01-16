@@ -7,18 +7,25 @@ using namespace server;
 // players: name, number, number of charater, characters
 
 /* the JSON look likes this */
-//[
-//	{
-//		"characters" :
+//{
+//	"first player name" : 0,
+//	"second player name" : 1,
+//	"third" : 2,
+//	"team" :
 //		[
-//			103,
-//			100,
-//			301
-//		],
-//		"name" : "Joueur 1"
-//	},
-// each block between {} is for one player
-//]
+//			{
+//				"characters" :
+//				[
+//					103,
+//					100,
+//					301
+//				],
+//				"name" : "first player name"
+//			},
+//			{ and so on}
+//
+//		]
+//}
 
 
 PlayerDB::PlayerDB() {}
@@ -29,30 +36,33 @@ void PlayerDB::addPlayer(Json::Value& player)
 	//{
 	//	"name" : "Joueur 2"
 	//}
-
-	JSONfile[JSONfile.size()]["name"] = player["name"].asString();
+	JSONfile[player["name"].asString()] = JSONfile.size();
+	JSONfile["team"][JSONfile["team"].size()]["name"] = player["name"].asString();
 }
 
-void PlayerDB::addCharacter(int index_player, Json::Value& character) 
+void PlayerDB::addCharacter(Json::Value& character) 
 {
 	/* player is json like this one*/
 	//{
+	//	"name" : "Joueur 2"
 	//	"character" : "103"
 	//}
 
-	JSONfile[index_player]["characters"][JSONfile[index_player]["characters"].size()] 
+	int index_player = JSONfile[character["name"].asString()].asInt();
+	JSONfile["team"][index_player]["characters"][JSONfile["team"][index_player]["characters"].size()]
 		= character["character"].asInt();
 };
 
+// to be completed
 void PlayerDB::deletePlayer(Json::Value& player) 
 {
 	Json::Value temp;
-	for (unsigned int index(0), index_temp(0); index < JSONfile.size(); ++index, ++index_temp)
+	for (unsigned int index(0), index_temp(0); index < JSONfile["team"].size(); ++index, ++index_temp)
 	{
-		if (JSONfile[index]["name"] == (player["name"].asString()))
+		if (JSONfile["team"][index]["name"] == (player["name"].asString()))
 			index_temp--; 
 		else
-			temp[index] = JSONfile[index];
+			temp["team"][index] = JSONfile["team"][index];
 	}
 	JSONfile = temp;
 };
