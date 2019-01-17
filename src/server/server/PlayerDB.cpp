@@ -40,7 +40,6 @@ int PlayerDB::addPlayer(const Json::Value& player, Json::Value& out)
 
 	if (JSONfile["players"].size() < MAX_NB_PLAYER)
 	{
-		static short int player_id(0);
 		for (unsigned int i = 0; i < JSONfile["players"].size(); i++)
 		{
 			if (JSONfile["players"][i].asString() == player["name"].asString())
@@ -49,7 +48,8 @@ int PlayerDB::addPlayer(const Json::Value& player, Json::Value& out)
 		JSONfile["players"][JSONfile["players"].size()] = player["name"].asString();
 		JSONfile["team"][JSONfile["team"].size()]["name"] = player["name"].asString();
 
-		out["id"] = player_id++;
+		static unsigned short int i(0);
+		out["id"] = "player"+ std::to_string(i++);
 		return 0;
 	}
 	else return -2;
@@ -73,9 +73,10 @@ void PlayerDB::addCharacter(const Json::Value& character)
 		= character["character"].asInt();
 };
 
-// to be completed
-void PlayerDB::deletePlayer(const Json::Value& player) 
+int PlayerDB::deletePlayer(const Json::Value& player) 
 {
+	int erno(-1);
+
 	Json::Value temp;
 	unsigned int index_player(0), i(0);
 	for (i = 0; i < JSONfile["players"].size(); i++)
@@ -83,6 +84,7 @@ void PlayerDB::deletePlayer(const Json::Value& player)
 		if (JSONfile["players"][i].asString() == player["name"].asString())
 		{
 			index_player = i;
+			erno = 1;
 			continue;
 		}
 		temp["players"][i] = JSONfile["players"][i].asString();
@@ -90,11 +92,15 @@ void PlayerDB::deletePlayer(const Json::Value& player)
 
 	for (i=0; i < JSONfile["team"].size(); i++)
 	{
-		if (i == index_player) continue;
+		if (i == index_player) {
+			erno--;
+			continue;
+		}
 		temp["team"][i] = JSONfile["team"][i];
-
 	}
 	JSONfile = temp;
+
+	return erno;
 };
 
 void PlayerDB::deleteCharacter(const Json::Value& character) {};

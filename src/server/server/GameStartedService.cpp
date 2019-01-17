@@ -15,14 +15,17 @@ GameStartedService::~GameStartedService()
 {
 }
 
-HttpStatus GameStartedService::get (const string& url, Json::Value& out) const
+HttpStatus GameStartedService::get (const string& url, Json::Value& out)
 {
 	out["welcome to the game"] = "not started";
+
 	if (url[pattern.size()] == '/')
 	{
-		if(url.find("/get_command",pattern.size()) == pattern.size())
+		std::string get_command("/get_command/");
+		if(url.find(get_command, pattern.size()) == pattern.size())
 		{
-			out = commandes[0]->getCommand();	
+			std::string id(url, pattern.size() + get_command.size());
+			out = commandes[id]->getCommand();	
 		}
 	}
 	return HttpStatus::OK;
@@ -32,11 +35,13 @@ HttpStatus GameStartedService::post (const string& url, const Json::Value& in, J
 {
 	if (url[pattern.size()] == '/')
 	{
-		if(url.find("/add_command",pattern.size()) == pattern.size())
+		std::string add_command("/add_command/");
+		if(url.find(add_command, pattern.size()) == pattern.size())
 		{
+			std::string id(url, pattern.size() + add_command.size());
 			state::sfEvents com;
 
-			com.ID = static_cast<state::sfEventsID>(in["sfEvents"].asInt());
+			com.ID = static_cast<state::sfEventsID>(in["sfEventsID"].asInt());
 			com.mouse_position.setPosition(in["x"].asInt(),in["y"].asInt());
 
 			if ((com.ID == state::arrow_left) || (com.ID == state::arrow_right))
@@ -72,15 +77,22 @@ HttpStatus GameStartedService::post (const string& url, const Json::Value& in, J
 				}
 			}
 
-			server->moteur->add_command(com);
-			server->moteur->executeCommandes();
+			//server->moteur->add_command(com);
+			//server->moteur->executeCommandes(); // fait dans un thread !
 
-			for(unsigned int i = 0; i < commandes.size(); i++)
-			{
-				Json::Value json = in;
-				commandes[i]->addCommand(json);
-			}	
+			Json::Value temp = in;
+			temp["commande"] = "success";
+			commandes[id]->addCommand(temp);
+
+			//for(unsigned int i = 0; i < commandes[id].size(); i++)
+			//{
+			//	Json::Value json = in;
+			//	commandes[id][i]->addCommand(json);
+			//}	
+			return HttpStatus::OK;
 		}
+		else return HttpStatus::BAD_REQUEST;
 	}
-	return HttpStatus::OK;
+	else return HttpStatus::NOT_IMPLEMENTED;
+	
 }

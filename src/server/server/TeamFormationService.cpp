@@ -15,7 +15,7 @@ TeamFormationService::~TeamFormationService()
 }
 
 // get Team Formation
-HttpStatus TeamFormationService::get (const string& url, Json::Value& out) const
+HttpStatus TeamFormationService::get (const string& url, Json::Value& out)
 {
 	out = players->JSONfile;
 	return HttpStatus::OK;
@@ -33,7 +33,8 @@ HttpStatus TeamFormationService::post (const string& url, const Json::Value& in,
 				return HttpStatus::BAD_REQUEST;
 
 			else
-				service_gameStarted->commandes.push_back(make_shared<CommandDB>());
+				service_gameStarted->commandes[out["id"].asString()] = make_shared<CommandDB>();
+				//service_gameStarted->commandes.push_back(make_shared<CommandDB>());
 		}
 		
 		//url = "/TeamFormationService/character"
@@ -42,7 +43,10 @@ HttpStatus TeamFormationService::post (const string& url, const Json::Value& in,
 
 		//url = "/TeamFormationService/delete_player";
 		if (url.find("/delete_player", pattern.size()) == pattern.size())
-			players->deletePlayer(in);
+		{
+			if (players->deletePlayer(in) == 0)
+				service_gameStarted->commandes.erase(out["id"].asString());
+		}
 	}
 
 	return HttpStatus::OK;

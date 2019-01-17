@@ -337,26 +337,38 @@ void connect_client(std::string name_client)
 	Json::Value request_body;
 	
 	request_body["name"] = name_client; request_body["character"] = 100;
-	if (send(http, sf::Http::Request::Post, "/TeamFormationService/player", request_body) ==
-		sf::Http::Response::Status::Ok)
-	{
-		send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
-		send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
-		send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
+	//if (send(http, sf::Http::Request::Post, "/TeamFormationService/player", request_body) ==
+	//	sf::Http::Response::Status::Ok)
+	//{
+	//	send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
+	//	send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
+	//	send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
 
-		// all went well: show player DB
+	//	// all went well: show player DB
+	//	send(http, sf::Http::Request::Get, "/TeamFormationService", request_body);
+
+	//	// delete player name from PlayerDB
+	//	cout << "Pressez <entrée> pour continuer (supprimer votre joueur du serveur)\n" << endl;
+	//	cout << "Press Enter to Continue";
+	//	//cin.ignore();
+	//	send(http, sf::Http::Request::Post, "/TeamFormationService/delete_player", request_body);
+	//	
+	//	//show PlayerDB
+	//	send(http, sf::Http::Request::Get, "/TeamFormationService", request_body);
+
+		//////////////////
+		request_body["name"] = "Domingo"; request_body["character"] = 200;
+		send(http, sf::Http::Request::Post, "/TeamFormationService/player", request_body);
+		send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
+		send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
 		send(http, sf::Http::Request::Get, "/TeamFormationService", request_body);
 
-		// delete player name from PlayerDB
-		cout << "Pressez <entrée> pour continuer (supprimer votre joueur du serveur)\n" << endl;
-		cout << "Press Enter to Continue";
-		cin.ignore();
-		send(http, sf::Http::Request::Post, "/TeamFormationService/delete_player", request_body);
-		request_body["name"] = "Joueur 1"; request_body["character"] = 100;
+		Json::Value sfjson;
+		sfjson["sfEventsID"] = 101; 		sfjson["x"] = 20;		sfjson["y"] = 30;
 
-		//show PlayerDB
-		send(http, sf::Http::Request::Get, "/TeamFormationService", request_body);
-	}
+		send(http, sf::Http::Request::Post, "/GameStartedService/add_command/player0", sfjson);
+		send(http, sf::Http::Request::Get, "/GameStartedService/get_command/player0", request_body);
+	//}
 
 }
 
