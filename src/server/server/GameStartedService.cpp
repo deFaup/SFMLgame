@@ -2,6 +2,7 @@
 #include "GameServer.h"
 #include "state.h"
 #include "engine.h"
+#include <iostream>
 
 using namespace server;
 using namespace std;
@@ -17,16 +18,18 @@ GameStartedService::~GameStartedService()
 
 HttpStatus GameStartedService::get (const string& url, Json::Value& out)
 {
-	out["welcome to the game"] = "not started";
-
 	if (url[pattern.size()] == '/')
 	{
 		std::string get_command("/get_command/");
 		if(url.find(get_command, pattern.size()) == pattern.size())
 		{
 			std::string id(url, pattern.size() + get_command.size());
+			out["welcome to the game"] = "not started";
+			// jusqu'ici aucun probleme
 			out = commandes[id]->getCommand();	
 		}
+		// 
+
 	}
 	return HttpStatus::OK;
 }
@@ -43,7 +46,7 @@ HttpStatus GameStartedService::post (const string& url, const Json::Value& in, J
 
 			com.ID = static_cast<state::sfEventsID>(in["sfEventsID"].asInt());
 			com.mouse_position.setPosition(in["x"].asInt(),in["y"].asInt());
-
+/*
 			if ((com.ID == state::arrow_left) || (com.ID == state::arrow_right))
 			{
 				engine::Move move_command(com.ID);
@@ -76,7 +79,7 @@ HttpStatus GameStartedService::post (const string& url, const Json::Value& in, J
 					return HttpStatus::OK;
 				}
 			}
-
+*/
 			//server->moteur->add_command(com);
 			//server->moteur->executeCommandes(); // fait dans un thread !
 
