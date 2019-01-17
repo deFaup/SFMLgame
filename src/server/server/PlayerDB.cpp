@@ -35,6 +35,7 @@ int PlayerDB::addPlayer(const Json::Value& player)
 	//{
 	//	"name" : "Joueur 2"
 	//}
+
 	if (JSONfile["players"].size() < MAX_NB_PLAYER)
 	{
 		for (unsigned int i = 0; i < JSONfile["players"].size(); i++)

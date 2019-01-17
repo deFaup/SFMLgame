@@ -33,6 +33,8 @@ HttpStatus TeamFormationService::post (const string& url, const Json::Value& in)
 			{
 				return HttpStatus::BAD_REQUEST;
 			}
+			else
+				service_gameStarted->commandes.push_back(make_shared<CommandDB>());
 		}
 		
 		//url = "/TeamFormationService/character"

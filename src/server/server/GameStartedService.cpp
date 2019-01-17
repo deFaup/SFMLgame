@@ -8,7 +8,6 @@ using namespace std;
 
 GameStartedService::GameStartedService()
 {
-	commandes = std::make_unique<CommandDB>();
 	server::AbstractService::pattern = "/GameStartedService";
 }
 
@@ -23,7 +22,8 @@ HttpStatus GameStartedService::get (const string& url, Json::Value& out) const
 	{
 		if(url.find("/get_command",pattern.size()) == pattern.size())
 		{
-			out = commandes->getCommand();	
+			//TEMP JUST TO COMPILE
+			out = commandes[0]->getCommand();	
 		}
 	}
 	return HttpStatus::OK;
@@ -77,7 +77,7 @@ HttpStatus GameStartedService::post (const string& url, const Json::Value& in)
 			server->moteur->executeCommandes();
 
 			Json::Value json = in;
-			commandes->addCommand(json);	
+			//commandes->addCommand(json);	
 		}
 	}
 	return HttpStatus::OK;

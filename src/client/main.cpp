@@ -37,6 +37,9 @@ sf::Http::Response::Status send(sf::Http& client, sf::Http::Request::Method type
 void connect_client(std::string name_client);
 void test_command(void);
 
+// Global variables
+int client_name;
+
 void enginet(int player_1_type, int player_2_type)
 {
 	sf::RenderWindow renderWindow(sf::VideoMode(1102,869), "menu test");
@@ -244,8 +247,10 @@ int main(int argc, char* argv[])
 		else if (strcmp(argv[1], "network") == 0)
 		{
 			std::string player1("Joueur 1");
-			//thread(connect_client, player1);
-			test_command();
+			char player_id[] = "Joueur 1";
+			client_name = atoi(player_id);
+			thread(connect_client, player1);
+			//test_command();
 		}
 	}
 	return 0;

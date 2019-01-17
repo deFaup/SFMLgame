@@ -10,11 +10,11 @@
 using namespace std;
 using namespace server;
 
-void ServicesManager::registerService(unique_ptr<AbstractService> service) {
-	services.push_back(std::move(service));
+void ServicesManager::registerService(shared_ptr<AbstractService> service) {
+	services.push_back(service);
 }
 
-AbstractService* ServicesManager::findService(const string& url) const 
+shared_ptr<AbstractService> ServicesManager::findService(const string& url) const
 {
 	for (auto& service : services) 
 	{
@@ -24,7 +24,7 @@ AbstractService* ServicesManager::findService(const string& url) const
 		{
 			if ((url.size() > pattern.size()) && url[pattern.size()] != '/') // but what if they have the same beginning
 				continue;
-			return service.get();
+			return service;
 		}
 		else
 			continue;
@@ -35,7 +35,7 @@ AbstractService* ServicesManager::findService(const string& url) const
 HttpStatus ServicesManager::queryService (string& out, const string& in, const string& url, const string& method) 
 {
 	// find the corresponding service
-	AbstractService* service = findService(url);
+	shared_ptr<AbstractService> service = findService(url);
 	if (!service)
 		throw ServiceException(HttpStatus::NOT_FOUND, "no service for url: "+ url);
 

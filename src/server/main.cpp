@@ -154,11 +154,12 @@ int server_listen(uint16_t port)
 	try {
 		ServicesManager servicesManager;
 
-		std::unique_ptr<server::AbstractService> team_service = std::make_unique<TeamFormationService>();
-		servicesManager.registerService(std::move(team_service));
+		std::shared_ptr<server::AbstractService> team_service = std::make_shared<TeamFormationService>();
+		servicesManager.registerService(team_service);
 
-		std::unique_ptr<server::AbstractService> game_service = std::make_unique<GameStartedService>();
-		servicesManager.registerService(std::move(game_service));
+		std::shared_ptr<server::AbstractService> game_service = std::make_shared<GameStartedService>();
+		servicesManager.registerService(game_service);
+		(std::static_pointer_cast<TeamFormationService>) (team_service)->service_gameStarted = game_service;
 
 		struct MHD_Daemon *d;
 
