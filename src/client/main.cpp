@@ -35,6 +35,7 @@ void init_game(state::GameState* etat, int& player_1_type, int& player_2_type);
 void play_json(Json::Value* json_commandes, engine::GameEngine* gameEngine);
 sf::Http::Response::Status send(sf::Http& client, sf::Http::Request::Method type, const std::string& uri, Json::Value& request_body);
 void connect_client(std::string name_client);
+void test_command(void);
 
 void enginet(int player_1_type, int player_2_type)
 {
@@ -243,7 +244,8 @@ int main(int argc, char* argv[])
 		else if (strcmp(argv[1], "network") == 0)
 		{
 			std::string player1("Joueur 1");
-			thread(connect_client, player1);
+			//thread(connect_client, player1);
+			test_command();
 		}
 	}
 	return 0;
@@ -357,6 +359,22 @@ void connect_client(std::string name_client)
 		//request_body["name"] = name_client + "BEST_PFE";
 		//send(http, sf::Http::Request::Post, "/TeamFormationService/player", request_body);
 	}
+}
+
+void test_command(void)
+{
+	Json::Value JsonCmd;
+	JsonCmd["sfEventsID"] = arrow_up;
+	JsonCmd["x"] = 187;
+	JsonCmd["y"] = 210;
+	sf::Http http("http://localhost", 8080);
+	send(http, sf::Http::Request::Post, "/GameStartedService/add_command", JsonCmd);
+	JsonCmd["sfEventsID"] = arrow_down;
+	JsonCmd["x"] = 145;
+	JsonCmd["y"] = 368;
+	send(http, sf::Http::Request::Post, "/GameStartedService/add_command", JsonCmd);
+	//
+	send(http, sf::Http::Request::Get, "/GameStartedService/get_command", JsonCmd);
 }
 
 /* le thread render/main aura une méthode class whatever pour afficher un menu dans renderwindow.

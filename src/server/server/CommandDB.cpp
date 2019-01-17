@@ -20,21 +20,27 @@ forme du JSON :
 }
 
 */
+
 CommandDB::CommandDB()
 {
+
 }
 
 Json::Value& CommandDB::getCommand()
 {
-	return(JSONfile);
+	return JSONfile;
 }
 
 void CommandDB::addCommand(Json::Value& commande)
 {
-
+	static int i = 0;
+	JSONfile["commandes"][i] = commande;
+	i++;
+	return;
 }
 
 void CommandDB::deleteCommand(Json::Value& commande)
 {
-
+	return;
 }
+
