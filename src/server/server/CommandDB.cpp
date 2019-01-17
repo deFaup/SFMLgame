@@ -26,7 +26,7 @@ CommandDB::CommandDB()
 
 Json::Value& CommandDB::getCommand()
 {
-
+	return(JSONfile);
 }
 
 void CommandDB::addCommand(Json::Value& commande)
