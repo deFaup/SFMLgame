@@ -1,15 +1,21 @@
 /* Includes */
-#include <iostream>
 #include "define.hpp"
+#include "global_mutex.hpp"
 #include "GameServer.h"
 
 #include "state.h"
+#include "server.h"
 #include "engine.h"
-#include "ai.h"
 
-using namespace std;
-using namespace state;
+#include <memory>
+#include <iostream>
+#include <string>	//string
+#include <thread>
+#include <json/json.h>
+
 using namespace server;
+void set_map_players_characters(state::GameState* gameState, const Json::Value& players);
+
 GameServer::GameServer() {}
 GameServer::~GameServer(){ std::cout << "Server deleted" << std::endl; }
 
@@ -19,12 +25,50 @@ GameServer::GameServer(state::GameState* etat, engine::GameEngine* moteur) : eta
 	std::cout << "Server created" << std::endl;
 }
 
+void GameServer::launch_game(Json::Value& players)
+{
+	std::thread thread_engine;
+
+	/* Init game */
+	set_map_players_characters(etat, players);
+
+	thread_engine = std::thread(&engine::GameEngine::workLoop, moteur);
+
+	thread_engine.join();
+	std::cout << "server engine thread closed\n";
+}
+
+void set_map_players_characters(state::GameState* gameState, const Json::Value& players)
+{
+	global::rng.seed(std::random_device()());
+
+	/* Create players, characters and a map. Will be rewritten when menu is implemented */
+	if (gameState->ID == state::StateID::not_started)
+	{
+		gameState->new_map(3000, 2000);
+
+		for (auto& elem : players["team"])
+		{
+			int player_no(0);
+			gameState->new_player(elem["name"].asString());
+			for (auto& characters : elem["characters"])
+			{
+				gameState->new_character(player_no,
+					static_cast<state::CharactersID>(characters.asInt()));
+			}
+			player_no++;
+		}
+
+		gameState->ID = state::StateID::team_selected;
+	}
+}
+
 void GameServer::stateChanged(state::Event& event)
 {	
 	if (event.hasChanged(state::EventID::Character_isDead))
 	{
-		EventCharacters* event_character = (EventCharacters*) &event;
-		Player* player = event_character->changed_character->get_Player();
+		state::EventCharacters* event_character = (state::EventCharacters*) &event;
+		state::Player* player = event_character->changed_character->get_Player();
 
 		//std::cout << "Server::stateChanged Player: " << player->name << " character: ";
 		//std::cout << event_character->changed_character->get_id() << " is dead !" << std::endl;
@@ -57,8 +101,8 @@ void GameServer::stateChanged(state::Event& event)
 
 	else if (event.hasChanged(state::EventID::Player_isDead))
 	{
-		EventPlayer* event_player = (EventPlayer*) &event;
-		Player* player = event_player->changed_player;
+		state::EventPlayer* event_player = (state::EventPlayer*) &event;
+		state::Player* player = event_player->changed_player;
 		//std::cout << "Server::stateChanged  Player: " << player->name << " is dead !" << std::endl;
 
 		//unsigned int index(0);
