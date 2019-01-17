@@ -22,7 +22,6 @@ HttpStatus GameStartedService::get (const string& url, Json::Value& out) const
 	{
 		if(url.find("/get_command",pattern.size()) == pattern.size())
 		{
-			//TEMP JUST TO COMPILE
 			out = commandes[0]->getCommand();	
 		}
 	}
@@ -76,8 +75,11 @@ HttpStatus GameStartedService::post (const string& url, const Json::Value& in)
 			server->moteur->add_command(com);
 			server->moteur->executeCommandes();
 
-			Json::Value json = in;
-			//commandes->addCommand(json);	
+			for(unsigned int i = 0; i < commandes.size(); i++)
+			{
+				Json::Value json = in;
+				commandes[i]->addCommand(json);
+			}	
 		}
 	}
 	return HttpStatus::OK;
