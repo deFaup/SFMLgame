@@ -1,6 +1,7 @@
 #include "PlayerDB.h"
 #include "define.hpp"
 #include <iostream>
+#include <cstdlib>
 
 using namespace server;
 //using namespace std;
@@ -29,7 +30,8 @@ using namespace server;
 PlayerDB::PlayerDB() {}
 
 // return -1 if player is already in, -2 if there are too many players and 0 if OK
-int PlayerDB::addPlayer(const Json::Value& player)
+// return an id in HTML body when 0
+int PlayerDB::addPlayer(const Json::Value& player, Json::Value& out)
 {
 	/* player is json like this one*/
 	//{
@@ -38,15 +40,16 @@ int PlayerDB::addPlayer(const Json::Value& player)
 
 	if (JSONfile["players"].size() < MAX_NB_PLAYER)
 	{
+		static short int player_id(0);
 		for (unsigned int i = 0; i < JSONfile["players"].size(); i++)
 		{
 			if (JSONfile["players"][i].asString() == player["name"].asString())
 				return -1;
 		}
 		JSONfile["players"][JSONfile["players"].size()] = player["name"].asString();
-		//JSONfile["players"] [player["name"].asString()] = JSONfile["players"].size();
 		JSONfile["team"][JSONfile["team"].size()]["name"] = player["name"].asString();
 
+		out["id"] = player_id++;
 		return 0;
 	}
 	else return -2;

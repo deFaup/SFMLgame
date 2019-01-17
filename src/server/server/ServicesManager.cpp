@@ -52,18 +52,23 @@ HttpStatus ServicesManager::queryService (string& out, const string& in, const s
 	else if (method == "POST")
 	{
 		Json::Reader jsonReader;
+		Json::Value json_in; Json::Value json_out;
+		if (!jsonReader.parse(in, json_in))
+			throw ServiceException(HttpStatus::BAD_REQUEST, "Données invalides: " + jsonReader.getFormattedErrorMessages());
+
+		status = service->post(url, json_in, json_out);
+		out = json_out.toStyledString();
+	}
+	else if (method == "PUT")
+	{
+		Json::Reader jsonReader;
 		Json::Value json_in;
 		if (!jsonReader.parse(in, json_in))
 			throw ServiceException(HttpStatus::BAD_REQUEST, "Données invalides: " + jsonReader.getFormattedErrorMessages());
 
-		status = service->post(url, json_in);
-	}
-	else if (method == "PUT")
-	{
-		Json::Value json_in;
 		Json::Value json_out;
-
 		status = service->put(json_out, json_in);
+		out = json_out.toStyledString();
 	}
 	else
 	{

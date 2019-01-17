@@ -22,17 +22,16 @@ HttpStatus TeamFormationService::get (const string& url, Json::Value& out) const
 }
 
 // Insert new player in PlayerDB
-HttpStatus TeamFormationService::post (const string& url, const Json::Value& in)
+HttpStatus TeamFormationService::post (const string& url, const Json::Value& in, Json::Value& out)
 {
 	if (url[pattern.size()] == '/')
 	{
 		//url = "/TeamFormationService/player";
 		if (url.find("/player", pattern.size()) == pattern.size())
 		{
-			if (players->addPlayer(in) != 0)
-			{
+			if (players->addPlayer(in, out) != 0)
 				return HttpStatus::BAD_REQUEST;
-			}
+
 			else
 				service_gameStarted->commandes.push_back(make_shared<CommandDB>());
 		}
@@ -45,6 +44,12 @@ HttpStatus TeamFormationService::post (const string& url, const Json::Value& in)
 		if (url.find("/delete_player", pattern.size()) == pattern.size())
 			players->deletePlayer(in);
 	}
+
+	return HttpStatus::OK;
+}
+
+HttpStatus TeamFormationService::put(Json::Value& out, const Json::Value& in)
+{
 
 	return HttpStatus::OK;
 }

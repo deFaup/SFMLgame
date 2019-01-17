@@ -153,14 +153,16 @@ int server_listen(uint16_t port)
 {
 	try {
 		ServicesManager servicesManager;
+		{
+			std::shared_ptr<server::AbstractService> game_service = std::make_shared<GameStartedService>();
+			servicesManager.registerService(game_service);
 
-		std::shared_ptr<server::AbstractService> team_service = std::make_shared<TeamFormationService>();
-		servicesManager.registerService(team_service);
+			auto team = std::make_shared<TeamFormationService>();
+			team->service_gameStarted = (std::static_pointer_cast<GameStartedService>) (game_service);
 
-		std::shared_ptr<server::AbstractService> game_service = std::make_shared<GameStartedService>();
-		servicesManager.registerService(game_service);
-		(std::static_pointer_cast<TeamFormationService>) (team_service)->service_gameStarted = game_service;
-
+			std::shared_ptr<server::AbstractService> team_service = team;
+			servicesManager.registerService(team_service);
+		}
 		struct MHD_Daemon *d;
 
 		d = MHD_start_daemon(// MHD_USE_SELECT_INTERNALLY | MHD_USE_DEBUG | MHD_USE_POLL,

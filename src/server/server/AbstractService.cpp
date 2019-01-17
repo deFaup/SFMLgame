@@ -33,7 +33,7 @@ HttpStatus AbstractService::get (const string& url, Json::Value& out) const {
     throw ServiceException(HttpStatus::NOT_IMPLEMENTED,"Non implanté");
 }
 
-HttpStatus AbstractService::post (const string& url, const Json::Value& in) {
+HttpStatus AbstractService::post (const string& url, const Json::Value& in, Json::Value& out) {
     throw ServiceException(HttpStatus::NOT_IMPLEMENTED,"abstract service post");
 }
 

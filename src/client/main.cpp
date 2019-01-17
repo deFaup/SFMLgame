@@ -247,8 +247,6 @@ int main(int argc, char* argv[])
 		else if (strcmp(argv[1], "network") == 0)
 		{
 			std::string player1("Joueur 1");
-			char player_id[] = "Joueur 1";
-			client_name = atoi(player_id);
 			thread(connect_client, player1);
 			//test_command();
 		}
@@ -356,14 +354,10 @@ void connect_client(std::string name_client)
 		send(http, sf::Http::Request::Post, "/TeamFormationService/delete_player", request_body);
 		request_body["name"] = "Joueur 1"; request_body["character"] = 100;
 
-		// show PlayerDB
+		//show PlayerDB
 		send(http, sf::Http::Request::Get, "/TeamFormationService", request_body);
 	}
-	else
-	{
-		//request_body["name"] = name_client + "BEST_PFE";
-		//send(http, sf::Http::Request::Post, "/TeamFormationService/player", request_body);
-	}
+
 }
 
 void test_command(void)

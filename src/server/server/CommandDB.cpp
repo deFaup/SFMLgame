@@ -21,10 +21,7 @@ forme du JSON :
 
 */
 
-CommandDB::CommandDB()
-{
-
-}
+CommandDB::CommandDB() {}
 
 Json::Value& CommandDB::getCommand()
 {
