@@ -49,10 +49,15 @@ HttpStatus TeamFormationService::post (const string& url, const Json::Value& in,
 		//url = "/TeamFormationService/player";
 		else if (url.find("/player", pattern.size()) == pattern.size())
 		{
-			if (players->addPlayer(in, out) == 0)
+			if (players->JSONfile["players"].size() < nb_players)
 			{
-				service_gameStarted->commandes[out["id"].asString()] = make_shared<CommandDB>();
-				try_to_start();
+				if (players->addPlayer(in, out) == 0)
+				{
+					service_gameStarted->commandes[out["id"].asString()] = make_shared<CommandDB>();
+					try_to_start();
+				}
+				else
+					return HttpStatus::BAD_REQUEST;
 			}
 			else
 				return HttpStatus::BAD_REQUEST;
@@ -80,6 +85,7 @@ HttpStatus TeamFormationService::put(Json::Value& out, const Json::Value& in)
 
 void TeamFormationService::try_to_start()
 {
+	std::cout << "TRY TO START GAME" << std::endl;
 	bool start(true);
 	if (players->JSONfile["players"].size() == nb_players)
 	{

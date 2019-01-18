@@ -27,6 +27,7 @@ GameServer::GameServer(state::GameState* etat, engine::GameEngine* moteur) : eta
 
 void GameServer::launch_game(Json::Value& players)
 {
+	std::cout << "launch_game" << std::endl;
 	std::thread thread_engine;
 
 	/* Init game */
