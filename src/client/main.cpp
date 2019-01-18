@@ -247,7 +247,9 @@ int main(int argc, char* argv[])
 		else if (strcmp(argv[1], "network") == 0)
 		{
 			std::string player1("Joueur 1");
-			thread(connect_client, player1);
+			thread th(connect_client, player1);
+						
+			th.join();
 			//test_command();
 		}
 	}
