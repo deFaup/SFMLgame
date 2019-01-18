@@ -33,12 +33,14 @@ void testSFML() {
 
 void init_game(state::GameState* etat, int& player_1_type, int& player_2_type);
 void play_json(Json::Value* json_commandes, engine::GameEngine* gameEngine);
-sf::Http::Response::Status send(sf::Http& client, sf::Http::Request::Method type, const std::string& uri, Json::Value& request_body);
-void connect_client(std::string name_client);
+sf::Http::Response send(sf::Http& client, sf::Http::Request::Method type, const std::string& uri, Json::Value& request_body);
+void connect_client(int character_id);
 void test_command(void);
 
 // Global variables
-int client_name;
+std::string player_id; // we set this once we pushed a player in the PlayerDB
+std::string player_name("Joueur 1");
+int character_id;
 
 void enginet(int player_1_type, int player_2_type)
 {
@@ -206,7 +208,6 @@ void play()
 
 int main(int argc, char* argv[])
 {
-
 	if (argc == 2)
 	{
 		if (strcmp(argv[1], "hello") == 0)
@@ -246,8 +247,7 @@ int main(int argc, char* argv[])
 		else if (strcmp(argv[1], "play") == 0) play();
 		else if (strcmp(argv[1], "network") == 0)
 		{
-			std::string player1("Joueur 1");
-			thread(connect_client, player1);
+			thread(connect_client);
 			//test_command();
 		}
 	}
@@ -302,7 +302,7 @@ void play_json(Json::Value* json_commandes, engine::GameEngine* gameEngine)
 	}
 }
 
-sf::Http::Response::Status send(sf::Http& client, sf::Http::Request::Method type, const std::string& uri, Json::Value& request_body)
+sf::Http::Response send(sf::Http& client, sf::Http::Request::Method type, const std::string& uri, Json::Value& request_body)
 {
 	sf::Http::Request request;
 	request.setMethod(type);
@@ -320,56 +320,50 @@ sf::Http::Response::Status send(sf::Http& client, sf::Http::Request::Method type
 	// Send the request
 	sf::Http::Response response = client.sendRequest(request);
 
+	return response;
+}
+
+void connect_client()
+{
+	// Create a new HTTP client
+	sf::Http http("http://localhost", 8080);
+
+	// requests & response
+	Json::Value request_body;
+	sf::Http::Response response;
+
 	// Check the status code and display the result	
 	std::cout << "\nresopnse get field body: " << response.getField("Content-Type") << std::endl;
 	std::cout << "response body: " << response.getBody() << std::endl;
 	std::cout << "response status: " << response.getStatus() << std::endl;
 
-	return response.getStatus();
-}
+	request_body["name"] = player_name; request_body["character"] = character_id;
 
-void connect_client(std::string name_client)
-{
-	// Create a new HTTP client
-	sf::Http http("http://localhost", 8080);
+	// record the player in PlayerDB
+	response = send(http, sf::Http::Request::Post, "/TeamFormationService/player", request_body);
 
-	// send requests
-	Json::Value request_body;
-	
-	request_body["name"] = name_client; request_body["character"] = 100;
-	//if (send(http, sf::Http::Request::Post, "/TeamFormationService/player", request_body) ==
-	//	sf::Http::Response::Status::Ok)
-	//{
-	//	send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
-	//	send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
-	//	send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
-
-	//	// all went well: show player DB
-	//	send(http, sf::Http::Request::Get, "/TeamFormationService", request_body);
-
-	//	// delete player name from PlayerDB
-	//	cout << "Pressez <entrée> pour continuer (supprimer votre joueur du serveur)\n" << endl;
-	//	cout << "Press Enter to Continue";
-	//	//cin.ignore();
-	//	send(http, sf::Http::Request::Post, "/TeamFormationService/delete_player", request_body);
-	//	
-	//	//show PlayerDB
-	//	send(http, sf::Http::Request::Get, "/TeamFormationService", request_body);
-
-		//////////////////
-		request_body["name"] = "Domingo"; request_body["character"] = 200;
-		send(http, sf::Http::Request::Post, "/TeamFormationService/player", request_body);
+	if (response.getStatus() == sf::Http::Response::Status::Ok)
+	{
+		{
+			Json::Value id_temp;
+			id_temp = response.getBody();
+			player_id = id_temp["id"].asString();
+		}
 		send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
 		send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
+
+		// all went well: show player DB
 		send(http, sf::Http::Request::Get, "/TeamFormationService", request_body);
-
-		Json::Value sfjson;
-		sfjson["sfEventsID"] = 101; 		sfjson["x"] = 20;		sfjson["y"] = 30;
-
-		send(http, sf::Http::Request::Post, "/GameStartedService/add_command/player0", sfjson);
-		send(http, sf::Http::Request::Get, "/GameStartedService/get_command/player0", request_body);
-	//}
-
+/*		// delete player name from PlayerDB
+		cout << "Pressez <entrée> pour continuer (supprimer votre joueur du serveur)\n" << endl;
+		cout << "Press Enter to Continue";
+		//cin.ignore();
+		send(http, sf::Http::Request::Post, "/TeamFormationService/delete_player", request_body);
+		
+		//show PlayerDB
+		send(http, sf::Http::Request::Get, "/TeamFormationService", request_body);
+*/
+	}
 }
 
 void test_command(void)
@@ -395,4 +389,15 @@ Seul le moteur peut modifier l'état pour que cela marche en mode réseau.
 La méthode menu sera appelé par l'engine au premier call de check state ID
 */
 
-
+// test command to GameStartedService
+//request_body["name"] = "Domingo"; request_body["character"] = 200;
+//send(http, sf::Http::Request::Post, "/TeamFormationService/player", request_body);
+//send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
+//send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
+//send(http, sf::Http::Request::Get, "/TeamFormationService", request_body);
+//
+//Json::Value sfjson;
+//sfjson["sfEventsID"] = 101; 		sfjson["x"] = 20;		sfjson["y"] = 30;
+//
+//send(http, sf::Http::Request::Post, "/GameStartedService/add_command/player0", sfjson);
+//send(http, sf::Http::Request::Get, "/GameStartedService/get_command/player0", request_body);
