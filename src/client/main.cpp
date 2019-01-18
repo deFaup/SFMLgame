@@ -252,6 +252,13 @@ int main(int argc, char* argv[])
 			//test_command();
 		}
 	}
+	else if (argc == 3)
+	{
+		if (strcmp(argv[1], "network") == 0 && strcmp(argv[2], "test") == 0)
+		{
+			test_command();
+		}
+	}
 	else if (argc == 4)
 	{
 		if (strcmp(argv[1], "network") == 0)
@@ -340,7 +347,8 @@ sf::Http::Response send(sf::Http& client, sf::Http::Request::Method type, const 
 void connect_client()
 {
 	// Create a new HTTP client
-	sf::Http http("http://localhost", 8080);
+	//sf::Http http("http://localhost", 8080);
+	sf::Http http("10.10.26.128", 8080);
 
 	// requests & response
 	Json::Value request_body;
@@ -381,18 +389,37 @@ void connect_client()
 
 void test_command(void)
 {
-	Json::Value JsonCmd;
-	JsonCmd["sfEventsID"] = arrow_up;
-	JsonCmd["x"] = 187;
-	JsonCmd["y"] = 210;
+	// Create a new HTTP client
 	sf::Http http("http://localhost", 8080);
-	send(http, sf::Http::Request::Post, "/GameStartedService/add_command", JsonCmd);
-	JsonCmd["sfEventsID"] = arrow_down;
-	JsonCmd["x"] = 145;
-	JsonCmd["y"] = 368;
-	send(http, sf::Http::Request::Post, "/GameStartedService/add_command", JsonCmd);
-	//
-	send(http, sf::Http::Request::Get, "/GameStartedService/get_command", JsonCmd);
+
+	// requests & response
+	Json::Value request_body;
+	sf::Http::Response response;
+
+	request_body["name"] = "Domingo"; request_body["character"] = 200;
+	send(http, sf::Http::Request::Post, "/TeamFormationService/player", request_body);
+	send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
+	send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
+	send(http, sf::Http::Request::Get, "/TeamFormationService", request_body);
+	
+	Json::Value sfjson;
+	sfjson["sfEventsID"] = 101; 		sfjson["x"] = 20;		sfjson["y"] = 30;
+	
+	send(http, sf::Http::Request::Post, "/GameStartedService/add_command/"+player_id, sfjson);
+	send(http, sf::Http::Request::Get, "/GameStartedService/get_command/"+player_id, request_body);
+
+	//Json::Value JsonCmd;
+	//JsonCmd["sfEventsID"] = arrow_up;
+	//JsonCmd["x"] = 187;
+	//JsonCmd["y"] = 210;
+	//sf::Http http("http://localhost", 8080);
+	//send(http, sf::Http::Request::Post, "/GameStartedService/add_command", JsonCmd);
+	//JsonCmd["sfEventsID"] = arrow_down;
+	//JsonCmd["x"] = 145;
+	//JsonCmd["y"] = 368;
+	//send(http, sf::Http::Request::Post, "/GameStartedService/add_command", JsonCmd);
+	////
+	//send(http, sf::Http::Request::Get, "/GameStartedService/get_command", JsonCmd);
 }
 
 /* le thread render/main aura une méthode class whatever pour afficher un menu dans renderwindow.
@@ -402,15 +429,3 @@ Seul le moteur peut modifier l'état pour que cela marche en mode réseau.
 La méthode menu sera appelé par l'engine au premier call de check state ID
 */
 
-// test command to GameStartedService
-//request_body["name"] = "Domingo"; request_body["character"] = 200;
-//send(http, sf::Http::Request::Post, "/TeamFormationService/player", request_body);
-//send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
-//send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
-//send(http, sf::Http::Request::Get, "/TeamFormationService", request_body);
-//
-//Json::Value sfjson;
-//sfjson["sfEventsID"] = 101; 		sfjson["x"] = 20;		sfjson["y"] = 30;
-//
-//send(http, sf::Http::Request::Post, "/GameStartedService/add_command/player0", sfjson);
-//send(http, sf::Http::Request::Get, "/GameStartedService/get_command/player0", request_body);
