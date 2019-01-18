@@ -40,7 +40,7 @@ void test_command(void);
 // Global variables
 std::string player_id; // we set this once we pushed a player in the PlayerDB
 std::string player_name("Joueur 1");
-int character_id;
+int character_id (100);
 
 void enginet(int player_1_type, int player_2_type)
 {
@@ -252,6 +252,19 @@ int main(int argc, char* argv[])
 			//test_command();
 		}
 	}
+	else if (argc == 4)
+	{
+		if (strcmp(argv[1], "network") == 0)
+		{
+			player_name = argv[2];
+			int temp(atoi(argv[3]));
+			if (temp != 100 || temp != 101 || temp != 200)
+				character_id = 100;
+			thread th(connect_client);
+			th.join();
+			//test_command();
+		}
+	}
 	return 0;
 }
 
@@ -333,29 +346,29 @@ void connect_client()
 	Json::Value request_body;
 	sf::Http::Response response;
 
-	// Check the status code and display the result	
-	std::cout << "\nresopnse get field body: " << response.getField("Content-Type") << std::endl;
-	std::cout << "response body: " << response.getBody() << std::endl;
-	std::cout << "response status: " << response.getStatus() << std::endl;
-
 	request_body["name"] = player_name; request_body["character"] = character_id;
 
 	// record the player in PlayerDB
 	response = send(http, sf::Http::Request::Post, "/TeamFormationService/player", request_body);
+	std::cout << "wtf !!!" << endl;
 
 	if (response.getStatus() == sf::Http::Response::Status::Ok)
 	{
 		{
 			Json::Value id_temp;
-			id_temp = response.getBody();
+			Json::Reader jsonReader;
+			if (!jsonReader.parse(response.getBody(), id_temp))
+				return;
 			player_id = id_temp["id"].asString();
+			std::cout << player_id << endl;
 		}
-		send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
-		send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
+		response = send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
+		response = send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
 
 		// all went well: show player DB
-		send(http, sf::Http::Request::Get, "/TeamFormationService", request_body);
-/*		// delete player name from PlayerDB
+		response = send(http, sf::Http::Request::Get, "/TeamFormationService", request_body);
+/*		//Pour livrable 4.2 mais useless
+		// delete player name from PlayerDB
 		cout << "Pressez <entrée> pour continuer (supprimer votre joueur du serveur)\n" << endl;
 		cout << "Press Enter to Continue";
 		//cin.ignore();
