@@ -54,6 +54,7 @@ HttpStatus TeamFormationService::post (const string& url, const Json::Value& in,
 				if (players->addPlayer(in, out) == 0)
 				{
 					service_gameStarted->commandes[out["id"].asString()] = make_shared<CommandDB>();
+					service_gameStarted->players_id.push_back(in["name"].asString());
 					try_to_start();
 				}
 				else
