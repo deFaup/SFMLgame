@@ -4,7 +4,7 @@
 using namespace server;
 using namespace std;
 
-int nb_players(2), nb_characters_by_player(2);
+unsigned int nb_players(2), nb_characters_by_player(2);
 // local functions
 
 

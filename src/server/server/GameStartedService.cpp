@@ -84,7 +84,7 @@ HttpStatus GameStartedService::post (const string& url, const Json::Value& in, J
 			//server->moteur->executeCommandes(); // fait dans un thread !
 
 			Json::Value temp = in;
-			temp["commande"] = "success";
+			//temp["commande"] = "success";
 			commandes[id]->addCommand(temp);
 
 			//for(unsigned int i = 0; i < commandes[id].size(); i++)
