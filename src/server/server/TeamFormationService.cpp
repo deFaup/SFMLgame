@@ -19,7 +19,14 @@ TeamFormationService::~TeamFormationService(){}
 // get Team Formation
 HttpStatus TeamFormationService::get (const string& url, Json::Value& out)
 {
-	out = players->JSONfile;
+	if (url.find("/start", pattern.size()) == pattern.size())
+	{
+		if (try_to_start() == 1)
+			out["start"] = 1;
+	}
+	else out = players->JSONfile;
+
+
 	return HttpStatus::OK;
 }
 
@@ -74,6 +81,7 @@ HttpStatus TeamFormationService::post (const string& url, const Json::Value& in,
 			if (players->deletePlayer(in) == 0)
 				service_gameStarted->commandes.erase(out["id"].asString());
 		}
+		
 	}
 
 	return HttpStatus::OK;
@@ -84,7 +92,7 @@ HttpStatus TeamFormationService::put(Json::Value& out, const Json::Value& in)
 	return HttpStatus::OK;
 }
 
-void TeamFormationService::try_to_start()
+int TeamFormationService::try_to_start()
 {
 	std::cout << "TRY TO START GAME" << std::endl;
 	bool start(true);
@@ -99,4 +107,6 @@ void TeamFormationService::try_to_start()
 	else start = false;
 	if (start)
 		server::AbstractService::gameServer->launch_game(players->JSONfile);
+
+	return start;
 }

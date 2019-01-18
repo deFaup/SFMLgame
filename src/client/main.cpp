@@ -36,6 +36,7 @@ void play_json(Json::Value* json_commandes, engine::GameEngine* gameEngine);
 sf::Http::Response send(sf::Http& client, sf::Http::Request::Method type, const std::string& uri, Json::Value& request_body);
 void connect_client();
 void test_command(void);
+void wait_game_to_start();
 
 // Global variables
 std::string player_id; // we set this once we pushed a player in the PlayerDB
@@ -269,7 +270,8 @@ int main(int argc, char* argv[])
 				character_id = 100;
 			thread th(connect_client);
 			th.join();
-			//test_command();
+
+			wait_game_to_start();
 		}
 	}
 	return 0;
@@ -387,6 +389,30 @@ void connect_client()
 	}
 }
 
+void wait_game_to_start()
+{
+	sf::Http http("10.10.26.128", 8080);
+
+	// requests & response
+	Json::Value request_body;
+	sf::Http::Response response;
+
+	request_body["name"] = player_name; request_body["character"] = character_id;
+	response = send(http, sf::Http::Request::Get, "/start", request_body);
+
+	{
+		Json::Value id_temp;
+		Json::Reader jsonReader;
+		if (!jsonReader.parse(response.getBody(), id_temp))
+			return;
+		int start_ok = id_temp["start"].asBool();
+		std::cout << start_ok << endl;
+
+		//if (!start_ok)
+		//	std::this_thread::sleep_for(std::chrono::milliseconds(500));
+	}
+
+}
 void test_command(void)
 {
 	// Create a new HTTP client
