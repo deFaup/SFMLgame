@@ -349,8 +349,8 @@ sf::Http::Response send(sf::Http& client, sf::Http::Request::Method type, const 
 void connect_client()
 {
 	// Create a new HTTP client
-	//sf::Http http("http://localhost", 8080);
-	sf::Http http("10.10.26.128", 8080);
+	sf::Http http("http://localhost", 8080);
+	//sf::Http http("10.10.26.128", 8080);
 
 	// requests & response
 	Json::Value request_body;
@@ -391,7 +391,9 @@ void connect_client()
 
 void wait_game_to_start()
 {
-	sf::Http http("10.10.26.128", 8080);
+	sf::Http http("http://localhost", 8080);
+
+	//sf::Http http("10.10.26.128", 8080);
 
 	// requests & response
 	Json::Value request_body;
@@ -405,8 +407,9 @@ void wait_game_to_start()
 		Json::Reader jsonReader;
 		if (!jsonReader.parse(response.getBody(), id_temp))
 			return;
-		int start_ok = id_temp["start"].asBool();
+		int start_ok = id_temp["start"].asInt();
 		std::cout << start_ok << endl;
+		std::cout << "where" << endl;
 
 		//if (!start_ok)
 		//	std::this_thread::sleep_for(std::chrono::milliseconds(500));

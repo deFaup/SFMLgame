@@ -7,6 +7,7 @@ using namespace std;
 unsigned int nb_players(2), nb_characters_by_player(2);
 // local functions
 
+bool start(false);
 
 TeamFormationService::TeamFormationService()
 {
@@ -21,7 +22,7 @@ HttpStatus TeamFormationService::get (const string& url, Json::Value& out)
 {
 	if (url.find("/start", pattern.size()) == pattern.size())
 	{
-		if (try_to_start() == 1)
+		if (start)
 			out["start"] = 1;
 	}
 	else out = players->JSONfile;
@@ -62,7 +63,6 @@ HttpStatus TeamFormationService::post (const string& url, const Json::Value& in,
 				{
 					service_gameStarted->commandes[out["id"].asString()] = make_shared<CommandDB>();
 					service_gameStarted->players_id.push_back(in["name"].asString());
-					try_to_start();
 				}
 				else
 					return HttpStatus::BAD_REQUEST;
@@ -73,7 +73,10 @@ HttpStatus TeamFormationService::post (const string& url, const Json::Value& in,
 		
 		//url = "/TeamFormationService/character"
 		else if (url.find("/character", pattern.size()) == pattern.size())
+		{
 			players->addCharacter(in);
+			try_to_start();
+		}
 
 		//url = "/TeamFormationService/delete_player";
 		else if (url.find("/delete_player", pattern.size()) == pattern.size())
@@ -95,16 +98,16 @@ HttpStatus TeamFormationService::put(Json::Value& out, const Json::Value& in)
 int TeamFormationService::try_to_start()
 {
 	std::cout << "TRY TO START GAME" << std::endl;
-	bool start(true);
+
 	if (players->JSONfile["players"].size() == nb_players)
 	{
 		for (auto& elem : players->JSONfile["team"])
 		{
 			if (elem["characters"].size() != nb_characters_by_player)
-				start = false;
+				continue;
 		}
 	}
-	else start = false;
+
 	if (start)
 		server::AbstractService::gameServer->launch_game(players->JSONfile);
 
