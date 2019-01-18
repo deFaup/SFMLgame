@@ -46,11 +46,13 @@ void AI::place_character(engine::GameEngine& moteur)
 
 	if (previous_position.getPositionY() == ia_player->get_current_character()->position.getPositionY())
 	{
-		global::rng.seed(global::dist6(global::rng));
-		int nb_aleatoire = global::dist6(global::rng);
+		//global::rng.seed(global::dist6(global::rng));
+		//int nb_aleatoire = global::dist6(global::rng);
+		srand(time(NULL));
+		int nb_aleatoire = rand() % 350;
 		for (int i = 0; i < nb_aleatoire; i++)
 			moteur.add_command(state::sfEventsID::arrow_right);
-		//moteur.executeCommandes();
+		moteur.executeCommandes();
 
 		state::sfEvents change_character(state::sfEventsID::arrow_up);
 		moteur.add_command(change_character);
