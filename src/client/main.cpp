@@ -350,7 +350,6 @@ void connect_client()
 
 	// record the player in PlayerDB
 	response = send(http, sf::Http::Request::Post, "/TeamFormationService/player", request_body);
-	std::cout << "wtf !!!" << endl;
 
 	if (response.getStatus() == sf::Http::Response::Status::Ok)
 	{
