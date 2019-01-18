@@ -37,20 +37,32 @@ HttpStatus GameStartedService::get (const string& url, Json::Value& out)
 
 HttpStatus GameStartedService::post (const string& url, const Json::Value& in, Json::Value& out)
 {
+
+	cout << "avant l'erreur de segmentation" << endl;
+
 	if (url[pattern.size()] == '/')
 	{
 		std::string add_command("/add_command/");
 		if(url.find(add_command, pattern.size()) == pattern.size())
 		{
+
+			cout << "avant l'erreur de segmentation" << endl;
+
 			std::string id(url, pattern.size() + add_command.size());
 			state::sfEvents com;
+
+			cout << "avant l'erreur de segmentation" << endl;
 
 			com.ID = static_cast<state::sfEventsID>(in["sfEventsID"].asInt());
 			com.mouse_position.setPosition(in["x"].asInt(),in["y"].asInt());
 
+			cout << "avant l'erreur de segmentation" << endl;
+
 			if ((com.ID == state::arrow_left) || (com.ID == state::arrow_right))
 			{
+				cout << "avant l'erreur de segmentation" << endl;
 				engine::Move move_command(com.ID);
+				cout << "avant l'erreur de segmentation" << endl;
 				if (move_command.isLegit(*(gameServer->etat)) == -1) {
 					return HttpStatus::OK;
 				}
@@ -80,6 +92,8 @@ HttpStatus GameStartedService::post (const string& url, const Json::Value& in, J
 					return HttpStatus::OK;
 				}
 			}
+
+			cout << "avant l'erreur de segmentation" << endl;
 
 			gameServer->moteur->add_command(com);
 			//server->moteur->executeCommandes(); // fait dans un thread !
