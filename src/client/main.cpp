@@ -34,7 +34,7 @@ void testSFML() {
 void init_game(state::GameState* etat, int& player_1_type, int& player_2_type);
 void play_json(Json::Value* json_commandes, engine::GameEngine* gameEngine);
 sf::Http::Response send(sf::Http& client, sf::Http::Request::Method type, const std::string& uri, Json::Value& request_body);
-void connect_client(int character_id);
+void connect_client();
 void test_command(void);
 
 // Global variables
@@ -247,7 +247,8 @@ int main(int argc, char* argv[])
 		else if (strcmp(argv[1], "play") == 0) play();
 		else if (strcmp(argv[1], "network") == 0)
 		{
-			thread(connect_client);
+			thread th(connect_client);						
+			th.join();
 			//test_command();
 		}
 	}
