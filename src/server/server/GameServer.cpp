@@ -25,18 +25,17 @@ GameServer::GameServer(state::GameState* etat, engine::GameEngine* moteur) : eta
 	std::cout << "Server created" << std::endl;
 }
 
-void GameServer::launch_game(Json::Value& players)
+void GameServer::launch_game(Json::Value* players)
 {
 	std::cout << "launch_game" << std::endl;
-	std::thread thread_engine;
+	//std::thread thread_engine;
 
 	/* Init game */
-	set_map_players_characters(etat, players);
+	set_map_players_characters(etat, *players);
 
-	thread_engine = std::thread(&engine::GameEngine::workLoop, moteur);
-
-	thread_engine.join();
-	std::cout << "server engine thread closed\n";
+	/*thread_engine = std::thread(&engine::GameEngine::workLoop, moteur);*/
+	/*thread_engine.join();*/
+	/*std::cout << "server engine thread closed\n";*/
 }
 
 void set_map_players_characters(state::GameState* gameState, const Json::Value& players)
@@ -46,17 +45,23 @@ void set_map_players_characters(state::GameState* gameState, const Json::Value& 
 	/* Create players, characters and a map. Will be rewritten when menu is implemented */
 	if (gameState->ID == state::StateID::not_started)
 	{
+		std::cout << "new map begin\n";
 		gameState->new_map(3000, 2000);
+		std::cout << "new map done\n";
 
 		for (auto& elem : players["team"])
 		{
 			int player_no(0);
+			std::cout << "new player begin\n";
 			gameState->new_player(elem["name"].asString());
+			std::cout << "new player ok\n";
 			for (auto& characters : elem["characters"])
 			{
 				gameState->new_character(player_no,
 					static_cast<state::CharactersID>(characters.asInt()));
+			std::cout << "new character ok\n";
 			}
+			
 			player_no++;
 		}
 

@@ -263,11 +263,13 @@ int main(int argc, char* argv[])
 	else if (argc == 4)
 	{
 		if (strcmp(argv[1], "network") == 0)
-		{
+		{ //ex: "bin/client my_name_in_the_game 100"
 			player_name = argv[2];
+			
 			int temp(atoi(argv[3]));
-			if (temp != 100 || temp != 101 || temp != 200)
+			if (temp != 100 && temp != 101 && temp != 200)
 				character_id = 100;
+
 			thread th(connect_client);
 			th.join();
 
@@ -356,7 +358,7 @@ void connect_client()
 	Json::Value request_body;
 	sf::Http::Response response;
 
-	request_body["name"] = player_name; request_body["character"] = character_id;
+	request_body["name"] = player_name; request_body["characters"] = character_id;
 
 	// record the player in PlayerDB
 	response = send(http, sf::Http::Request::Post, "/TeamFormationService/player", request_body);
@@ -399,7 +401,7 @@ void wait_game_to_start()
 	Json::Value request_body;
 	sf::Http::Response response;
 
-	request_body["name"] = player_name; request_body["character"] = character_id;
+	request_body["name"] = player_name; request_body["characters"] = character_id;
 	response = send(http, sf::Http::Request::Get, "/start", request_body);
 
 	{
@@ -425,7 +427,7 @@ void test_command(void)
 	Json::Value request_body;
 	sf::Http::Response response;
 
-	request_body["name"] = "Domingo"; request_body["character"] = 200;
+	request_body["name"] = "Domingo"; request_body["characters"] = 200;
 	send(http, sf::Http::Request::Post, "/TeamFormationService/player", request_body);
 	send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
 	send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);

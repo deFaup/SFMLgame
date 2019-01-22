@@ -1,10 +1,12 @@
 #include "TeamFormationService.h"
+#include "define.hpp"
 #include <iostream>
+#include <thread>
+
 
 using namespace server;
 using namespace std;
 
-unsigned int nb_players(2), nb_characters_by_player(2);
 // local functions
 
 bool start(false);
@@ -27,7 +29,6 @@ HttpStatus TeamFormationService::get (const string& url, Json::Value& out)
 	}
 	else out = players->JSONfile;
 
-
 	return HttpStatus::OK;
 }
 
@@ -42,35 +43,42 @@ HttpStatus TeamFormationService::post (const string& url, const Json::Value& in,
 		{
 			std::string id(url, pattern.size() + set_player.size());
 			Json::Value conv_to_int; conv_to_int[set_player] = id;
-			nb_players = conv_to_int[set_player].asInt();
-			out = conv_to_int;
-		}
+			unsigned int int_id = conv_to_int[set_player].asUInt();
 
+			if (int_id < MAX_NB_PLAYER)
+			{
+				players->nb_players = int_id;
+				out = conv_to_int;
+			}
+			else
+				out = "MAX_NB_PLAYER= " + to_string(MAX_NB_PLAYER);
+		}
 		else if (url.find(set_character, pattern.size()) == pattern.size())
 		{
 			std::string id(url, pattern.size() + set_character.size());
 			Json::Value conv_to_int; conv_to_int[set_character] = id;
-			nb_characters_by_player = conv_to_int[set_character].asInt();
-			out = conv_to_int;
+			unsigned int int_id = conv_to_int[set_character].asUInt();
+
+			if (int_id < MAX_NB_CHARACTER)
+			{
+				players->nb_characters_by_player = int_id;
+				out = conv_to_int;
+			}
+			else
+				out = "MAX_NB_CHARACTER= " + to_string(MAX_NB_CHARACTER);
 		}
 
 		//url = "/TeamFormationService/player";
 		else if (url.find("/player", pattern.size()) == pattern.size())
 		{
-			if (players->JSONfile["players"].size() < nb_players)
+			if (players->addPlayer(in, out) == 0)
 			{
-				if (players->addPlayer(in, out) == 0)
-				{
-					service_gameStarted->commandes[out["id"].asString()] = make_shared<CommandDB>();
-					service_gameStarted->players_id.push_back(in["name"].asString());
-				}
-				else
-					return HttpStatus::BAD_REQUEST;
+				service_gameStarted->commandes[out["id"].asString()] = make_shared<CommandDB>();
+				service_gameStarted->players_id.push_back(in["name"].asString());
 			}
 			else
 				return HttpStatus::BAD_REQUEST;
-		}
-		
+		}	
 		//url = "/TeamFormationService/character"
 		else if (url.find("/character", pattern.size()) == pattern.size())
 		{
@@ -98,18 +106,24 @@ HttpStatus TeamFormationService::put(Json::Value& out, const Json::Value& in)
 int TeamFormationService::try_to_start()
 {
 	std::cout << "TRY TO START GAME" << std::endl;
+	unsigned int count(0);
 
-	if (players->JSONfile["players"].size() == nb_players)
+	if (players->JSONfile["players"].size() == players->nb_players)
 	{
 		for (auto& elem : players->JSONfile["team"])
 		{
-			if (elem["characters"].size() != nb_characters_by_player)
-				continue;
+			if (elem["characters"].size() == players->nb_characters_by_player)
+			{
+				count++; std::cout << elem["name"].asString() << "is OK\n";
+			}
 		}
 	}
 
-	if (start)
-		server::AbstractService::gameServer->launch_game(players->JSONfile);
-
+	if (count == players->nb_players)
+	{
+		start = true;
+		//std::thread(&server::GameServer::launch_game, gameServer, &(players->JSONfile));
+		gameServer->launch_game(&(players->JSONfile));
+	}
 	return start;
 }

@@ -57,6 +57,8 @@ void GameEngine::check_stateID()
 	{
 		cout << "Vous avez remportez le jeu !! Bravo\n";
 	}
+
+	else std::this_thread::sleep_for(std::chrono::milliseconds(420));
 }
 
 void GameEngine::workLoop()

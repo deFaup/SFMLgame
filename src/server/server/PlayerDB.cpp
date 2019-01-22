@@ -27,18 +27,18 @@ using namespace server;
 	//		]
 	//}
 
-PlayerDB::PlayerDB() {}
+PlayerDB::PlayerDB() : nb_players(2), nb_characters_by_player(2) {}
 
 // return -1 if player is already in, -2 if there are too many players and 0 if OK
 // return an id in HTML body when 0
 int PlayerDB::addPlayer(const Json::Value& player, Json::Value& out)
 {
-	/* player is json like this one*/
-	//{
-	//	"name" : "Joueur 2"
-	//}
+	/* player is json like this one
+	{
+		"name" : "Joueur 2"
+	}*/
 
-	if (JSONfile["players"].size() < MAX_NB_PLAYER)
+	if (JSONfile["players"].size() < nb_players)
 	{
 		for (unsigned int i = 0; i < JSONfile["players"].size(); i++)
 		{
@@ -60,19 +60,26 @@ void PlayerDB::addCharacter(const Json::Value& character)
 	/* player is json like this one*/
 	//{
 	//	"name" : "Joueur 2"
-	//	"character" : "103"
+	//	"characters" : "103"
 	//}
 
 	unsigned int index_player;
 	for (index_player = 0; index_player < JSONfile["players"].size(); index_player++)
 	{
 		if (JSONfile["players"][index_player].asString() == character["name"].asString())
-			break;
+		{
+			unsigned int nb_char = JSONfile["team"][index_player]["characters"].size();
+			if (nb_char < nb_characters_by_player)
+			{
+				JSONfile["team"][index_player]["characters"][nb_char] = character["characters"].asInt();
+				break;
+			}
+			// here we could return -1 to say it didn't work like in add_Player
+		}
 	}
-	JSONfile["team"][index_player]["characters"][JSONfile["team"][index_player]["characters"].size()]
-		= character["character"].asInt();
 };
 
+// still need to delete it from the vector in GameStartedService
 int PlayerDB::deletePlayer(const Json::Value& player) 
 {
 	int erno(-1);

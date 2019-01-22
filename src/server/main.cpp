@@ -154,9 +154,14 @@ int begin(uint16_t port)
 	//in Characters::stats & position + Player + GameState
 	gameState.registerObserver(gameServer);
 
+	std::thread thread_engine(&engine::GameEngine::workLoop, &gameEngine);
+
 	// launch the http server in a thread
 	// create services and set them with a pointer to gameServer
 	thread thread_server_listen(server_listen, gameServer, port);
+
+	thread_engine.join();
+	std::cout << "server engine thread closed\n";
 
 	thread_server_listen.join();
 	return 0;

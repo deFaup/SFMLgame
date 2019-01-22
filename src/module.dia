@@ -2848,19 +2848,19 @@
     </dia:object>
     <dia:object type="UML - Class" version="0" id="O14">
       <dia:attribute name="obj_pos">
-        <dia:point val="43.8266,13.9816"/>
+        <dia:point val="43.8266,12.3794"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="43.7766,13.9316;67.0916,20.8316"/>
+        <dia:rectangle val="43.7766,12.3294;67.0916,20.6294"/>
       </dia:attribute>
       <dia:attribute name="elem_corner">
-        <dia:point val="43.8266,13.9816"/>
+        <dia:point val="43.8266,12.3794"/>
       </dia:attribute>
       <dia:attribute name="elem_width">
         <dia:real val="23.215"/>
       </dia:attribute>
       <dia:attribute name="elem_height">
-        <dia:real val="6.7999999999999998"/>
+        <dia:real val="8.1999999999999993"/>
       </dia:attribute>
       <dia:attribute name="name">
         <dia:string>#PlayerDB#</dia:string>
@@ -2949,7 +2949,54 @@
       <dia:attribute name="comment_font_height">
         <dia:real val="0.69999999999999996"/>
       </dia:attribute>
-      <dia:attribute name="attributes"/>
+      <dia:attribute name="attributes">
+        <dia:composite type="umlattribute">
+          <dia:attribute name="name">
+            <dia:string>#nb_players#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="type">
+            <dia:string>#unsigned int#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="value">
+            <dia:string>##</dia:string>
+          </dia:attribute>
+          <dia:attribute name="comment">
+            <dia:string>##</dia:string>
+          </dia:attribute>
+          <dia:attribute name="visibility">
+            <dia:enum val="0"/>
+          </dia:attribute>
+          <dia:attribute name="abstract">
+            <dia:boolean val="false"/>
+          </dia:attribute>
+          <dia:attribute name="class_scope">
+            <dia:boolean val="false"/>
+          </dia:attribute>
+        </dia:composite>
+        <dia:composite type="umlattribute">
+          <dia:attribute name="name">
+            <dia:string>#nb_characters_by_player#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="type">
+            <dia:string>#unsigned int#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="value">
+            <dia:string>##</dia:string>
+          </dia:attribute>
+          <dia:attribute name="comment">
+            <dia:string>##</dia:string>
+          </dia:attribute>
+          <dia:attribute name="visibility">
+            <dia:enum val="0"/>
+          </dia:attribute>
+          <dia:attribute name="abstract">
+            <dia:boolean val="false"/>
+          </dia:attribute>
+          <dia:attribute name="class_scope">
+            <dia:boolean val="false"/>
+          </dia:attribute>
+        </dia:composite>
+      </dia:attribute>
       <dia:attribute name="operations">
         <dia:composite type="umloperation">
           <dia:attribute name="name">
@@ -3555,16 +3602,16 @@
         <dia:point val="43.8091,22.896"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="42.9591,20.664;55.4841,22.946"/>
+        <dia:rectangle val="42.9591,20.5628;55.4841,22.946"/>
       </dia:attribute>
       <dia:attribute name="meta">
         <dia:composite type="dict"/>
       </dia:attribute>
       <dia:attribute name="orth_points">
         <dia:point val="43.8091,22.896"/>
-        <dia:point val="43.8091,21.464"/>
-        <dia:point val="55.4341,21.464"/>
-        <dia:point val="55.4341,20.832"/>
+        <dia:point val="43.8091,21.3628"/>
+        <dia:point val="55.4341,21.3628"/>
+        <dia:point val="55.4341,20.6297"/>
       </dia:attribute>
       <dia:attribute name="orth_orient">
         <dia:enum val="1"/>
@@ -3588,7 +3635,7 @@
       </dia:attribute>
       <dia:connections>
         <dia:connection handle="0" to="O12" connection="12"/>
-        <dia:connection handle="1" to="O14" connection="20"/>
+        <dia:connection handle="1" to="O14" connection="24"/>
       </dia:connections>
     </dia:object>
     <dia:object type="UML - Class" version="0" id="O18">
@@ -3902,7 +3949,7 @@
                 <dia:string>#players#</dia:string>
               </dia:attribute>
               <dia:attribute name="type">
-                <dia:string>#Json::Value&amp;#</dia:string>
+                <dia:string>#Json::Value*#</dia:string>
               </dia:attribute>
               <dia:attribute name="value">
                 <dia:string>##</dia:string>
