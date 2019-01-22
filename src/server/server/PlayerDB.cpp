@@ -55,7 +55,7 @@ int PlayerDB::addPlayer(const Json::Value& player, Json::Value& out)
 	else return -2;
 }
 
-void PlayerDB::addCharacter(const Json::Value& character) 
+int PlayerDB::addCharacter(const Json::Value& character) 
 {
 	/* player is json like this one*/
 	//{
@@ -72,11 +72,12 @@ void PlayerDB::addCharacter(const Json::Value& character)
 			if (nb_char < nb_characters_by_player)
 			{
 				JSONfile["team"][index_player]["characters"][nb_char] = character["characters"].asInt();
-				break;
+				return 0;
 			}
-			// here we could return -1 to say it didn't work like in add_Player
+			else return -1;
 		}
 	}
+	return -2;
 };
 
 // still need to delete it from the vector in GameStartedService

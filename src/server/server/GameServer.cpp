@@ -28,14 +28,7 @@ GameServer::GameServer(state::GameState* etat, engine::GameEngine* moteur) : eta
 void GameServer::launch_game(Json::Value* players)
 {
 	std::cout << "launch_game" << std::endl;
-	//std::thread thread_engine;
-
-	/* Init game */
 	set_map_players_characters(etat, *players);
-
-	/*thread_engine = std::thread(&engine::GameEngine::workLoop, moteur);*/
-	/*thread_engine.join();*/
-	/*std::cout << "server engine thread closed\n";*/
 }
 
 void set_map_players_characters(state::GameState* gameState, const Json::Value& players)
@@ -49,9 +42,9 @@ void set_map_players_characters(state::GameState* gameState, const Json::Value& 
 		gameState->new_map(3000, 2000);
 		std::cout << "new map done\n";
 
+		int player_no(0);
 		for (auto& elem : players["team"])
 		{
-			int player_no(0);
 			std::cout << "new player begin\n";
 			gameState->new_player(elem["name"].asString());
 			std::cout << "new player ok\n";

@@ -82,8 +82,8 @@ HttpStatus TeamFormationService::post (const string& url, const Json::Value& in,
 		//url = "/TeamFormationService/character"
 		else if (url.find("/character", pattern.size()) == pattern.size())
 		{
-			players->addCharacter(in);
-			try_to_start();
+			if (players->addCharacter(in) == 0)
+				try_to_start();
 		}
 
 		//url = "/TeamFormationService/delete_player";
