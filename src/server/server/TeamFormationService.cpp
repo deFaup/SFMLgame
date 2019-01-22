@@ -39,7 +39,7 @@ HttpStatus TeamFormationService::post (const string& url, const Json::Value& in,
 		std::string set_player("/set_player/");
 		std::string set_character("/set_character/");
 
-		if (url.find(set_player, pattern.size()) == pattern.size())
+		if (url.find(set_player, pattern.size()) == pattern.size() && !start)
 		{
 			std::string id(url, pattern.size() + set_player.size());
 			Json::Value conv_to_int; conv_to_int[set_player] = id;
@@ -53,7 +53,7 @@ HttpStatus TeamFormationService::post (const string& url, const Json::Value& in,
 			else
 				out = "MAX_NB_PLAYER= " + to_string(MAX_NB_PLAYER);
 		}
-		else if (url.find(set_character, pattern.size()) == pattern.size())
+		else if (url.find(set_character, pattern.size()) == pattern.size() && !start)
 		{
 			std::string id(url, pattern.size() + set_character.size());
 			Json::Value conv_to_int; conv_to_int[set_character] = id;
