@@ -37,9 +37,6 @@ HttpStatus GameStartedService::get (const string& url, Json::Value& out)
 
 HttpStatus GameStartedService::post (const string& url, const Json::Value& in, Json::Value& out)
 {
-
-	cout << "avant l'erreur de segmentation" << endl;
-
 	if (url[pattern.size()] == '/')
 	{
 		std::string add_command("/add_command/");
@@ -121,8 +118,16 @@ HttpStatus GameStartedService::post (const string& url, const Json::Value& in, J
 			}*/
 			return HttpStatus::OK;
 		}
+
+		else if (url.find("/stop", pattern.size()) == pattern.size())
+		{
+			gameServer->moteur->game_ended = true;
+			gameServer->etat->ID = state::StateID::end;
+		}
+
 		else return HttpStatus::BAD_REQUEST;
 	}
 	else return HttpStatus::NOT_IMPLEMENTED;
 	
+	return HttpStatus::OK;
 }

@@ -38,26 +38,19 @@ void set_map_players_characters(state::GameState* gameState, const Json::Value& 
 	/* Create players, characters and a map. Will be rewritten when menu is implemented */
 	if (gameState->ID == state::StateID::not_started)
 	{
-		std::cout << "new map begin\n";
 		gameState->new_map(3000, 2000);
-		std::cout << "new map done\n";
 
 		int player_no(0);
 		for (auto& elem : players["team"])
 		{
-			std::cout << "new player begin\n";
 			gameState->new_player(elem["name"].asString());
-			std::cout << "new player ok\n";
 			for (auto& characters : elem["characters"])
 			{
 				gameState->new_character(player_no,
 					static_cast<state::CharactersID>(characters.asInt()));
-			std::cout << "new character ok\n";
 			}
-			
 			player_no++;
 		}
-
 		gameState->ID = state::StateID::team_selected;
 	}
 }
