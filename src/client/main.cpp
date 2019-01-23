@@ -427,13 +427,15 @@ void test_command(void)
 	
 	Json::Value sfjson;
 	sfjson["sfEventsID"] = 101; 		sfjson["x"] = 20;		sfjson["y"] = 30;
-	
-	send(http, sf::Http::Request::Post, "/GameStartedService/add_command/"+player_id, sfjson);
-	cout << "command sent to " << player_id << endl;
-	cout << "command = " << "/GameStartedService/get_command/" + player_id << endl;
+	sfjson["id"] = player_id;
+
+	send(http, sf::Http::Request::Post, "/GameStartedService/add_command/", sfjson);
+	//send(http, sf::Http::Request::Post, "/GameStartedService/add_command/" + player_id, sfjson);
+	//cout << "command sent to " << player_id << endl;
+	//cout << "command = " << "/GameStartedService/get_command/" + player_id << endl;
 
 	send(http, sf::Http::Request::Get, "/GameStartedService/get_command/" + player_id, request_body);
-	send(http, sf::Http::Request::Get, "/GameStartedService/get_command/player0", request_body);
+	send(http, sf::Http::Request::Get, "/GameStartedService/get_command/A", request_body);
 
 	//Json::Value JsonCmd;
 	//JsonCmd["sfEventsID"] = arrow_up;

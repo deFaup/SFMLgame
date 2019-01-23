@@ -25,12 +25,13 @@ HttpStatus GameStartedService::get (const string& url, Json::Value& out)
 		if(url.find(get_command, pattern.size()) == pattern.size())
 		{
 			std::string id(url, pattern.size() + get_command.size());
-			out["welcome to the game"] = "not started";
-			// jusqu'ici aucun probleme
-			out = commandes[id]->getCommand();	
-		}
-		// 
 
+			for (auto& players : players_id) //check if the players exist-- need a function for that as it should be done everywhere
+			{
+				if (players == id)
+					out = commandes[id]->getCommand();
+			}
+		}
 	}
 	return HttpStatus::OK;
 }
@@ -40,35 +41,25 @@ HttpStatus GameStartedService::post (const string& url, const Json::Value& in, J
 	if (url[pattern.size()] == '/')
 	{
 		std::string add_command("/add_command/");
-		if(url.find(add_command, pattern.size()) == pattern.size())
+		if (url.find(add_command, pattern.size()) == pattern.size())
 		{
-			cout << "1" << endl;
-
-			std::string id(url, pattern.size() + add_command.size());
 			state::sfEvents com;
-
-			cout << "2" << endl;
-
 			com.ID = static_cast<state::sfEventsID>(in["sfEventsID"].asInt());
-			com.mouse_position.setPosition(in["x"].asInt(),in["y"].asInt());
-
-			cout << "3" << endl;
+			com.mouse_position.setPosition(in["x"].asInt(), in["y"].asInt());
 
 			if ((com.ID == state::arrow_left) || (com.ID == state::arrow_right))
 			{
-				cout << "4" << endl;
+				//cout << "4" << endl;
 				engine::Move move_command(com.ID);
-				cout << "5" << endl;
+				//cout << "5" << endl;
 				if (move_command.isLegit(*(gameServer->etat)) == -1) {
 					return HttpStatus::OK;
 				}
 			}
-
 			else if (gameServer->etat->ID != state::started || com.ID == state::num1 || com.ID == state::num2 || com.ID == state::num3 || com.ID == state::num4 || com.ID == state::num5)
 			{
 				return HttpStatus::OK;
 			}
-
 			else if (com.ID == state::num1 || com.ID == state::num2 || com.ID == state::num3 || com.ID == state::num4 || com.ID == state::num5)
 			{
 				engine::Attack attack_command;
@@ -89,35 +80,33 @@ HttpStatus GameStartedService::post (const string& url, const Json::Value& in, J
 				}
 			}
 
-			cout << "6" << endl;
-
 			gameServer->moteur->add_command(com);
-			cout << "7" << endl;
 			//server->moteur->executeCommandes(); // fait dans un thread !
 
-			//Json::Value temp = in;
-			//temp["commande"] = "success";
-			//commandes[id]->addCommand(temp);
-
-			// Ca ça ne marche pas!! jusqu'a 8
-			//for(unsigned int i = 0; i < players_id.size(); i++)
-			//{
-			//	if(players_id[i] != id)
-			//	{
-			//		Json::Value json = in;
-			//		commandes[players_id[i]]->addCommand(json);
-			//	}
-			//}
-			cout << "8" << endl;
+			//std::cout << "server processing " << in["id"].asString() << std::endl;
+			for (auto& players: players_id)
+			{
+				//std::cout << players << std::endl;
+				if (players != in["id"].asString())
+				{
+					//std::cout << "ennemy: " << players << std::endl;
+					//std::cout << "add cmd: " << in << std::endl;
+					Json::Value json_cmd = in;
+					//std::cout << "json cmd: " << json_cmd << std::endl;
+					commandes[players]->addCommand(json_cmd);
+					//std::cout << "new json cmd: " << commandes[players]->JSONfile << std::endl;
+				}
+			}
+			//cout << "8" << endl;
 
 			/*for (std::map<char,int>::const_iterator it=commandes.begin(); it == commandes.end(); ++it)
 			{
-				//std::cout << it->first << " => " << it->second << '\n';
-				if(it->first != id)
-				{
-					Json::Value json = in;
-					(it->second)->addCommand(json);
-				}
+			//std::cout << it->first << " => " << it->second << '\n';
+			if(it->first != id)
+			{
+			Json::Value json = in;
+			(it->second)->addCommand(json);
+			}
 			}*/
 			return HttpStatus::OK;
 		}

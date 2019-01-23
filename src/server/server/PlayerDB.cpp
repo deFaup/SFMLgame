@@ -48,8 +48,10 @@ int PlayerDB::addPlayer(const Json::Value& player, Json::Value& out)
 		JSONfile["players"][JSONfile["players"].size()] = player["name"].asString();
 		JSONfile["team"][JSONfile["team"].size()]["name"] = player["name"].asString();
 
-		static unsigned short int i(0);
-		out["id"] = "player"+ std::to_string(i++);
+		//static unsigned short int i(0);
+		//out["id"] = "player" + std::to_string(i++); // OLD ID SYSTEM
+		
+		out["id"] = player["name"].asString(); // new system: id=name as names are unique
 		return 0;
 	}
 	else return -2;

@@ -26,15 +26,12 @@ CommandDB::CommandDB() {}
 
 Json::Value& CommandDB::getCommand()
 {
-	std::cout << "in CommandDB: " << JSONfile << std::endl;
 	return JSONfile;
 }
 
 void CommandDB::addCommand(Json::Value& commande)
 {
-	static int i = 0;
-	JSONfile["commandes"][i] = commande;
-	i++;
+	JSONfile["commandes"][JSONfile["commandes"].size()] = commande;
 	return;
 }
 
