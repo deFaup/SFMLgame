@@ -31,7 +31,10 @@ Json::Value& CommandDB::getCommand()
 
 void CommandDB::addCommand(Json::Value& commande)
 {
+	std::cout << "in addCommand, cmd size: " << JSONfile["commandes"].size() << std::endl;
 	JSONfile["commandes"][JSONfile["commandes"].size()] = commande;
+	std::cout << "in addCommand, new cmd size: " << JSONfile["commandes"].size() << std::endl;
+
 	return;
 }
 

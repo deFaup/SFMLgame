@@ -83,13 +83,13 @@ HttpStatus GameStartedService::post (const string& url, const Json::Value& in, J
 			gameServer->moteur->add_command(com);
 			//server->moteur->executeCommandes(); // fait dans un thread !
 
-			//std::cout << "server processing " << in["id"].asString() << std::endl;
+			std::cout << "server processing " << in["id"].asString() << std::endl;
 			for (auto& players: players_id)
 			{
-				//std::cout << players << std::endl;
+				std::cout << players << std::endl;
 				if (players != in["id"].asString())
 				{
-					//std::cout << "ennemy: " << players << std::endl;
+					std::cout << "ennemy: " << players << std::endl;
 					//std::cout << "add cmd: " << in << std::endl;
 					Json::Value json_cmd = in;
 					//std::cout << "json cmd: " << json_cmd << std::endl;
