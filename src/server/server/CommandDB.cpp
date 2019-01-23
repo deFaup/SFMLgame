@@ -1,4 +1,5 @@
 #include "CommandDB.h"
+#include <iostream>
 
 using namespace server;
 using namespace std;
@@ -25,6 +26,7 @@ CommandDB::CommandDB() {}
 
 Json::Value& CommandDB::getCommand()
 {
+	std::cout << "in CommandDB: " << JSONfile << std::endl;
 	return JSONfile;
 }
 

@@ -37,6 +37,9 @@ sf::Http::Response send(sf::Http& client, sf::Http::Request::Method type, const 
 void connect_client();
 void test_command(void);
 void wait_game_to_start();
+void add_player_and_get_id();
+void add_character();
+void show_playerDB();
 
 // Global variables
 std::string player_id; // we set this once we pushed a player in the PlayerDB
@@ -267,6 +270,7 @@ int main(int argc, char* argv[])
 			player_name = argv[2];
 			
 			int temp(atoi(argv[3]));
+			std::cout << "character_id = " << temp << endl;
 			if (temp != 100 && temp != 101 && temp != 200)
 				character_id = 100;
 
@@ -350,34 +354,21 @@ sf::Http::Response send(sf::Http& client, sf::Http::Request::Method type, const 
 
 void connect_client()
 {
-	// Create a new HTTP client
-	sf::Http http("http://localhost", 8080);
-	//sf::Http http("10.10.26.128", 8080);
+	add_player_and_get_id();
+	add_character();
+	add_character();
+	show_playerDB();
 
-	// requests & response
-	Json::Value request_body;
-	sf::Http::Response response;
+	//sf::Http http("http://localhost", 8080);
+	//Json::Value request_body;
+	//sf::Http::Response response;
 
-	request_body["name"] = player_name; request_body["characters"] = character_id;
+	//request_body["name"] = player_name; request_body["characters"] = character_id;
+	//response = send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
+	//response = send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
 
-	// record the player in PlayerDB
-	response = send(http, sf::Http::Request::Post, "/TeamFormationService/player", request_body);
-
-	if (response.getStatus() == sf::Http::Response::Status::Ok)
-	{
-		{
-			Json::Value id_temp;
-			Json::Reader jsonReader;
-			if (!jsonReader.parse(response.getBody(), id_temp))
-				return;
-			player_id = id_temp["id"].asString();
-			std::cout << player_id << endl;
-		}
-		response = send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
-		response = send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
-
-		// all went well: show player DB
-		response = send(http, sf::Http::Request::Get, "/TeamFormationService", request_body);
+	//// all went well: show player DB
+	//response = send(http, sf::Http::Request::Get, "/TeamFormationService", request_body);
 /*		//Pour livrable 4.2 mais useless
 		// delete player name from PlayerDB
 		cout << "Pressez <entrée> pour continuer (supprimer votre joueur du serveur)\n" << endl;
@@ -388,7 +379,7 @@ void connect_client()
 		//show PlayerDB
 		send(http, sf::Http::Request::Get, "/TeamFormationService", request_body);
 */
-	}
+
 }
 
 void wait_game_to_start()
@@ -420,24 +411,29 @@ void wait_game_to_start()
 }
 void test_command(void)
 {
+	player_name = "Domingo"; character_id = 200;
+	add_player_and_get_id();
+	add_character();
+	add_character();
+	show_playerDB();
+
 	// Create a new HTTP client
 	sf::Http http("http://localhost", 8080);
 
 	// requests & response
 	Json::Value request_body;
 	sf::Http::Response response;
-
-	request_body["name"] = "Domingo"; request_body["characters"] = 200;
-	send(http, sf::Http::Request::Post, "/TeamFormationService/player", request_body);
-	send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
-	send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
-	send(http, sf::Http::Request::Get, "/TeamFormationService", request_body);
+	request_body["name"] = player_name; request_body["characters"] = character_id;
 	
 	Json::Value sfjson;
 	sfjson["sfEventsID"] = 101; 		sfjson["x"] = 20;		sfjson["y"] = 30;
 	
 	send(http, sf::Http::Request::Post, "/GameStartedService/add_command/"+player_id, sfjson);
-	send(http, sf::Http::Request::Get, "/GameStartedService/get_command/"+player_id, request_body);
+	cout << "command sent to " << player_id << endl;
+	cout << "command = " << "/GameStartedService/get_command/" + player_id << endl;
+
+	send(http, sf::Http::Request::Get, "/GameStartedService/get_command/" + player_id, request_body);
+	send(http, sf::Http::Request::Get, "/GameStartedService/get_command/player0", request_body);
 
 	//Json::Value JsonCmd;
 	//JsonCmd["sfEventsID"] = arrow_up;
@@ -460,3 +456,39 @@ Seul le moteur peut modifier l'état pour que cela marche en mode réseau.
 La méthode menu sera appelé par l'engine au premier call de check state ID
 */
 
+void add_player_and_get_id()
+{
+	sf::Http http("http://localhost", 8080);
+	sf::Http::Response response;
+	Json::Value request_body;
+	request_body["name"] = player_name; request_body["characters"] = character_id;
+
+	response = send(http, sf::Http::Request::Post, "/TeamFormationService/player", request_body);
+
+	Json::Value id_temp;
+	Json::Reader jsonReader;
+	if (!jsonReader.parse(response.getBody(), id_temp))
+		return;
+	player_id = id_temp["id"].asString();
+	std::cout << "player_id = " << player_id << endl;
+}
+
+void add_character()
+{
+	sf::Http http("http://localhost", 8080);
+	sf::Http::Response response;
+	Json::Value request_body;
+
+	request_body["name"] = player_name; request_body["characters"] = character_id;
+	response = send(http, sf::Http::Request::Post, "/TeamFormationService/character", request_body);
+}
+
+void show_playerDB()
+{
+	sf::Http http("http://localhost", 8080);
+	sf::Http::Response response;
+	Json::Value request_body;
+
+	request_body["name"] = player_name; request_body["characters"] = character_id;
+	response = send(http, sf::Http::Request::Get, "/TeamFormationService", request_body);
+}

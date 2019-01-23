@@ -42,24 +42,23 @@ HttpStatus GameStartedService::post (const string& url, const Json::Value& in, J
 		std::string add_command("/add_command/");
 		if(url.find(add_command, pattern.size()) == pattern.size())
 		{
-
-			cout << "avant l'erreur de segmentation" << endl;
+			cout << "1" << endl;
 
 			std::string id(url, pattern.size() + add_command.size());
 			state::sfEvents com;
 
-			cout << "avant l'erreur de segmentation" << endl;
+			cout << "2" << endl;
 
 			com.ID = static_cast<state::sfEventsID>(in["sfEventsID"].asInt());
 			com.mouse_position.setPosition(in["x"].asInt(),in["y"].asInt());
 
-			cout << "avant l'erreur de segmentation" << endl;
+			cout << "3" << endl;
 
 			if ((com.ID == state::arrow_left) || (com.ID == state::arrow_right))
 			{
-				cout << "avant l'erreur de segmentation" << endl;
+				cout << "4" << endl;
 				engine::Move move_command(com.ID);
-				cout << "avant l'erreur de segmentation" << endl;
+				cout << "5" << endl;
 				if (move_command.isLegit(*(gameServer->etat)) == -1) {
 					return HttpStatus::OK;
 				}
@@ -90,23 +89,27 @@ HttpStatus GameStartedService::post (const string& url, const Json::Value& in, J
 				}
 			}
 
-			cout << "avant l'erreur de segmentation" << endl;
+			cout << "6" << endl;
 
 			gameServer->moteur->add_command(com);
+			cout << "7" << endl;
 			//server->moteur->executeCommandes(); // fait dans un thread !
 
 			//Json::Value temp = in;
 			//temp["commande"] = "success";
 			//commandes[id]->addCommand(temp);
 
-			for(unsigned int i = 0; i < players_id.size(); i++)
-			{
-				if(players_id[i] != id)
-				{
-					Json::Value json = in;
-					commandes[players_id[i]]->addCommand(json);
-				}
-			}
+			// Ca ça ne marche pas!! jusqu'a 8
+			//for(unsigned int i = 0; i < players_id.size(); i++)
+			//{
+			//	if(players_id[i] != id)
+			//	{
+			//		Json::Value json = in;
+			//		commandes[players_id[i]]->addCommand(json);
+			//	}
+			//}
+			cout << "8" << endl;
+
 			/*for (std::map<char,int>::const_iterator it=commandes.begin(); it == commandes.end(); ++it)
 			{
 				//std::cout << it->first << " => " << it->second << '\n';
