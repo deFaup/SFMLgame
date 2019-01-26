@@ -33,5 +33,11 @@
 #define PLAY 6
 
 #define JSON_FILENAME "replay.json"
+
+// define for network
+#define GET  0
+#define POST 1
+#define PUT  2
+
 #endif	/* DEFINE_H_ */
 

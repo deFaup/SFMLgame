@@ -1,13 +1,19 @@
 /* Includes */
 #include <iostream>
 #include "define.hpp"
+#include "global_mutex.hpp"
+
 #include "Controller.h"
 #include <string>
+#include <SFML/Network.hpp>
 
 using namespace std;
 //using namespace state;
 using namespace render;
-using namespace engine;
+//using namespace engine;
+
+extern Json::Value conv_event_to_json(state::sfEvents& to_export);
+extern bool send_command(Json::Value& request_body);
 
 Controller::Controller(sf::RenderWindow& renderWindow, engine::GameEngine& engine, state::GameState& gameState) 
 	: renderWindow(renderWindow), engine(engine), gameState(gameState) {}
@@ -93,7 +99,20 @@ void Controller::handle_sfEvents(sf::Event& event)
 
 }
 
+// no need to put a reference as I declare the sfEvents inside the call of the function (see above)
 void Controller::add_command(state::sfEvents sf_event)
 {
+	if (engine.network_active)
+		// convertir en json
+		// envoyer au serveur
+		// attendre la réponse
+		// si réponse ajouter la commande
+	{
+		Json::Value cmd = conv_event_to_json(sf_event);
+		bool response = send_command(cmd);
+		if (!response)
+			return;
+	}
+	
 	engine.add_command(sf_event);
 }

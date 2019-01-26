@@ -15,8 +15,9 @@ using namespace engine;
 using namespace std;
 
 int speedp[10] = {0};
+Json::Value conv_event_to_json(state::sfEvents& to_export);
 
-GameEngine::GameEngine(state::GameState* etat) : etat(etat), updating(false){}
+GameEngine::GameEngine(state::GameState* etat) : etat(etat), updating(false), network_active(false){}
 
 void GameEngine::check_stateID()
 {
@@ -86,8 +87,8 @@ void GameEngine::executeCommandes()
 			ChangePlayer useless_var;
 			useless_var.execute(*etat);
 			global::next_player_cv.notify_all();
-			if (JSONActive)
-				export_json(commandes.front());
+			//if (JSONActive)
+			//	export_json(commandes.front());
 			if (etat->ID == started && rollbackActive)
 				executed.push_back(commandes.front());
 		}
@@ -97,8 +98,8 @@ void GameEngine::executeCommandes()
 			Move move_command(commandes.front().ID);
 			if (move_command.isLegit(*etat) != -1) {
 				move_command.execute(*etat);
-				if (JSONActive)
-					export_json(commandes.front());
+				//if (JSONActive)
+				//	export_json(commandes.front());
 				if (etat->ID == started && rollbackActive)
 					executed.push_back(commandes.front());
 			}
@@ -108,8 +109,8 @@ void GameEngine::executeCommandes()
 		{
 			ChangeCharacter useless_var;
 			useless_var.execute(*etat);
-			if (JSONActive)
-				export_json(commandes.front());
+			//if (JSONActive)
+			//	export_json(commandes.front());
 			if (etat->ID == started && rollbackActive)
 				executed.push_back(commandes.front());
 		}
@@ -118,8 +119,8 @@ void GameEngine::executeCommandes()
 		{
 			if (etat->ID == started)
 			{
-				if (JSONActive)
-					export_json(commandes.front());
+				//if (JSONActive)
+				//	export_json(commandes.front());
 				/*if(rollbackActive)
 				{
 				while(!executed.empty())
@@ -173,8 +174,8 @@ void GameEngine::executeCommandes()
 				updating = true; // we forbid any call to scene.draw in main.cpp
 				if (attack_command.isLegit(*etat) != -1)
 				{
-					if (JSONActive)
-						export_json(commandes.front());
+					//if (JSONActive)
+					//	export_json(commandes.front());
 					if (rollbackActive)
 					{
 						previous_mask.push_back(etat->map.get_mask());
@@ -230,6 +231,13 @@ void GameEngine::place_characters_with_mouse()
 
 void GameEngine::add_command(state::sfEvents commande)
 {
+	if (JSONActive)
+	{
+		static int i = 0;
+		global::json_commandes["commandes"][i] = conv_event_to_json(commande);
+		i++;
+	}
+
 	commandes.push(commande);
 }
 
@@ -352,15 +360,35 @@ void GameEngine::rollback(void){
 
 void GameEngine::set_updating(bool true_false) { updating = true_false; }
 
-void GameEngine::export_json(state::sfEvents to_export)
-{
-	static int i = 0;
+//void GameEngine::export_json(state::sfEvents& to_export)
+//{
+//	static int i = 0;
+//
+//	Json::Value JsonCmd;
+//	JsonCmd["id"] = global::player_id;
+//	JsonCmd["sfEventsID"] = to_export.ID;
+//	JsonCmd["x"] = to_export.mouse_position.getPositionX();
+//	JsonCmd["y"] = to_export.mouse_position.getPositionY();
+//
+//	if (JSONActive)
+//	{
+//		global::json_commandes["commandes"][i] = JsonCmd;
+//		i++;
+//	}
+//	else if (network_active)
+//	{
+//		//send_command(JsonCmd); // si reponse est BAD alors on ajoute rien sinon on ajoute à la queue
+//	}
+//}
 
+Json::Value conv_event_to_json(state::sfEvents& to_export)
+{
 	Json::Value JsonCmd;
+	JsonCmd["id"] = global::player_id;
 	JsonCmd["sfEventsID"] = to_export.ID;
 	JsonCmd["x"] = to_export.mouse_position.getPositionX();
 	JsonCmd["y"] = to_export.mouse_position.getPositionY();
 
-	global::json_commandes["commandes"][i] = JsonCmd;
-	i++;
+	return JsonCmd;
 }
+

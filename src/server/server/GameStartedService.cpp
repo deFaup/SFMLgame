@@ -40,12 +40,18 @@ HttpStatus GameStartedService::post (const string& url, const Json::Value& in, J
 {
 	if (url[pattern.size()] == '/')
 	{
+		//std::cout << "game service: " << url <<"\n";
+
 		std::string add_command("/add_command/");
 		if (url.find(add_command, pattern.size()) == pattern.size())
 		{
+			// 1. conv to json
+			// 2. check if the client has the right to send commands
+			// 3. return OK if he can (+legit cmd) else no
 			state::sfEvents com;
 			com.ID = static_cast<state::sfEventsID>(in["sfEventsID"].asInt());
 			com.mouse_position.setPosition(in["x"].asInt(), in["y"].asInt());
+			//std::cout << "add_command OK\n";
 
 			if ((com.ID == state::arrow_left) || (com.ID == state::arrow_right))
 			{
@@ -53,13 +59,14 @@ HttpStatus GameStartedService::post (const string& url, const Json::Value& in, J
 				engine::Move move_command(com.ID);
 				//cout << "5" << endl;
 				if (move_command.isLegit(*(gameServer->etat)) == -1) {
-					return HttpStatus::OK;
+					return HttpStatus::BAD_REQUEST;
 				}
 			}
-			else if (gameServer->etat->ID != state::started || com.ID == state::num1 || com.ID == state::num2 || com.ID == state::num3 || com.ID == state::num4 || com.ID == state::num5)
-			{
-				return HttpStatus::OK;
-			}
+			//else if (gameServer->etat->ID != state::started || com.ID == state::num1 || com.ID == state::num2 || com.ID == state::num3 || com.ID == state::num4 || com.ID == state::num5)
+			//{
+			// inutile fait par l'engine
+			//	return HttpStatus::OK;
+			//}
 			else if (com.ID == state::num1 || com.ID == state::num2 || com.ID == state::num3 || com.ID == state::num4 || com.ID == state::num5)
 			{
 				engine::Attack attack_command;
@@ -76,7 +83,7 @@ HttpStatus GameStartedService::post (const string& url, const Json::Value& in, J
 					attack_command.attack_number = 4;
 				if (attack_command.isLegit(*(gameServer->etat)) == -1)
 				{
-					return HttpStatus::OK;
+					return HttpStatus::BAD_REQUEST;
 				}
 			}
 
@@ -99,22 +106,15 @@ HttpStatus GameStartedService::post (const string& url, const Json::Value& in, J
 			}
 			//cout << "8" << endl;
 
-			/*for (std::map<char,int>::const_iterator it=commandes.begin(); it == commandes.end(); ++it)
-			{
-			//std::cout << it->first << " => " << it->second << '\n';
-			if(it->first != id)
-			{
-			Json::Value json = in;
-			(it->second)->addCommand(json);
-			}
-			}*/
 			return HttpStatus::OK;
 		}
 
 		else if (url.find("/stop", pattern.size()) == pattern.size())
 		{
+			//std::cout << "stop\n";
 			gameServer->moteur->game_ended = true;
 			gameServer->etat->ID = state::StateID::end;
+			return HttpStatus::OK;
 		}
 
 		else return HttpStatus::BAD_REQUEST;
