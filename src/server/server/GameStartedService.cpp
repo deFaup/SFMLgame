@@ -32,6 +32,15 @@ HttpStatus GameStartedService::get (const string& url, Json::Value& out)
 					out = commandes[id]->getCommand();
 			}
 		}
+		
+		else if (url.find("/stop", pattern.size()) == pattern.size())
+		{
+			//std::cout << "stop\n";
+			gameServer->moteur->game_ended = true;
+			gameServer->etat->ID = state::StateID::end;
+			return HttpStatus::OK;
+		}
+
 	}
 	return HttpStatus::OK;
 }
@@ -106,14 +115,6 @@ HttpStatus GameStartedService::post (const string& url, const Json::Value& in, J
 			}
 			//cout << "8" << endl;
 
-			return HttpStatus::OK;
-		}
-
-		else if (url.find("/stop", pattern.size()) == pattern.size())
-		{
-			//std::cout << "stop\n";
-			gameServer->moteur->game_ended = true;
-			gameServer->etat->ID = state::StateID::end;
 			return HttpStatus::OK;
 		}
 

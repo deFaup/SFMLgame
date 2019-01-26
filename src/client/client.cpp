@@ -6,7 +6,7 @@
 
 //#include "state.h"
 //#include "engine.h"
-//#include <thread>
+#include <thread>
 #include <SFML/Network.hpp>
 
 sf::Http::Response send(int type, const std::string& uri, Json::Value& request_body);
@@ -69,6 +69,7 @@ void connect_client()
 	add_character();
 	add_character();
 	show_playerDB();
+	std::cout << "client connected\n";
 
 	/*		//Pour livrable 4.2 mais useless
 	// delete player name from PlayerDB
@@ -80,28 +81,32 @@ void connect_client()
 	//show PlayerDB
 	send(http, sf::Http::Request::Get, "/TeamFormationService", request_body);
 	*/
+
 }
 
 void wait_game_to_start()
 {
-	// requests & response
 	Json::Value request_body;
 	sf::Http::Response response;
 
-	request_body["name"] = global::player_name; request_body["characters"] = global::character_id;
-	response = send(GET, "/start", request_body);
+	response = send(GET, "TeamFormationService/start", request_body);
 
+	Json::Value id_temp;
+	Json::Reader jsonReader;
+
+	if (!jsonReader.parse(response.getBody(), id_temp))
 	{
-		Json::Value id_temp;
-		Json::Reader jsonReader;
-		if (!jsonReader.parse(response.getBody(), id_temp))
-			return;
-		int start_ok = id_temp["start"].asInt();
-		std::cout << start_ok << "\n";
-		std::cout << "where\n";
+		return;
+	}
 
-		//if (!start_ok)
-		//	std::this_thread::sleep_for(std::chrono::milliseconds(500));
+	int start_ok = id_temp["start"].asBool();
+	std::cout << start_ok << "\n";
+
+	if (!start_ok)
+	{
+		std::this_thread::sleep_for(std::chrono::milliseconds(500));
+		std::cout << "not enough client to start game\n";
+		wait_game_to_start();
 	}
 
 }

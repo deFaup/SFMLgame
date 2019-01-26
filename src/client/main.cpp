@@ -77,7 +77,6 @@ void enginet(int player_1_type, int player_2_type)
 	
 	/* Init game */
 	init_game(&etat, player_1_type, player_2_type);
-	//engine.init_game(player_2_type);
 	
 	/* config AI */
 	shared_ptr<AI> ai_1(0); std::thread thread_ai_1;
@@ -265,9 +264,7 @@ int main(int argc, char* argv[])
 			if (temp != 100 && temp != 101 && temp != 200)
 				global::character_id = 100;
 
-			thread th(connect_client);
-			th.join();
-
+			connect_client();
 			wait_game_to_start();
 		}
 	}

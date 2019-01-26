@@ -24,8 +24,7 @@ HttpStatus TeamFormationService::get (const string& url, Json::Value& out)
 {
 	if (url.find("/start", pattern.size()) == pattern.size())
 	{
-		if (start)
-			out["start"] = 1;
+		out["start"] = start;
 	}
 	else out = players->JSONfile;
 
