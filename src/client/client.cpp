@@ -88,28 +88,26 @@ void wait_game_to_start()
 {
 	Json::Value request_body;
 	sf::Http::Response response;
-
-	response = send(GET, "TeamFormationService/start", request_body);
-
 	Json::Value id_temp;
 	Json::Reader jsonReader;
+	int start_ok(0);
 
-	if (!jsonReader.parse(response.getBody(), id_temp))
+	while (!start_ok)
 	{
-		return;
-	}
-
-	int start_ok = id_temp["start"].asBool();
-	std::cout << start_ok << "\n";
-
-	if (!start_ok)
-	{
-		std::this_thread::sleep_for(std::chrono::milliseconds(500));
 		std::cout << "not enough client to start game\n";
-		wait_game_to_start();
-	}
+		std::this_thread::sleep_for(std::chrono::milliseconds(500));
+		response = send(GET, "TeamFormationService/start", request_body);
 
+		if (!jsonReader.parse(response.getBody(), id_temp))
+		{
+			return;
+		}
+
+		start_ok = id_temp["start"].asBool();
+		//std::cout << start_ok << "\n";
+	}
 }
+
 void test_command(void)
 {
 	global::player_name = "Domingo"; global::character_id = 200;

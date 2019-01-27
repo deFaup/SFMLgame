@@ -262,8 +262,9 @@ int main(int argc, char* argv[])
 			int temp(atoi(argv[3]));
 			std::cout << "character_id = " << temp << endl;
 			if (temp != 100 && temp != 101 && temp != 200)
+			{
 				global::character_id = 100;
-
+			}
 			connect_client();
 			wait_game_to_start();
 		}
