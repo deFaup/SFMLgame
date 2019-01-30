@@ -8,6 +8,8 @@
 using namespace server;
 using namespace std;
 
+extern state::sfEvents conv_json_to_event(const Json::Value& json_cmd);
+
 GameStartedService::GameStartedService()
 {
 	server::AbstractService::pattern = "/GameStartedService";
@@ -54,19 +56,19 @@ HttpStatus GameStartedService::post (const string& url, const Json::Value& in, J
 		std::string add_command("/add_command/");
 		if (url.find(add_command, pattern.size()) == pattern.size())
 		{
-			// 1. conv to json
+			// 1. conv from json to sfEvents
 			// 2. check if the client has the right to send commands
 			// 3. return OK if he can (+legit cmd) else no
-			state::sfEvents com;
-			com.ID = static_cast<state::sfEventsID>(in["sfEventsID"].asInt());
-			com.mouse_position.setPosition(in["x"].asInt(), in["y"].asInt());
+
+			state::sfEvents com (conv_json_to_event(in));
+
+			//com.ID = static_cast<state::sfEventsID>(in["sfEventsID"].asInt());
+			//com.mouse_position.setPosition(in["x"].asInt(), in["y"].asInt());
 			//std::cout << "add_command OK\n";
 
 			if ((com.ID == state::arrow_left) || (com.ID == state::arrow_right))
 			{
-				//cout << "4" << endl;
 				engine::Move move_command(com.ID);
-				//cout << "5" << endl;
 				if (move_command.isLegit(*(gameServer->etat)) == -1) {
 					return HttpStatus::BAD_REQUEST;
 				}

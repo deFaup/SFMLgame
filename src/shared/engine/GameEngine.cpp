@@ -391,4 +391,12 @@ Json::Value conv_event_to_json(state::sfEvents& to_export)
 
 	return JsonCmd;
 }
+state::sfEvents conv_json_to_event(const Json::Value& json_cmd)
+{
+	state::sfEvents command;
+	command.ID = static_cast<state::sfEventsID>(json_cmd["sfEventsID"].asInt());
+	command.mouse_position.setPosition(json_cmd["x"].asInt(), json_cmd["y"].asInt());
+
+	return command;
+}
 

@@ -24,9 +24,11 @@ forme du JSON :
 
 CommandDB::CommandDB() {}
 
-Json::Value& CommandDB::getCommand()
+Json::Value CommandDB::getCommand()
 {
-	return JSONfile;
+	Json::Value temp = JSONfile;
+	JSONfile.clear();
+	return temp;
 }
 
 void CommandDB::addCommand(Json::Value& commande)

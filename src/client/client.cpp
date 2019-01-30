@@ -63,14 +63,26 @@ sf::Http::Response send(int type, const std::string& uri, Json::Value& request_b
 	}
 
 	// Send the request
-	sf::Http::Response response = http.sendRequest(request);
-
-	return response;
+	return http.sendRequest(request);
 }
 bool send_command(Json::Value& request_body)
 {
 	sf::Http::Response response(send(POST, "/GameStartedService/add_command/", request_body));
 	return (response.getStatus() != sf::Http::Response::Ok) ? false:true;
+}
+Json::Value get_commands()
+{
+	Json::Value request_body;
+	sf::Http::Response response(send(GET, "/GameStartedService/get_command/"+global::player_id, request_body));
+	Json::Value JSONfile;
+	Json::Reader jsonReader;
+
+	if (!jsonReader.parse(response.getBody(), JSONfile))
+	{
+		std::cout << "can't parse in client.cpp get_commands()\n";
+		return JSONfile;
+	}
+	return JSONfile;
 }
 
 void connect_client()
@@ -123,7 +135,7 @@ void game_network()
 	connect_client();
 	wait_game_to_start();
 	menu();
-/*
+
 	sf::RenderWindow renderWindow;
 	state::GameState etat;
 	engine::GameEngine engine(&etat); engine.network_active = true; std::thread thread_engine;
@@ -132,7 +144,16 @@ void game_network()
 
 	registerObservers(etat, scene);
 	set_map_players_characters(&etat, team_info);
-*/}
+
+	scene->background.new_background_layer();
+	scene->characters.new_character_layer();
+
+	thread_engine = std::thread(&engine::GameEngine::workLoop, &engine);
+	RenderWindow_isOpen(renderWindow, engine, controller, scene);
+
+	thread_engine.join();
+	std::cout << "engine thread closed\n";
+}
 
 void test_command(void)
 {

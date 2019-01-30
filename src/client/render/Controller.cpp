@@ -13,7 +13,10 @@ using namespace render;
 //using namespace engine;
 
 extern Json::Value conv_event_to_json(state::sfEvents& to_export);
+extern state::sfEvents conv_json_to_event(const Json::Value& json_cmd);
+
 extern bool send_command(Json::Value& request_body);
+extern Json::Value get_commands();
 
 Controller::Controller(sf::RenderWindow& renderWindow, engine::GameEngine& engine, state::GameState& gameState) 
 	: renderWindow(renderWindow), engine(engine), gameState(gameState) {}
@@ -26,7 +29,22 @@ void Controller::handle_sfEvents(sf::Event& event)
 		engine.game_ended = true;
 	}
 	
-	if (engine.etat->ID == state::StateID::started)
+	if (engine.network_active)
+	{
+		// if we are in a multiplayer network mode then we get the commands when it's not our turn to play
+		// add them to our engine
+		// then return
+		if (gameState.current_player->name != global::player_id)
+		{
+			Json::Value JSONfile = get_commands();
+			for (auto& cmd : JSONfile["commandes"])
+			{
+				engine.add_command(conv_json_to_event(cmd));
+			}
+			return;
+		}
+	}	
+	else// (engine.etat->ID == state::StateID::started)
 	{
 		if (gameState.current_player->name == AI_1 ||
 			gameState.current_player->name == AI_2 ||
@@ -52,7 +70,6 @@ void Controller::handle_sfEvents(sf::Event& event)
 		else if (event.key.code == sf::Keyboard::Down)
 			add_command(state::sfEvents(state::sfEventsID::arrow_down));
 	}
-
 	else if (event.type == sf::Event::KeyReleased)
 	{
 		if (event.key.code == sf::Keyboard::Space)
@@ -82,7 +99,6 @@ void Controller::handle_sfEvents(sf::Event& event)
 		else if (event.key.code == sf::Keyboard::Num5 || event.key.code == sf::Keyboard::Numpad5)
 			add_command(state::sfEvents(state::sfEventsID::num5));
 	}
-
 	else if (event.type == sf::Event::MouseButtonReleased)
 	{
 		if (event.mouseButton.button == sf::Mouse::Left)
@@ -111,7 +127,10 @@ void Controller::add_command(state::sfEvents sf_event)
 		Json::Value cmd = conv_event_to_json(sf_event);
 		bool response = send_command(cmd);
 		if (!response)
+		{
+			std::cout << "command not added to the server engine\n";
 			return;
+		}
 	}
 	
 	engine.add_command(sf_event);
