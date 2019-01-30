@@ -79,8 +79,8 @@ void GameEngine::executeCommandes()
 	while (!commandes.empty())
 	{
 		updating = true; // we execute each command one by one and others threads are paused
-		std::cout << "GameEngine::executeCommandes; commandes.size() = " << commandes.size() << endl;
-		std::cout << "commandes.ID = " << commandes.front().ID << endl;
+		//std::cout << "GameEngine::executeCommandes; commandes.size() = " << commandes.size() << endl;
+		//std::cout << "commandes.ID = " << commandes.front().ID << endl;
 
 		if (commandes.front().ID == enter)
 		{

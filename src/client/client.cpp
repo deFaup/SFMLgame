@@ -1,25 +1,36 @@
 #include <iostream>
 #include <string>	//string
+#include <thread>
+#include <SFML/Network.hpp>
+#include <SFML/Graphics.hpp>
 
 #include "define.hpp"
 #include "global_mutex.hpp"
+#include "state.h"
+#include "render.h"
+#include "engine.h"
+#include "ai.h"
 
-//#include "state.h"
-//#include "engine.h"
-#include <thread>
-#include <SFML/Network.hpp>
+static void RenderWindow_isOpen(sf::RenderWindow& renderWindow, engine::GameEngine& engine,
+	render::Controller& controller, std::shared_ptr<render::Scene>& scene);
+extern void menu();
+static void registerObservers(state::GameState& etat, std::shared_ptr<render::Scene>& scene); 
 
 sf::Http::Response send(int type, const std::string& uri, Json::Value& request_body);
 bool send_command(Json::Value& request_body);
 void connect_client();
-void test_command(void);
 void wait_game_to_start();
+void game_network();
+
+void test_command(void);
 void add_player_and_get_id();
 void add_character();
 void show_playerDB();
+static void set_map_players_characters(state::GameState* gameState, const Json::Value& players);
 
+/********** Global variables *************/
 sf::Http http("http://localhost", 8080);
-//sf::Http http("10.10.26.128", 8080);
+Json::Value team_info;
 
 sf::Http::Response send(int type, const std::string& uri, Json::Value& request_body)
 {
@@ -56,7 +67,6 @@ sf::Http::Response send(int type, const std::string& uri, Json::Value& request_b
 
 	return response;
 }
-
 bool send_command(Json::Value& request_body)
 {
 	sf::Http::Response response(send(POST, "/GameStartedService/add_command/", request_body));
@@ -81,9 +91,7 @@ void connect_client()
 	//show PlayerDB
 	send(http, sf::Http::Request::Get, "/TeamFormationService", request_body);
 	*/
-
 }
-
 void wait_game_to_start()
 {
 	Json::Value request_body;
@@ -91,7 +99,7 @@ void wait_game_to_start()
 	Json::Value id_temp;
 	Json::Reader jsonReader;
 	int start_ok(0);
-
+	// loop until we have reached the good number of players and characters (defined in TeamFormationService)
 	while (!start_ok)
 	{
 		std::cout << "not enough client to start game\n";
@@ -99,14 +107,32 @@ void wait_game_to_start()
 		response = send(GET, "TeamFormationService/start", request_body);
 
 		if (!jsonReader.parse(response.getBody(), id_temp))
-		{
 			return;
-		}
 
 		start_ok = id_temp["start"].asBool();
-		//std::cout << start_ok << "\n";
 	}
+	// get the JSON with team information
+	response = send(GET, "TeamFormationService", request_body);
+	if (!jsonReader.parse(response.getBody(), team_info))
+		return;
+	std::cout << team_info << "\n";
 }
+
+void game_network()
+{
+	connect_client();
+	wait_game_to_start();
+	menu();
+/*
+	sf::RenderWindow renderWindow;
+	state::GameState etat;
+	engine::GameEngine engine(&etat); engine.network_active = true; std::thread thread_engine;
+	render::Controller controller(renderWindow, engine, etat);
+	std::shared_ptr<render::Scene> scene = std::make_shared<render::Scene>(renderWindow, etat);
+
+	registerObservers(etat, scene);
+	set_map_players_characters(&etat, team_info);
+*/}
 
 void test_command(void)
 {
@@ -158,4 +184,54 @@ void show_playerDB()
 
 	request_body["name"] = global::player_name; request_body["characters"] = global::character_id;
 	response = send(GET, "/TeamFormationService", request_body);
+}
+
+// same as in GameStartedService
+void set_map_players_characters(state::GameState* gameState, const Json::Value& players)
+{
+	global::rng.seed(std::random_device()());
+
+	/* Create players, characters and a map. Will be rewritten when menu is implemented */
+	if (gameState->ID == state::StateID::not_started)
+	{
+		gameState->new_map(3000, 2000);
+
+		int player_no(0);
+		for (auto& elem : players["team"])
+		{
+			gameState->new_player(elem["name"].asString());
+			for (auto& characters : elem["characters"])
+			{
+				gameState->new_character(player_no,
+					static_cast<state::CharactersID>(characters.asInt()));
+			}
+			player_no++;
+		}
+		gameState->ID = state::StateID::team_selected;
+	}
+}
+
+// same as in main.cpp
+inline void RenderWindow_isOpen(sf::RenderWindow& renderWindow, engine::GameEngine& engine, 
+	render::Controller& controller, std::shared_ptr<render::Scene>& scene)
+{
+	while (renderWindow.isOpen())
+	{
+		renderWindow.display();
+		sf::Event event;
+		while (renderWindow.pollEvent(event))
+			controller.handle_sfEvents(event);
+
+		renderWindow.clear();
+		while (engine.updating) {}
+		scene->draw(); // wonder if we can get a segfault if engine.updating changes to true in between		
+	}
+}
+inline void registerObservers(state::GameState& etat, std::shared_ptr<render::Scene>& scene)
+{
+	/* Linking the observer to each observable */
+	//in Characters::stats & position + Player + Map + GameState
+	etat.registerObserver(scene);
+	etat.map.registerObserver(scene);
+	std::cout << "main: observers listed\n\n";
 }

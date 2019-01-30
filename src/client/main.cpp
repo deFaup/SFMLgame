@@ -31,51 +31,31 @@ void testSFML() {
 /*************************************************************/
 
 void init_game(state::GameState* etat, int& player_1_type, int& player_2_type);
-void play_json(Json::Value* json_commandes, engine::GameEngine* gameEngine);
-extern void connect_client();
+void RenderWindow_isOpen(
+	sf::RenderWindow& renderWindow, GameEngine& engine, Controller& controller, shared_ptr<Scene>& scene);
+void menu();
+void registerObservers(state::GameState& etat, std::shared_ptr<render::Scene>& scene);
+
+// mode: network (client.cpp)
+extern void game_network();
 extern void test_command(void);
-extern void wait_game_to_start();
 
+// mode: play
+void play();
+void play_json(Json::Value* json_commandes, engine::GameEngine* gameEngine);
 
+// mode: local
 void enginet(int player_1_type, int player_2_type)
 {
-	sf::RenderWindow renderWindow(sf::VideoMode(1102,869), "menu test");
+	menu();
 
-	/* Menu begin */
-	sf::Texture pic; 
-	pic.loadFromFile("res/menu.png");
-	sf::Sprite menu_sprite(pic);
-
-	bool Return_key_pressed(false);
-	while (!Return_key_pressed)
-	{
-		sf::Event event;
-		while (renderWindow.pollEvent(event))
-		{
-			if (event.type == sf::Event::KeyReleased)
-			{
-				if (event.key.code == sf::Keyboard::Return)
-					Return_key_pressed = true;
-			}
-		}
-		renderWindow.draw(menu_sprite);
-		renderWindow.display();
-		renderWindow.clear();
-	}
-	/* Menu end */
-
+	sf::RenderWindow renderWindow;
 	GameState etat;
 	GameEngine engine(&etat); std::thread thread_engine;
 	Controller controller(renderWindow, engine, etat);
 	shared_ptr<Scene> scene = make_shared<Scene>(renderWindow, etat);
 
-	/* Linking the observer to each observable */
-	//in Characters::stats & position + Player + Map + GameState
-	etat.registerObserver(scene);
-	etat.map.registerObserver(scene);
-	cout << "main: observers listed\n" << endl;
-	
-	/* Init game */
+	registerObservers(etat, scene);
 	init_game(&etat, player_1_type, player_2_type);
 	
 	/* config AI */
@@ -126,20 +106,8 @@ void enginet(int player_1_type, int player_2_type)
 	if (ai_2)
 		thread_ai_2 = thread(&ai::DeepAI::workloop, ai_2);
 
-	while (renderWindow.isOpen())
-	{
-		renderWindow.display();
+	RenderWindow_isOpen(renderWindow, engine, controller, scene);
 
-		// Process events
-		sf::Event event;
-		while (renderWindow.pollEvent(event))
-			controller.handle_sfEvents(event);
-
-		renderWindow.clear();
-		while (engine.updating) {}
-		scene->draw(); // wonder if we can get a segfault if engine.updating changes to true in between		
-	}
-	
 	thread_engine.join();
 	cout << "engine thread closed\n";
 
@@ -148,57 +116,6 @@ void enginet(int player_1_type, int player_2_type)
 	cout << "ai thread closed\n";
 }
 
-void play()
-{
-	sf::RenderWindow renderWindow;
-
-	GameState etat;
-	GameEngine engine(&etat); std::thread thread_engine;
-	Controller controller(renderWindow, engine, etat);
-	shared_ptr<Scene> scene = make_shared<Scene>(renderWindow, etat);
-
-	/* Linking the observer to each observable */
-	//in Characters::stats & position + Player + Map + GameState
-	etat.registerObserver(scene);
-	etat.map.registerObserver(scene);
-	cout << "main: observers listed\n" << endl;
-
-	/* Init game */
-	int real = REAL;
-	init_game(&etat, real, real);
-	scene->background.new_background_layer();
-	scene->characters.new_character_layer();
-
-	//laucnh engine thread
-	//thread_engine = thread(&engine::GameEngine::workLoop, &engine);
-
-	// get commands from JSON
-	std::ifstream json_in_file;
-	json_in_file.open(JSON_FILENAME);
-	json_in_file >> global::json_commandes;
-	json_in_file.close();
-
-	// launch play json thread
-	thread thread_json(play_json, &global::json_commandes, &engine);
-
-	while (renderWindow.isOpen())
-	{
-		renderWindow.display();
-
-		// Process events
-		sf::Event event;
-		while (renderWindow.pollEvent(event))
-			controller.handle_sfEvents(event);
-
-		renderWindow.clear();
-		while (engine.updating) {}
-		scene->draw(); // wonder if we can get a segfault if engine.updating changes to true in between		
-	}
-
-	thread_json.join();
-	//thread_engine.join();
-	cout << "engine thread closed\n";
-}
 
 int main(int argc, char* argv[])
 {
@@ -214,38 +131,27 @@ int main(int argc, char* argv[])
 			//testPlayer();
 			//testGameState();
 		}
-
 		else if (strcmp(argv[1], "render") == 0)
 		{
 			testSFML();
 			//rendering();
 			//render_state();
 		}
-
 		else if (strcmp(argv[1], "engine") == 0)	enginet(REAL, REAL);
-	
 		else if (strcmp(argv[1], "random_ai") == 0)	enginet(REAL, RANDOM_AI);
-
 		else if (strcmp(argv[1], "heuristic_ai") == 0)	enginet(REAL, HEURISTIC_AI);
-		
 		else if (strcmp(argv[1], "deep_ai") == 0)	enginet(REAL, DEEP_AI);
 		else if (strcmp(argv[1], "rollback") == 0)	enginet(HEURISTIC_AI, HEURISTIC_AI);
-
 		else if (strcmp(argv[1], "test") == 0)
 		{
 			result_statistics();
 			result_position();
 		}
-
 		else if (strcmp(argv[1], "thread") == 0) enginet(HEURISTIC_AI, HEURISTIC_AI);
 		else if (strcmp(argv[1], "play") == 0) play();
-		else if (strcmp(argv[1], "network") == 0)
-		{
-			thread th(connect_client);						
-			th.join();
-			//test_command();
-		}
+		else if (strcmp(argv[1], "network") == 0) game_network();
 	}
+
 	else if (argc == 3)
 	{
 		if (strcmp(argv[1], "network") == 0 && strcmp(argv[2], "test") == 0)
@@ -265,8 +171,7 @@ int main(int argc, char* argv[])
 			{
 				global::character_id = 100;
 			}
-			connect_client();
-			wait_game_to_start();
+			game_network();
 		}
 	}
 	return 0;
@@ -300,6 +205,90 @@ void init_game(state::GameState* etat, int& player_1_type, int& player_2_type)
 	}
 }
 
+void menu()
+{
+	sf::RenderWindow renderWindow(sf::VideoMode(1102, 869), "menu test");
+
+	/* Menu begin */
+	sf::Texture pic;
+	pic.loadFromFile("res/menu.png");
+	sf::Sprite menu_sprite(pic);
+
+	bool Return_key_pressed(false);
+	while (!Return_key_pressed)
+	{
+		sf::Event event;
+		while (renderWindow.pollEvent(event))
+		{
+			if (event.type == sf::Event::KeyReleased)
+			{
+				if (event.key.code == sf::Keyboard::Return)
+					Return_key_pressed = true;
+			}
+		}
+		renderWindow.draw(menu_sprite);
+		renderWindow.display();
+		renderWindow.clear();
+	}
+	/* Menu end */
+}
+
+inline void RenderWindow_isOpen(sf::RenderWindow& renderWindow, engine::GameEngine& engine,
+	render::Controller& controller, std::shared_ptr<render::Scene>& scene)
+{
+	while (renderWindow.isOpen())
+	{
+		renderWindow.display();
+		sf::Event event;
+		while (renderWindow.pollEvent(event))
+			controller.handle_sfEvents(event);
+
+		renderWindow.clear();
+		while (engine.updating) {}
+		scene->draw(); // wonder if we can get a segfault if engine.updating changes to true in between		
+	}
+}
+inline void registerObservers(state::GameState& etat, std::shared_ptr<render::Scene>& scene)
+{
+	/* Linking the observer to each observable */
+	//in Characters::stats & position + Player + Map + GameState
+	etat.registerObserver(scene);
+	etat.map.registerObserver(scene);
+	std::cout << "main: observers listed\n\n";
+}
+
+/************** PLAY functions (done after server RECORD) **************/
+void play()
+{
+	sf::RenderWindow renderWindow;
+
+	state::GameState etat;
+	engine::GameEngine engine(&etat); std::thread thread_engine;
+	render::Controller controller(renderWindow, engine, etat);
+	std::shared_ptr<render::Scene> scene = std::make_shared<render::Scene>(renderWindow, etat);
+
+	registerObservers(etat, scene);
+
+	/* Init game */
+	int real = REAL;
+	init_game(&etat, real, real);
+	scene->background.new_background_layer();
+	scene->characters.new_character_layer();
+
+	// get commands from JSON
+	std::ifstream json_in_file;
+	json_in_file.open(JSON_FILENAME);
+	json_in_file >> global::json_commandes;
+	json_in_file.close();
+
+	// launch play json thread
+	std::thread thread_json(play_json, &global::json_commandes, &engine);
+
+	RenderWindow_isOpen(renderWindow, engine, controller, scene);
+
+	thread_json.join();
+	std::cout << "json thread closed\n";
+}
 void play_json(Json::Value* json_commandes, engine::GameEngine* gameEngine)
 {
 	// Iterate over the sequence elements.
@@ -309,20 +298,13 @@ void play_json(Json::Value* json_commandes, engine::GameEngine* gameEngine)
 	for (unsigned int index = 0; index < json_cmd["commandes"].size(); ++index)
 	{
 		Json::Value cmd = json_cmd["commandes"][index];
-		
+
 		state::sfEvents ev;
-		ev.ID = static_cast<sfEventsID>(cmd["sfEventsID"].asInt());
-		ev.mouse_position.increaseX( cmd["x"].asInt() );
-		ev.mouse_position.increaseY( cmd["y"].asInt() );
+		ev.ID = static_cast<state::sfEventsID>(cmd["sfEventsID"].asInt());
+		ev.mouse_position.increaseX(cmd["x"].asInt());
+		ev.mouse_position.increaseY(cmd["y"].asInt());
 
 		gameEngine->add_command(ev);
 		gameEngine->check_stateID();
 	}
 }
-
-/* le thread render/main aura une méthode class whatever pour afficher un menu dans renderwindow.
-Dans le menu on choisit le nombre de joueurs et de personnages + autres paramètres si besoin.
-Ensuite tous ces paramètres sont transmis au gameEngine qui va ensuite modifier le state.
-Seul le moteur peut modifier l'état pour que cela marche en mode réseau.
-La méthode menu sera appelé par l'engine au premier call de check state ID
-*/

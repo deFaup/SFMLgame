@@ -113,7 +113,7 @@ int TeamFormationService::try_to_start()
 		{
 			if (elem["characters"].size() == players->nb_characters_by_player)
 			{
-				count++; std::cout << elem["name"].asString() << " is OK\n";
+				count++; std::cout << elem["name"].asString() << " has enough characters to play\n";
 			}
 		}
 	}
