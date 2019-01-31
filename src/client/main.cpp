@@ -47,6 +47,20 @@ void play_json(Json::Value* json_commandes, engine::GameEngine* gameEngine);
 // mode: local
 void enginet(int player_1_type, int player_2_type)
 {
+	// in local mode we set the seed here
+	global::server_seed = std::random_device()();
+	global::rng.seed(global::server_seed);
+	std::cout << "server_seed = " << global::server_seed << "\n";
+	int nb_aleatoire = global::dist6(global::rng);
+	cout << nb_aleatoire << endl;
+	nb_aleatoire = global::dist6(global::rng);
+	cout << nb_aleatoire << endl;
+	nb_aleatoire = global::dist6(global::rng);
+	cout << nb_aleatoire << endl;
+	nb_aleatoire = global::dist6(global::rng);
+	cout << nb_aleatoire << endl;
+	std::cout << "random = " << global::server_seed << "\n";
+
 	menu();
 
 	sf::RenderWindow renderWindow;

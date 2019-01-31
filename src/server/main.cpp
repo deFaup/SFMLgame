@@ -40,6 +40,9 @@ int main(int argc, char* argv[])
 
 int begin(uint16_t port)
 {
+	global::server_seed = std::random_device()();
+	global::rng.seed(global::server_seed);
+
 	state::GameState gameState;
 	engine::GameEngine gameEngine(&gameState);
 

@@ -399,4 +399,3 @@ state::sfEvents conv_json_to_event(const Json::Value& json_cmd)
 
 	return command;
 }
-

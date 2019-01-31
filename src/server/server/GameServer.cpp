@@ -33,8 +33,6 @@ void GameServer::launch_game(Json::Value* players)
 
 void set_map_players_characters(state::GameState* gameState, const Json::Value& players)
 {
-	global::rng.seed(std::random_device()());
-
 	/* Create players, characters and a map. Will be rewritten when menu is implemented */
 	if (gameState->ID == state::StateID::not_started)
 	{

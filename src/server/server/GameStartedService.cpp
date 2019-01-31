@@ -31,7 +31,10 @@ HttpStatus GameStartedService::get (const string& url, Json::Value& out)
 			for (auto& players : players_id) //check if the players exist-- need a function for that as it should be done everywhere
 			{
 				if (players == id)
+				{
 					out = commandes[id]->getCommand();
+					break;
+				}
 			}
 		}
 		
@@ -56,15 +59,10 @@ HttpStatus GameStartedService::post (const string& url, const Json::Value& in, J
 		std::string add_command("/add_command/");
 		if (url.find(add_command, pattern.size()) == pattern.size())
 		{
-			// 1. conv from json to sfEvents
-			// 2. check if the client has the right to send commands
-			// 3. return OK if he can (+legit cmd) else no
+			// 1. conv json in to sfEvents
+			// 2. return OK if the client's command is legit else no
 
 			state::sfEvents com (conv_json_to_event(in));
-
-			//com.ID = static_cast<state::sfEventsID>(in["sfEventsID"].asInt());
-			//com.mouse_position.setPosition(in["x"].asInt(), in["y"].asInt());
-			//std::cout << "add_command OK\n";
 
 			if ((com.ID == state::arrow_left) || (com.ID == state::arrow_right))
 			{

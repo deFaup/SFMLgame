@@ -1,5 +1,7 @@
 #include "TeamFormationService.h"
 #include "define.hpp"
+#include "global_mutex.hpp"
+
 #include <iostream>
 #include <thread>
 
@@ -25,6 +27,10 @@ HttpStatus TeamFormationService::get (const string& url, Json::Value& out)
 	if (url.find("/start", pattern.size()) == pattern.size())
 	{
 		out["start"] = start;
+	}
+	else if (url.find("/seed", pattern.size()) == pattern.size())
+	{
+		out["seed"] = global::server_seed;
 	}
 	else out = players->JSONfile;
 

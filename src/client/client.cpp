@@ -26,6 +26,7 @@ void test_command(void);
 void add_player_and_get_id();
 void add_character();
 void show_playerDB();
+void get_seed();
 static void set_map_players_characters(state::GameState* gameState, const Json::Value& players);
 
 /********** Global variables *************/
@@ -91,6 +92,7 @@ void connect_client()
 	add_character();
 	add_character();
 	show_playerDB();
+	get_seed();
 	std::cout << "client connected\n";
 
 	/*		//Pour livrable 4.2 mais useless
@@ -123,13 +125,9 @@ void wait_game_to_start()
 
 		start_ok = id_temp["start"].asBool();
 	}
-	// get the JSON with team information
-	response = send(GET, "TeamFormationService", request_body);
-	if (!jsonReader.parse(response.getBody(), team_info))
-		return;
-	std::cout << team_info << "\n";
+	
+	show_playerDB();	
 }
-
 void game_network()
 {
 	connect_client();
@@ -202,16 +200,33 @@ void show_playerDB()
 {
 	sf::Http::Response response;
 	Json::Value request_body;
+	Json::Reader jsonReader;
+
+	response = send(GET, "/TeamFormationService", request_body);
+	if (!jsonReader.parse(response.getBody(), team_info))
+		return;
+	std::cout << team_info << "\n";
+}
+void get_seed()
+{
+	sf::Http::Response response;
+	Json::Value request_body;
 
 	request_body["name"] = global::player_name; request_body["characters"] = global::character_id;
-	response = send(GET, "/TeamFormationService", request_body);
+	response = send(GET, "/seed", request_body);
+
+	Json::Reader jsonReader;
+	if (!jsonReader.parse(response.getBody(), request_body))
+		return;
+
+	global::server_seed = request_body["seed"].asUInt();
+	global::rng.seed(global::server_seed);
+	std::cout << "server_seed = " << global::server_seed << "\n";
 }
 
 // same as in GameStartedService
 void set_map_players_characters(state::GameState* gameState, const Json::Value& players)
 {
-	global::rng.seed(std::random_device()());
-
 	/* Create players, characters and a map. Will be rewritten when menu is implemented */
 	if (gameState->ID == state::StateID::not_started)
 	{

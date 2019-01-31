@@ -22,6 +22,7 @@ namespace global
 
 	extern std::mt19937 rng;
 	extern std::uniform_int_distribution<std::mt19937::result_type> dist6;
+	extern unsigned int server_seed;
 
 	/* Network variables */
 	extern std::string player_id;
