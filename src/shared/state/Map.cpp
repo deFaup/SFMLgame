@@ -1,6 +1,5 @@
 #include <iostream>
 #include <SFML/Window.hpp> //getDesktopMode
-#include <ctime>	// time
 #include <cstdlib>	// rand srand
 
 #include "define.hpp"
@@ -64,17 +63,18 @@ void Map::create_mask ()
 	fill_mask_with_x(mask,1);
 
 	/* Intializes random number generator */
+	srand(global::server_seed);
 	//srand(time(NULL));
 
 	/* Starting with the first column and random row */
 	int x(0), y(0);
-	global::dist6 = std::uniform_int_distribution<std::mt19937::result_type>(
-		((40 * height) / 100), ((60 * height) / 100));
-	x = global::dist6(global::rng);
+	//global::dist6 = std::uniform_int_distribution<std::mt19937::result_type>(
+		//((40 * height) / 100), ((60 * height) / 100));
+	//x = global::dist6(global::rng);
 
-	global::dist6 = std::uniform_int_distribution<std::mt19937::result_type>(0, 100);
+	//global::dist6 = std::uniform_int_distribution<std::mt19937::result_type>(0, 100);
 
-	//x = int((60 * height) / 100) + rand() % int(30 * height / 100);
+	x = int((60 * height) / 100) + rand() % int(30 * height / 100);
 	mask[x][y]++;
 	puts_zero(mask, x, y);
 
@@ -140,9 +140,11 @@ int* Map::new_line_index(int* x, const int& height) {
 	else if (*x >= 0.8 * height) // 20% of bottom space for the ground
 		sign = -1;
 	else
-		sign = int_power(-1, global::dist6(global::rng)%2); // Either -1 or 1
-	
-	*x = *x + sign* (global::dist6(global::rng) %3);
+		sign = int_power(-1, rand() % 2); // Either -1 or 1
+		//sign = int_power(-1, global::dist6(global::rng) % 2); // Either -1 or 1
+
+	*x = *x + sign* (rand() % 3);
+	//*x = *x + sign* (global::dist6(global::rng) % 3);
 	return x;
 }
 

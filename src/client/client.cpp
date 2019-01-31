@@ -220,8 +220,8 @@ void get_seed()
 		return;
 
 	global::server_seed = request_body["seed"].asUInt();
-	global::rng.seed(global::server_seed);
-	std::cout << "server_seed = " << global::server_seed << "\n";
+	//global::rng.seed(global::server_seed);
+	//std::cout << "server_seed = " << global::server_seed << "\n";
 }
 
 // same as in GameStartedService

@@ -8,7 +8,9 @@
 #include <fstream>
 #include <json/json.h>
 
-#include <random>
+//#include <random> //mt19937 //uniform_int_distribution
+#include <cstdlib>	//srand
+#include <ctime>	// time
 
 namespace global
 {
@@ -20,8 +22,8 @@ namespace global
 	/* json */
 	extern Json::Value json_commandes;
 
-	extern std::mt19937 rng;
-	extern std::uniform_int_distribution<std::mt19937::result_type> dist6;
+	//extern std::mt19937 rng;
+	//extern std::uniform_int_distribution<std::mt19937::result_type> dist6;
 	extern unsigned int server_seed;
 
 	/* Network variables */

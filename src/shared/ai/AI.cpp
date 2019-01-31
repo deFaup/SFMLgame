@@ -10,6 +10,8 @@
 #include <thread>
 #include <chrono>
 
+#include "global_mutex.hpp"
+
 using namespace ai;
 
 AI::AI(engine::GameEngine& moteur) : moteur(moteur) {}
@@ -48,7 +50,7 @@ void AI::place_character(engine::GameEngine& moteur)
 	{
 		//global::rng.seed(global::dist6(global::rng));
 		//int nb_aleatoire = global::dist6(global::rng);
-		srand(time(NULL));
+		srand(global::server_seed);
 		int nb_aleatoire = rand() % 350;
 		for (int i = 0; i < nb_aleatoire; i++)
 			moteur.add_command(state::sfEventsID::arrow_right);

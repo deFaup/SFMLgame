@@ -48,19 +48,14 @@ void play_json(Json::Value* json_commandes, engine::GameEngine* gameEngine);
 void enginet(int player_1_type, int player_2_type)
 {
 	// in local mode we set the seed here
-	global::server_seed = std::random_device()();
-	global::rng.seed(global::server_seed);
-	std::cout << "server_seed = " << global::server_seed << "\n";
-	int nb_aleatoire = global::dist6(global::rng);
-	cout << nb_aleatoire << endl;
-	nb_aleatoire = global::dist6(global::rng);
-	cout << nb_aleatoire << endl;
-	nb_aleatoire = global::dist6(global::rng);
-	cout << nb_aleatoire << endl;
-	nb_aleatoire = global::dist6(global::rng);
-	cout << nb_aleatoire << endl;
-	std::cout << "random = " << global::server_seed << "\n";
-
+	srand(time(NULL));
+	global::server_seed = rand();
+	//global::server_seed = std::random_device()();
+	//global::rng.seed(global::server_seed);
+	//std::cout << "server_seed = " << global::server_seed << "\n";
+	//int nb_aleatoire = global::dist6(global::rng);
+	//cout << nb_aleatoire << endl;
+	
 	menu();
 
 	sf::RenderWindow renderWindow;
@@ -130,7 +125,6 @@ void enginet(int player_1_type, int player_2_type)
 	cout << "ai thread closed\n";
 }
 
-
 int main(int argc, char* argv[])
 {
 	if (argc == 2)
@@ -194,7 +188,7 @@ int main(int argc, char* argv[])
 /* Init the game with two players: player can be AI or real */
 void init_game(state::GameState* etat, int& player_1_type, int& player_2_type)
 {
-	global::rng.seed(std::random_device()());
+	//global::rng.seed(std::random_device()());
 
 	/* Create players, characters and a map. Will be rewritten when menu is implemented */
 	if (etat->ID == not_started)

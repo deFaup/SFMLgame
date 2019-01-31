@@ -11,11 +11,6 @@
 #include "ai.h"
 #include <thread>
 
-//using namespace state;
-//using namespace engine;
-//using namespace ai;
-//using namespace server;
-
 extern int server_listen(std::shared_ptr<server::GameServer> gameServer, uint16_t port = 8080);
 extern void record(int player_1_type, int player_2_type);
 int begin(uint16_t port = 8080);
@@ -36,12 +31,13 @@ int main(int argc, char* argv[])
     return 0;
 }
 
-
-
 int begin(uint16_t port)
 {
-	global::server_seed = std::random_device()();
-	global::rng.seed(global::server_seed);
+	srand(time(NULL));
+	global::server_seed = rand();
+
+	//global::server_seed = std::random_device()();
+	//global::rng.seed(global::server_seed);
 
 	state::GameState gameState;
 	engine::GameEngine gameEngine(&gameState);

@@ -1,7 +1,6 @@
 #include "PlayerDB.h"
 #include "define.hpp"
 #include <iostream>
-#include <cstdlib>
 
 using namespace server;
 //using namespace std;

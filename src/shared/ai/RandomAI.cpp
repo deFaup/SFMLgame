@@ -1,12 +1,13 @@
-#include "define.hpp"
-#include "RandomAI.h"
-#include "define.hpp"
 #include <iostream>
 #include <cstdlib>
-#include <ctime>
 
+#include "define.hpp"
+#include "define.hpp"
+#include "global_mutex.hpp"
+#include "RandomAI.h"
 #include "engine/Move.h"
 #include "state/GameState.h"
+
 using namespace ai;
 
 RandomAI::RandomAI(engine::GameEngine& moteur) : AI(moteur){}
@@ -19,7 +20,7 @@ void RandomAI::play()
 
 	else if (moteur.etat->ID == state::StateID::started)
 	{
-		srand(time(NULL));
+		srand(global::server_seed);
 		int nb_aleatoire = rand() % 2;
 		if (nb_aleatoire == 0 || nb_aleatoire == 1) {
 			int nb_aleatoire2 = rand() % 2;

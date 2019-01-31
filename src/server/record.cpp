@@ -19,7 +19,7 @@ using namespace server;
 /* Init the game with two players: player can be AI or real */
 static void init_game(state::GameState* etat, int& player_1_type, int& player_2_type)
 {
-	global::rng.seed(std::random_device()());
+	//global::rng.seed(std::random_device()());
 
 	/* Create players, characters and a map. Will be rewritten when menu is implemented */
 	if (etat->ID == not_started)
